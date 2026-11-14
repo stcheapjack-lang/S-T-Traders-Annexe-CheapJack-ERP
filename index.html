@@ -403,7 +403,7 @@
                     <th class="py-3.5 px-4">Unit Price / Value</th>
                     <th class="py-3.5 px-4">Completion Progress</th>
                     <th class="py-3.5 px-4">Current Stage</th>
-                    <th class="py-3.5 px-4 text-right">Shop-Floor Controls</th>
+                    <th class="py-3.5 px-4 text-right">Shop-Floor Controls & Job Slips</th>
                   </tr>
                 </thead>
                 <tbody id="work-orders-tbody" class="divide-y divide-slate-100 text-sm">
@@ -681,7 +681,7 @@
                 <div>
                   <span class="text-[11px] text-slate-400 block">Total Fabric Cost</span>
                   <span id="res-fabric-cost" class="text-lg sm:text-xl font-extrabold text-white">₹1,59,750</span>
-                  <span class="text-[10px] text-indigo-300 block">Ex-Mill Valuation</span>
+                  <span id="res-fabric-sub" class="text-[10px] text-indigo-300 block">Ex-Mill Valuation</span>
                 </div>
               </div>
             </div>
@@ -1271,7 +1271,7 @@
   </div>
 
   <!-- ===================================================================== -->
-  <!-- MODAL 5: PRINTABLE DOCUMENT PREVIEW (CHALLAN, COST SHEET, GST INV)    -->
+  <!-- MODAL 5: PRINTABLE DOCUMENT PREVIEW (JOB SLIP, CHALLAN, COST, GST)    -->
   <!-- ===================================================================== -->
   <div id="print-preview-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/60 backdrop-blur-xs p-4 overflow-y-auto">
     <div class="bg-white rounded-2xl max-w-2xl w-full shadow-2xl border border-slate-200 overflow-hidden my-auto">
@@ -1292,7 +1292,7 @@
           Copy Text
         </button>
         <button onclick="window.print()" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold">
-          Print Document
+          Print Slip / Document
         </button>
         <button onclick="closeModal('print-preview-modal')" class="px-4 py-2 rounded-xl bg-slate-800 text-white text-xs font-semibold">
           Close
@@ -1588,7 +1588,7 @@
     // Navigation & Hash Routing (#dashboard, #production, #efficiency, #inventory, #costing, #qc)
     const TAB_META = {
       dashboard: { title: "Dashboard Overview", subtitle: "Live shop-floor telemetry, cutting & stitching output, and dispatch readiness" },
-      production: { title: "Production & Work Order Management", subtitle: "Manage work orders, XS–XXL size matrices, output logging, and stage transitions" },
+      production: { title: "Production & Work Order Management", subtitle: "Manage work orders, XS–XXL size matrices, printable cutting/bundle job slips, and stage transitions" },
       efficiency: { title: "Line Efficiency, SAM & Tailor Payroll", subtitle: "Real-time sewing line efficiency %, SAM/SMV simulator, OB bottlenecks & piece-rate payroll" },
       inventory: { title: "Fabric, Trims & Mill Purchase Orders", subtitle: "Warehouse stock ledger, mill PO procurement, reorder alerts & CAD marker calculator" },
       costing: { title: "BOM & Garment Costing Calculator", subtitle: "Unit manufacturing cost sheet, B2B wholesale quotes, and portal MRP pricing" },
@@ -1770,7 +1770,7 @@
     }
 
     // =========================================================================
-    // PAGE 2: PRODUCTION & WORK ORDER MANAGEMENT
+    // PAGE 2: PRODUCTION & WORK ORDER MANAGEMENT + JOB SLIP GENERATOR
     // =========================================================================
     function renderWorkOrders() {
       const q = document.getElementById("wo-search-input").value.toLowerCase();
@@ -1826,15 +1826,18 @@
             </td>
             <td class="py-3.5 px-4 align-top text-right">
               <div class="flex flex-wrap justify-end gap-1.5">
+                <button onclick="openProductionJobSlip('${o.id}')" class="px-2.5 py-1.5 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 text-xs font-semibold transition">
+                  Print Job Slip
+                </button>
                 <button onclick="openSizeMatrixModal('${o.id}')" class="px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 text-xs font-semibold transition">
-                  View Size Matrix
+                  Size Matrix
                 </button>
                 <button onclick="logBatchOutput('${o.id}')" class="px-2.5 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 text-xs font-semibold transition">
                   + Log Output
                 </button>
                 ${!isFinal ? `
                   <button onclick="advanceOrderStage('${o.id}')" class="px-2.5 py-1.5 rounded-lg bg-slate-900 hover:bg-indigo-600 text-white text-xs font-semibold transition">
-                    Advance Stage →
+                    Advance →
                   </button>
                 ` : `
                   <span class="px-2.5 py-1.5 rounded-lg bg-emerald-600 text-white text-xs font-semibold">Ready</span>
@@ -1844,6 +1847,81 @@
           </tr>
         `;
       }).join("");
+    }
+
+    function openProductionJobSlip(orderId) {
+      const o = appState.workOrders.find(x => x.id === orderId);
+      if (!o) return;
+      const stageIdx = STAGES.indexOf(o.stage) + 1;
+      const bundles = Math.max(1, Math.ceil(o.totalQty / 25));
+
+      const sizeCells = Object.entries(o.sizes).map(([sz, qty]) => `
+        <div class="border border-slate-300 rounded-lg p-2 text-center bg-white">
+          <div class="text-[10px] font-bold text-slate-500">${sz}</div>
+          <div class="text-sm font-extrabold text-slate-900">${qty}</div>
+        </div>
+      `).join("");
+
+      const stageChecklist = STAGES.map((st, i) => {
+        const done = i < STAGES.indexOf(o.stage);
+        const current = st === o.stage;
+        return `
+          <div class="flex items-center justify-between py-1.5 px-2.5 rounded border ${current ? 'border-indigo-500 bg-indigo-50 font-bold text-indigo-900' : 'border-slate-200 text-slate-700'} text-xs">
+            <span>${i + 1}. ${st}</span>
+            <span>${done ? '✓ COMPLETED' : current ? '▶ ACTIVE STAGE' : '☐ Sign: _______'}</span>
+          </div>
+        `;
+      }).join("");
+
+      document.getElementById("print-modal-title").textContent = `Shop-Floor Production Job Slip & Bundle Ticket — ${o.id}`;
+      document.getElementById("print-area").innerHTML = `
+        <div class="border-b-2 border-slate-900 pb-3 flex justify-between items-start">
+          <div>
+            <h2 class="text-lg font-extrabold text-slate-900">S T TRADERS ANNEXE CHEAPJACK</h2>
+            <p class="text-xs text-slate-500">Cherlapally & Musheerabad Manufacturing Units • Hyderabad, Telangana</p>
+          </div>
+          <div class="text-right">
+            <span class="px-2.5 py-1 rounded bg-slate-900 text-white text-xs font-bold">PRODUCTION JOB SLIP</span>
+            <div class="text-[11px] font-mono text-slate-600 mt-1">Slip Ref: SLIP-${o.id}</div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3 text-xs bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+          <div><strong>Work Order ID:</strong> ${o.id}</div>
+          <div><strong>Due Date:</strong> ${o.dueDate}</div>
+          <div><strong>Client / Buyer:</strong> ${o.client}</div>
+          <div><strong>Assigned Line:</strong> ${o.line}</div>
+          <div class="col-span-2"><strong>Garment Style:</strong> ${o.style} (${o.category})</div>
+          <div><strong>Total Order Qty:</strong> ${o.totalQty} Pcs (${bundles} Bundles @ 25 pcs/bundle)</div>
+          <div><strong>Current Floor Stage:</strong> Stage 0${stageIdx} — ${o.stage} (${o.completedQty}/${o.totalQty} pcs done)</div>
+        </div>
+
+        <div>
+          <div class="text-[11px] font-bold uppercase tracking-wider text-slate-600 mb-1.5">Cutting & Stitching Size Matrix</div>
+          <div class="grid grid-cols-6 gap-2">${sizeCells}</div>
+        </div>
+
+        <div>
+          <div class="text-[11px] font-bold uppercase tracking-wider text-slate-600 mb-1.5">Department Routing & Supervisor Sign-Off</div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-1.5">${stageChecklist}</div>
+        </div>
+
+        <div class="pt-4 border-t border-slate-200 flex justify-between text-xs text-slate-500">
+          <span>Cutting Master Sign</span>
+          <span>Line Supervisor Sign</span>
+          <span>QA Floor Sign</span>
+        </div>
+      `;
+
+      currentPrintableText = [
+        `S T TRADERS ANNEXE CHEAPJACK — PRODUCTION JOB SLIP (${o.id})`,
+        `Client: ${o.client} | Style: ${o.style} | Line: ${o.line}`,
+        `Total Qty: ${o.totalQty} pcs (${bundles} Bundles) | Current Stage: ${o.stage} (${o.completedQty}/${o.totalQty})`,
+        `Sizes: XS:${o.sizes.XS}, S:${o.sizes.S}, M:${o.sizes.M}, L:${o.sizes.L}, XL:${o.sizes.XL}, XXL:${o.sizes.XXL}`
+      ].join("\n");
+
+      document.getElementById("print-preview-modal").classList.remove("hidden");
+      document.getElementById("print-preview-modal").classList.add("flex");
     }
 
     function logBatchOutput(orderId) {
@@ -2002,7 +2080,6 @@
         `;
       }).join("");
 
-      // Render Tailor Piece-Rate Payroll
       const paySelect = document.getElementById("pay-op-select");
       if (paySelect) {
         paySelect.innerHTML = appState.operators.map(op => `<option value="${op.id}">${op.id} — ${op.name}</option>`).join("");
@@ -2112,7 +2189,6 @@
         `;
       }).join("");
 
-      // Populate Mill POs
       const poSelect = document.getElementById("po-sku-select");
       if (poSelect) {
         poSelect.innerHTML = appState.inventory.map(i => `<option value="${i.sku}">${i.sku} — ${i.name}</option>`).join("");
