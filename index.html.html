@@ -1,0 +1,2651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>S T Traders Annexe CheapJack — Apparel & Uniform Manufacturing ERP</title>
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            pacifica: '#1E77B4',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #f1f5f9; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    .tab-fade { animation: fadeIn 0.2s ease-out; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @media print {
+      body * { visibility: hidden; }
+      #print-area, #print-area * { visibility: visible; }
+      #print-area { position: absolute; left: 0; top: 0; width: 100%; }
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased selection:bg-indigo-600 selection:text-white">
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none px-4 sm:px-0"></div>
+
+  <div class="min-h-screen flex flex-col lg:flex-row">
+    
+    <!-- Mobile Top Header -->
+    <header class="lg:hidden bg-slate-900 text-white px-4 py-3 flex items-center justify-between sticky top-0 z-30 shadow-md">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-lg bg-indigo-600 flex items-center justify-center font-extrabold text-white shadow-inner">
+          ST
+        </div>
+        <div>
+          <h1 class="text-sm font-bold leading-tight">S T Traders Annexe CheapJack</h1>
+          <p class="text-[11px] text-slate-400">Apparel & Uniform ERP • Hyderabad</p>
+        </div>
+      </div>
+      <button id="mobile-menu-btn" aria-label="Open menu" class="p-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
+    </header>
+
+    <!-- Left Sidebar Navigation -->
+    <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-72 bg-slate-900 text-slate-300 flex flex-col transition-transform duration-300 -translate-x-full lg:translate-x-0 lg:static lg:shrink-0 shadow-xl">
+      <!-- Brand Header -->
+      <div class="p-5 border-b border-slate-800 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-700 flex items-center justify-center text-white font-extrabold text-base shadow-lg ring-1 ring-white/15">
+            ST
+          </div>
+          <div>
+            <div class="font-bold text-white text-sm leading-snug">S T Traders Annexe</div>
+            <div class="text-xs font-semibold text-emerald-400 tracking-wide">CheapJack ERP • Hyd</div>
+          </div>
+        </div>
+        <button id="close-sidebar-btn" aria-label="Close menu" class="lg:hidden p-2 text-slate-400 hover:text-white">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <!-- Facility Status Pill -->
+      <div class="px-5 py-3 bg-slate-950/60 border-b border-slate-800 flex items-center justify-between text-xs">
+        <span class="flex items-center gap-2 text-slate-400">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          Cherlapally & Musheerabad
+        </span>
+        <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300 font-semibold">GST 36 • ₹</span>
+      </div>
+
+      <!-- Navigation Links -->
+      <nav class="flex-1 p-4 space-y-1.5 overflow-y-auto">
+        <p class="px-3 text-[11px] font-semibold uppercase tracking-wider text-slate-500 mb-2">ERP Core & Floor Intelligence</p>
+        
+        <button onclick="switchTab('dashboard')" data-tab="dashboard" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium transition-all bg-indigo-600 text-white shadow-sm">
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+          <span>Dashboard Overview</span>
+        </button>
+
+        <button onclick="switchTab('production')" data-tab="production" class="nav-btn w-full flex items-center justify-between px-3.5 py-3 rounded-xl text-sm font-medium text-slate-300 hover:bg-slate-800/80 hover:text-white transition-all">
+          <div class="flex items-center gap-3">
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+            <span>Production & Work Orders</span>
+          </div>
+          <span id="nav-wo-count" class="px-2 py-0.5 text-xs rounded-full bg-slate-800 text-slate-300">4</span>
+        </button>
+
+        <button onclick="switchTab('efficiency')" data-tab="efficiency" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium text-slate-300 hover:bg-slate-800/80 hover:text-white transition-all">
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          <span>Line Efficiency & SAM</span>
+        </button>
+
+        <button onclick="switchTab('inventory')" data-tab="inventory" class="nav-btn w-full flex items-center justify-between px-3.5 py-3 rounded-xl text-sm font-medium text-slate-300 hover:bg-slate-800/80 hover:text-white transition-all">
+          <div class="flex items-center gap-3">
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+            <span>Fabric & Trims Stock</span>
+          </div>
+          <span id="nav-low-stock-badge" class="hidden px-2 py-0.5 text-xs rounded-full bg-rose-500/20 text-rose-400 font-bold">!</span>
+        </button>
+
+        <button onclick="switchTab('costing')" data-tab="costing" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium text-slate-300 hover:bg-slate-800/80 hover:text-white transition-all">
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+          <span>BOM & Garment Costing</span>
+        </button>
+
+        <button onclick="switchTab('qc')" data-tab="qc" class="nav-btn w-full flex items-center justify-between px-3.5 py-3 rounded-xl text-sm font-medium text-slate-300 hover:bg-slate-800/80 hover:text-white transition-all">
+          <div class="flex items-center gap-3">
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <span>QC & Dispatch Logistics</span>
+          </div>
+        </button>
+      </nav>
+
+      <!-- Sidebar Footer CTA -->
+      <div class="p-4 border-t border-slate-800 space-y-2">
+        <button onclick="openGstInvoiceModal()" class="w-full py-2 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-indigo-300 text-xs font-semibold flex items-center justify-center gap-2 border border-slate-700 transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          <span>GST Invoice & Tally Export</span>
+        </button>
+        <button onclick="openNewOrderModal()" class="w-full py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-semibold flex items-center justify-center gap-2 shadow-sm transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+          <span>New Work Order</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Backdrop for Mobile Sidebar -->
+    <div id="sidebar-backdrop" onclick="toggleMobileSidebar(false)" class="fixed inset-0 bg-slate-950/60 backdrop-blur-xs z-30 hidden lg:hidden"></div>
+
+    <!-- Main Workspace Area -->
+    <main class="flex-1 flex flex-col min-w-0 overflow-x-hidden">
+      
+      <!-- Sticky Top Header Bar -->
+      <div class="bg-white border-b border-slate-200 px-4 sm:px-8 py-4 flex flex-col xl:flex-row xl:items-center xl:justify-between gap-3 sticky top-0 z-20">
+        <div>
+          <h2 id="page-title" class="text-xl font-bold text-slate-900 tracking-tight">Dashboard Overview</h2>
+          <p id="page-subtitle" class="text-xs sm:text-sm text-slate-500">Live shop-floor telemetry, cutting & stitching output, and dispatch readiness</p>
+        </div>
+        <div class="flex flex-wrap items-center gap-2 self-start sm:self-auto">
+          <button onclick="exportFactoryBackup()" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold border border-slate-200 transition">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+            <span>Export JSON</span>
+          </button>
+          <label class="cursor-pointer inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold border border-slate-200 transition">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+            <span>Import JSON</span>
+            <input type="file" accept=".json" onchange="importFactoryBackup(event)" class="hidden">
+          </label>
+          <button onclick="resetDemoData()" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold border border-slate-200 transition">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+            <span>Reset Demo</span>
+          </button>
+          <button onclick="openNewOrderModal()" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs sm:text-sm font-semibold shadow-xs transition">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+            <span>New Work Order</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Module Views Container -->
+      <div class="p-4 sm:p-8 max-w-[1600px] w-full mx-auto space-y-6">
+
+        <!-- ========================================================= -->
+        <!-- MODULE 1: DASHBOARD OVERVIEW                              -->
+        <!-- ========================================================= -->
+        <section id="tab-dashboard" class="module-section tab-fade space-y-6">
+          
+          <!-- 5 Real-Time KPI Cards -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-4">
+            <!-- KPI 1: Active Work Orders -->
+            <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs hover:shadow-md transition">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Active Work Orders</span>
+                <div class="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                </div>
+              </div>
+              <div class="mt-3 flex items-baseline gap-2">
+                <span id="kpi-active-orders" class="text-2xl font-extrabold text-slate-900">0</span>
+                <span class="text-xs font-semibold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-full">Batches</span>
+              </div>
+              <p id="kpi-total-units" class="mt-1 text-xs text-slate-500">0 units scheduled</p>
+            </div>
+
+            <!-- KPI 2: Daily Output Units -->
+            <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs hover:shadow-md transition">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Daily Output Units</span>
+                <div class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+                </div>
+              </div>
+              <div class="mt-3 flex items-baseline gap-2">
+                <span id="kpi-daily-output" class="text-2xl font-extrabold text-slate-900">0</span>
+                <span class="text-xs font-medium text-slate-500">Pcs Logged</span>
+              </div>
+              <p id="kpi-avg-line-eff" class="mt-1 text-xs text-emerald-600 font-semibold">Avg Line Efficiency: 78.4%</p>
+            </div>
+
+            <!-- KPI 3: Fabric Stock Value -->
+            <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs hover:shadow-md transition">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Fabric Stock Value</span>
+                <div class="w-9 h-9 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold text-base">
+                  ₹
+                </div>
+              </div>
+              <div class="mt-3 flex items-baseline gap-2">
+                <span id="kpi-stock-value" class="text-2xl font-extrabold text-slate-900">₹0</span>
+              </div>
+              <p id="kpi-low-stock-text" class="mt-1 text-xs text-slate-500">0 SKUs below reorder level</p>
+            </div>
+
+            <!-- KPI 4: Pending Dispatches -->
+            <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs hover:shadow-md transition">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Pending Dispatches</span>
+                <div class="w-9 h-9 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/></svg>
+                </div>
+              </div>
+              <div class="mt-3 flex items-baseline gap-2">
+                <span id="kpi-pending-dispatch" class="text-2xl font-extrabold text-slate-900">0</span>
+                <span class="text-xs font-medium text-sky-700 bg-sky-50 px-2 py-0.5 rounded-full">Ready</span>
+              </div>
+              <p class="mt-1 text-xs text-slate-500">Porter / BlueDart / FBA queue</p>
+            </div>
+
+            <!-- KPI 5: Overall FPY QC % -->
+            <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs hover:shadow-md transition">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Overall FPY QC %</span>
+                <div class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+              </div>
+              <div class="mt-3 flex items-baseline gap-2">
+                <span id="kpi-fpy-pct" class="text-2xl font-extrabold text-slate-900">98.4%</span>
+                <span class="text-xs font-semibold text-emerald-600">AQL 2.5</span>
+              </div>
+              <p class="mt-1 text-xs text-slate-500">First-Pass Yield Inspection</p>
+            </div>
+          </div>
+
+          <!-- Interactive 6-Stage Shop-Floor Production Pipeline Tracker -->
+          <div class="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-xs">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-5">
+              <div>
+                <h3 class="text-base font-bold text-slate-900">Shop-Floor Production Pipeline Tracker</h3>
+                <p class="text-xs text-slate-500">Click any manufacturing stage card to filter and inspect active batches on that floor</p>
+              </div>
+              <div class="flex items-center gap-3">
+                <button onclick="switchTab('efficiency')" class="text-xs font-semibold text-emerald-700 hover:text-emerald-800 inline-flex items-center gap-1">
+                  <span>Open Line SAM & IE Tracker</span>
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+                </button>
+                <button onclick="filterProductionByStage('ALL')" class="text-xs font-semibold text-indigo-600 hover:text-indigo-800 inline-flex items-center gap-1">
+                  <span>View All Batches</span>
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+                </button>
+              </div>
+            </div>
+
+            <div id="pipeline-visual-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3">
+              <!-- Populated dynamically via JS -->
+            </div>
+          </div>
+
+          <!-- Priority Work Orders & Live Low-Stock/QC Alert Feed -->
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            
+            <!-- Priority Work Orders Quick-View Table -->
+            <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden flex flex-col">
+              <div class="p-5 border-b border-slate-100 flex items-center justify-between">
+                <div>
+                  <h3 class="text-base font-bold text-slate-900">Priority Work Orders</h3>
+                  <p class="text-xs text-slate-500">Active Healthcare Uniforms, Industrial Workwear & Home Textiles runs</p>
+                </div>
+                <button onclick="switchTab('production')" class="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-xs font-semibold text-slate-700 transition">
+                  Manage Floor
+                </button>
+              </div>
+              <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                  <thead>
+                    <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                      <th class="py-3 px-4">Order ID & Client</th>
+                      <th class="py-3 px-4">Product Style</th>
+                      <th class="py-3 px-4">Progress</th>
+                      <th class="py-3 px-4">Stage</th>
+                      <th class="py-3 px-4">Due Date</th>
+                    </tr>
+                  </thead>
+                  <tbody id="dashboard-orders-tbody" class="divide-y divide-slate-100 text-sm">
+                    <!-- Populated via JS -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Live Low-Stock & QC Alert Feed -->
+            <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between mb-4">
+                  <h3 class="text-base font-bold text-slate-900">Low-Stock & QC Alerts</h3>
+                  <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-rose-50 text-rose-600 border border-rose-200">Live</span>
+                </div>
+                <div id="dashboard-alerts-list" class="space-y-3">
+                  <!-- Populated via JS -->
+                </div>
+              </div>
+              <div class="mt-5 pt-4 border-t border-slate-100 flex gap-2">
+                <button onclick="switchTab('inventory')" class="flex-1 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold transition">
+                  Stock Ledger
+                </button>
+                <button onclick="openGstInvoiceModal()" class="flex-1 py-2.5 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-semibold transition">
+                  GST & Tally
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- MODULE 2: PRODUCTION & WORK ORDER MANAGEMENT              -->
+        <!-- ========================================================= -->
+        <section id="tab-production" class="module-section hidden tab-fade space-y-6">
+          
+          <!-- Filter Bar -->
+          <div class="bg-white rounded-2xl border border-slate-200 p-4 sm:p-5 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 flex-1">
+              <div class="relative flex-1 max-w-md">
+                <svg class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                <input type="text" id="wo-search-input" oninput="renderWorkOrders()" placeholder="Search Order ID, Client, or Style..." class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+              </div>
+
+              <select id="wo-category-filter" onchange="renderWorkOrders()" class="px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm bg-white text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <option value="ALL">All Categories</option>
+                <option value="Healthcare Uniforms">Healthcare Uniforms</option>
+                <option value="Corporate & Industrial">Corporate & Industrial</option>
+                <option value="Home Textiles">Home Textiles</option>
+              </select>
+
+              <select id="wo-stage-filter" onchange="renderWorkOrders()" class="px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm bg-white text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <option value="ALL">All Stages</option>
+                <option value="Cutting">1. Cutting</option>
+                <option value="Stitching">2. Stitching</option>
+                <option value="Embroidery/Printing">3. Embroidery/Printing</option>
+                <option value="Finishing & Ironing">4. Finishing & Ironing</option>
+                <option value="Quality Inspection">5. Quality Inspection</option>
+                <option value="Packing & Dispatch">6. Packing & Dispatch</option>
+              </select>
+            </div>
+
+            <button onclick="openNewOrderModal()" class="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold inline-flex items-center justify-center gap-2 shadow-xs transition">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+              <span>New Work Order</span>
+            </button>
+          </div>
+
+          <!-- Work Orders Table -->
+          <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                    <th class="py-3.5 px-4">Work Order & Client</th>
+                    <th class="py-3.5 px-4">Style, Category & Line</th>
+                    <th class="py-3.5 px-4">Unit Price / Value</th>
+                    <th class="py-3.5 px-4">Completion Progress</th>
+                    <th class="py-3.5 px-4">Current Stage</th>
+                    <th class="py-3.5 px-4 text-right">Shop-Floor Controls</th>
+                  </tr>
+                </thead>
+                <tbody id="work-orders-tbody" class="divide-y divide-slate-100 text-sm">
+                  <!-- Rendered via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- MODULE 2B: SHOP-FLOOR LINE BALANCING & SAM TRACKER        -->
+        <!-- ========================================================= -->
+        <section id="tab-efficiency" class="module-section hidden tab-fade space-y-6">
+          
+          <!-- Live Sewing Lines Efficiency Telemetry -->
+          <div id="line-cards-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+            <!-- Populated via JS -->
+          </div>
+
+          <!-- SAM / SMV & Operator Reallocation Simulator -->
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <div class="lg:col-span-5 bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-xs space-y-4">
+              <div class="pb-3 border-b border-slate-100">
+                <h3 class="text-base font-bold text-slate-900">SAM / SMV & Line Balancing Simulator</h3>
+                <p class="text-xs text-slate-500">Formula: Efficiency % = (Output × SAM) ÷ (Operators × Shift Minutes) × 100</p>
+              </div>
+
+              <div class="space-y-3">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-700 mb-1">Garment Style Preset</label>
+                  <select id="sam-preset" onchange="applySamPreset()" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm bg-slate-50 font-medium">
+                    <option value="18.5|26|480|410|45500">Maroon V-Neck Scrub Set (SAM: 18.5 min)</option>
+                    <option value="24.0|32|480|390|56000">Pacifica Blue Industrial Shirt & Trouser (SAM: 24.0 min)</option>
+                    <option value="6.2|14|480|820|24500">144 TC Single Bedsheet + Pillow Cover (SAM: 6.2 min)</option>
+                  </select>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Garment SAM (Mins)</label>
+                    <input type="number" id="sam-val" value="18.5" step="0.5" min="1" oninput="calculateLineEfficiency()" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm font-bold">
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Active Operators</label>
+                    <input type="number" id="sam-ops" value="26" min="1" oninput="calculateLineEfficiency()" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm font-bold">
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Shift Minutes (8h = 480)</label>
+                    <input type="number" id="sam-mins" value="480" min="60" oninput="calculateLineEfficiency()" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm font-bold">
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Actual Output (Pcs)</label>
+                    <input type="number" id="sam-output" value="410" min="1" oninput="calculateLineEfficiency()" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm font-bold">
+                  </div>
+                </div>
+
+                <div>
+                  <label class="block text-xs font-semibold text-slate-700 mb-1">Daily Line Overhead & Wage Pool (₹)</label>
+                  <input type="number" id="sam-daily-cost" value="45500" min="1000" oninput="calculateLineEfficiency()" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm font-bold">
+                </div>
+              </div>
+
+              <div class="grid grid-cols-3 gap-2.5 p-4 rounded-2xl bg-slate-900 text-white">
+                <div>
+                  <span class="text-[11px] text-slate-400 block">Line Efficiency</span>
+                  <span id="sam-res-eff" class="text-xl font-extrabold text-emerald-400">60.8%</span>
+                </div>
+                <div>
+                  <span class="text-[11px] text-slate-400 block">100% Cap / Shift</span>
+                  <span id="sam-res-cap" class="text-xl font-extrabold text-white">675 pcs</span>
+                </div>
+                <div>
+                  <span class="text-[11px] text-slate-400 block">Cost / Min (CPM)</span>
+                  <span id="sam-res-cpm" class="text-xl font-extrabold text-indigo-300">₹3.65</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Operation Bulletin (OB) Bottleneck Table -->
+            <div class="lg:col-span-7 bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden flex flex-col">
+              <div class="p-5 border-b border-slate-100 flex items-center justify-between">
+                <div>
+                  <h3 class="text-base font-bold text-slate-900">Operation Bulletin (OB) & Bottleneck Station</h3>
+                  <p class="text-xs text-slate-500">Workstation cycle time breakdown identifying lowest hourly capacity station</p>
+                </div>
+                <span class="px-2.5 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-200 text-xs font-bold">Pitch Time: 0.71m</span>
+              </div>
+              <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                  <thead>
+                    <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                      <th class="py-3 px-4">Op # & Workstation</th>
+                      <th class="py-3 px-4">Machine Type</th>
+                      <th class="py-3 px-4">SMV (Min)</th>
+                      <th class="py-3 px-4">Operators</th>
+                      <th class="py-3 px-4">Hourly Cap</th>
+                      <th class="py-3 px-4">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="ob-table-tbody" class="divide-y divide-slate-100 text-xs sm:text-sm">
+                    <!-- Populated via JS -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- MODULE 3: FABRIC, TRIMS & RAW MATERIAL INVENTORY          -->
+        <!-- ========================================================= -->
+        <section id="tab-inventory" class="module-section hidden tab-fade space-y-6">
+          
+          <!-- Stock Ledger Table -->
+          <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+            <div class="p-5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <h3 class="text-base font-bold text-slate-900">Fabric Rolls & Trims Stock Ledger</h3>
+                <p class="text-xs text-slate-500">Live warehouse balances with instant Issue to Cutting (-) and Restock (+) controls</p>
+              </div>
+              <div class="flex flex-wrap items-center gap-2">
+                <select id="inv-type-filter" onchange="renderInventory()" class="px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold bg-slate-50 text-slate-700">
+                  <option value="ALL">All Materials</option>
+                  <option value="Fabric">Fabric Rolls (meters)</option>
+                  <option value="Trims">Trims & Labels (pcs/cones)</option>
+                </select>
+                <button onclick="openAddMaterialModal()" class="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold inline-flex items-center gap-1.5 transition">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                  <span>Add Material SKU</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                    <th class="py-3.5 px-4">SKU & Material Name</th>
+                    <th class="py-3.5 px-4">Color / Spec</th>
+                    <th class="py-3.5 px-4">Available Stock</th>
+                    <th class="py-3.5 px-4">Reorder Level</th>
+                    <th class="py-3.5 px-4">Unit Cost (₹)</th>
+                    <th class="py-3.5 px-4">Total Value (₹)</th>
+                    <th class="py-3.5 px-4">Status</th>
+                    <th class="py-3.5 px-4 text-right">Stock Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="inventory-tbody" class="divide-y divide-slate-100 text-sm">
+                  <!-- Rendered via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Fabric Consumption & CAD Marker Efficiency Calculator -->
+          <div class="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-xs">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-slate-100 mb-5">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                </div>
+                <div>
+                  <h3 class="text-base font-bold text-slate-900">Fabric Consumption & CAD Marker Efficiency Calculator</h3>
+                  <p class="text-xs text-slate-500">Calculate gross fabric meters required, marker wastage meters, and total fabric cost in ₹</p>
+                </div>
+              </div>
+              <select id="calc-fabric-preset" onchange="applyFabricPreset()" class="px-3.5 py-2 rounded-xl border border-slate-200 text-xs font-semibold bg-slate-50 text-slate-700">
+                <option value="2.15|142">Maroon V-Neck Scrub Set (2.15m @ ₹142/m)</option>
+                <option value="2.45|98">144 TC Single Bedsheet + Pillow Cover (2.45m @ ₹98/m)</option>
+                <option value="2.75|168">Pacifica Blue Workwear Shirt & Trouser (2.75m @ ₹168/m)</option>
+              </select>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+              <div class="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-700 mb-1">Order Qty (Units)</label>
+                  <input type="number" id="calc-fab-qty" value="450" min="1" oninput="calculateFabricRequirement()" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm font-bold">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-700 mb-1">Net Consumption (m/pc)</label>
+                  <input type="number" id="calc-fab-avg" value="2.15" step="0.05" min="0.1" oninput="calculateFabricRequirement()" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm font-bold">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-700 mb-1">Marker Efficiency (%)</label>
+                  <input type="number" id="calc-fab-eff" value="86" min="50" max="100" oninput="calculateFabricRequirement()" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm font-bold">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-700 mb-1">Fabric Rate (₹ / m)</label>
+                  <input type="number" id="calc-fab-rate" value="142" min="1" oninput="calculateFabricRequirement()" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm font-bold">
+                </div>
+              </div>
+
+              <div class="lg:col-span-5 grid grid-cols-3 gap-3 p-4 rounded-2xl bg-slate-900 text-white">
+                <div>
+                  <span class="text-[11px] text-slate-400 block">Gross Fabric Req.</span>
+                  <span id="res-gross-meters" class="text-lg sm:text-xl font-extrabold text-emerald-400">1,125.00 m</span>
+                  <span id="res-net-sub" class="text-[10px] text-slate-400 block">Net: 967.50 m</span>
+                </div>
+                <div>
+                  <span class="text-[11px] text-slate-400 block">Marker Wastage</span>
+                  <span id="res-wastage-meters" class="text-lg sm:text-xl font-extrabold text-amber-400">157.50 m</span>
+                  <span id="res-wastage-pct" class="text-[10px] text-slate-400 block">14% CAD loss</span>
+                </div>
+                <div>
+                  <span class="text-[11px] text-slate-400 block">Total Fabric Cost</span>
+                  <span id="res-fabric-cost" class="text-lg sm:text-xl font-extrabold text-white">₹1,59,750</span>
+                  <span class="text-[10px] text-indigo-300 block">Ex-Mill Valuation</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- MODULE 4: BOM & GARMENT COSTING CALCULATOR                -->
+        <!-- ========================================================= -->
+        <section id="tab-costing" class="module-section hidden tab-fade space-y-6">
+          
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            
+            <!-- Left 7 Columns: Costing Inputs & Custom Line Items -->
+            <div class="lg:col-span-7 bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-xs space-y-5">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100">
+                <div>
+                  <h3 class="text-base font-bold text-slate-900">BOM & Garment Costing Builder</h3>
+                  <p class="text-xs text-slate-500">1-click style presets with custom BOM line items & margin simulation</p>
+                </div>
+                <div class="flex flex-wrap gap-1.5">
+                  <button type="button" onclick="loadCostingPreset('scrub')" class="px-2.5 py-1.5 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-semibold border border-indigo-200 transition">
+                    Maroon Scrub Set
+                  </button>
+                  <button type="button" onclick="loadCostingPreset('bedsheet')" class="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold transition">
+                    144 TC Bedsheet
+                  </button>
+                  <button type="button" onclick="loadCostingPreset('coverall')" class="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold transition">
+                    Industrial Coverall
+                  </button>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div class="sm:col-span-2">
+                  <label class="block text-xs font-semibold text-slate-700 mb-1">Product / Garment Style Name</label>
+                  <input type="text" id="cost-title" value="Classic Fit Maroon V-Neck Medical Scrub Set" oninput="calculateGarmentCost()" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm font-medium">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-700 mb-1">Batch Order Qty (Pcs)</label>
+                  <input type="number" id="cost-batch-qty" value="450" min="1" oninput="calculateGarmentCost()" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm font-bold">
+                </div>
+              </div>
+
+              <!-- Direct Material & Conversion Costs -->
+              <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 p-4 rounded-xl bg-slate-50 border border-slate-200/80">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">Fabric Rate (₹/m)</label>
+                  <input type="number" id="cost-fab-rate" value="142" min="0" oninput="calculateGarmentCost()" class="w-full px-3 py-2 rounded-lg border border-slate-200 bg-white text-sm font-bold">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">Fabric Cons. (m/pc)</label>
+                  <input type="number" id="cost-fab-cons" value="2.15" step="0.05" min="0" oninput="calculateGarmentCost()" class="w-full px-3 py-2 rounded-lg border border-slate-200 bg-white text-sm font-bold">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">Trims & Accessories (₹)</label>
+                  <input type="number" id="cost-trims" value="26" min="0" oninput="calculateGarmentCost()" class="w-full px-3 py-2 rounded-lg border border-slate-200 bg-white text-sm font-bold">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">CM Stitching Labor (₹)</label>
+                  <input type="number" id="cost-cm" value="90" min="0" oninput="calculateGarmentCost()" class="w-full px-3 py-2 rounded-lg border border-slate-200 bg-white text-sm font-bold">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">Embroidery / Print (₹)</label>
+                  <input type="number" id="cost-emb" value="22" min="0" oninput="calculateGarmentCost()" class="w-full px-3 py-2 rounded-lg border border-slate-200 bg-white text-sm font-bold">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">Washing & Finishing (₹)</label>
+                  <input type="number" id="cost-wash" value="18" min="0" oninput="calculateGarmentCost()" class="w-full px-3 py-2 rounded-lg border border-slate-200 bg-white text-sm font-bold">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">Packing & Polybag (₹)</label>
+                  <input type="number" id="cost-pack" value="14" min="0" oninput="calculateGarmentCost()" class="w-full px-3 py-2 rounded-lg border border-slate-200 bg-white text-sm font-bold">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">Factory Overhead (%)</label>
+                  <input type="number" id="cost-overhead" value="12" min="0" max="100" oninput="calculateGarmentCost()" class="w-full px-3 py-2 rounded-lg border border-slate-200 bg-white text-sm font-bold">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">Wholesale Margin (%)</label>
+                  <input type="number" id="cost-margin" value="25" min="0" max="200" oninput="calculateGarmentCost()" class="w-full px-3 py-2 rounded-lg border border-slate-200 bg-white text-sm font-bold">
+                </div>
+              </div>
+
+              <!-- Retail MRP Margin -->
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 items-end">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-700 mb-1">Retail / Portal MRP Margin (% on Mfg Cost)</label>
+                  <input type="number" id="cost-mrp-margin" value="125" min="0" max="500" oninput="calculateGarmentCost()" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm font-bold">
+                </div>
+                <button type="button" onclick="addCustomBomItem()" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-semibold inline-flex items-center justify-center gap-1.5 transition">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                  <span>Add Custom BOM Line Item</span>
+                </button>
+              </div>
+
+              <!-- Custom BOM Line Items List -->
+              <div id="custom-bom-list" class="space-y-2">
+                <!-- Rendered dynamically -->
+              </div>
+            </div>
+
+            <!-- Right 5 Columns: Summary Cost Sheet & Print Export -->
+            <div class="lg:col-span-5 space-y-4">
+              <div class="bg-slate-900 text-white rounded-2xl p-6 shadow-lg space-y-5">
+                <div class="flex items-start justify-between gap-2 border-b border-slate-800 pb-4">
+                  <div>
+                    <span class="text-[11px] font-bold uppercase tracking-wider text-emerald-400">S T Traders Annexe CheapJack</span>
+                    <h3 id="sheet-style-name" class="text-base font-bold text-white mt-0.5">Classic Fit Maroon V-Neck Medical Scrub Set</h3>
+                  </div>
+                  <button onclick="openPrintCostSheet()" class="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold shrink-0 transition">
+                    Print / Export
+                  </button>
+                </div>
+
+                <!-- Breakdown Lines -->
+                <div class="space-y-2 text-xs sm:text-sm">
+                  <div class="flex justify-between text-slate-300">
+                    <span>Direct Fabric (<span id="sheet-fab-desc">2.15m @ ₹142</span>)</span>
+                    <span id="sheet-fab-cost" class="font-semibold text-white">₹305.30</span>
+                  </div>
+                  <div class="flex justify-between text-slate-300">
+                    <span>Trims & Accessories</span>
+                    <span id="sheet-trim-cost" class="font-semibold text-white">₹26.00</span>
+                  </div>
+                  <div class="flex justify-between text-slate-300">
+                    <span>CM Stitching Labor</span>
+                    <span id="sheet-cm-cost" class="font-semibold text-white">₹90.00</span>
+                  </div>
+                  <div class="flex justify-between text-slate-300">
+                    <span>Embroidery / Printing</span>
+                    <span id="sheet-emb-cost" class="font-semibold text-white">₹22.00</span>
+                  </div>
+                  <div class="flex justify-between text-slate-300">
+                    <span>Washing, Finishing & Packing</span>
+                    <span id="sheet-wash-pack-cost" class="font-semibold text-white">₹32.00</span>
+                  </div>
+                  <div id="sheet-custom-row" class="hidden flex justify-between text-indigo-300">
+                    <span>Custom BOM Additions</span>
+                    <span id="sheet-custom-cost" class="font-semibold">₹0.00</span>
+                  </div>
+                  <div class="flex justify-between text-slate-300 pt-2 border-t border-slate-800">
+                    <span>Factory Overhead (<span id="sheet-oh-pct">12</span>%)</span>
+                    <span id="sheet-oh-cost" class="font-semibold text-white">₹57.04</span>
+                  </div>
+                </div>
+
+                <!-- 4 Highlighted Output Cards -->
+                <div class="grid grid-cols-2 gap-3 pt-2">
+                  <div class="p-3.5 rounded-xl bg-slate-800 border border-slate-700">
+                    <span class="text-[11px] text-slate-400 block">Unit Mfg. Cost</span>
+                    <span id="sheet-unit-mfg" class="text-xl font-extrabold text-white mt-0.5 block">₹532.34</span>
+                  </div>
+                  <div class="p-3.5 rounded-xl bg-emerald-950/80 border border-emerald-700/60">
+                    <span class="text-[11px] text-emerald-300 block">B2B Wholesale Quote</span>
+                    <span id="sheet-wholesale" class="text-xl font-extrabold text-emerald-400 mt-0.5 block">₹665.42</span>
+                  </div>
+                  <div class="p-3.5 rounded-xl bg-indigo-950/80 border border-indigo-700/60">
+                    <span class="text-[11px] text-indigo-300 block">Suggested Portal MRP</span>
+                    <span id="sheet-mrp" class="text-xl font-extrabold text-indigo-300 mt-0.5 block">₹1,199</span>
+                  </div>
+                  <div class="p-3.5 rounded-xl bg-slate-800 border border-slate-700">
+                    <span class="text-[11px] text-slate-400 block">Batch Gross Profit</span>
+                    <span id="sheet-batch-profit" class="text-xl font-extrabold text-emerald-400 mt-0.5 block">₹59,888</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- MODULE 5: QUALITY CONTROL (QC), GST INVOICE & DISPATCH    -->
+        <!-- ========================================================= -->
+        <section id="tab-qc" class="module-section hidden tab-fade space-y-6">
+          
+          <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
+            
+            <!-- Left 5 Columns: AQL 2.5 Batch Inspection Logger -->
+            <div class="xl:col-span-5 bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-xs space-y-4 self-start">
+              <div class="pb-3 border-b border-slate-100 flex items-center justify-between">
+                <div>
+                  <h3 class="text-base font-bold text-slate-900">AQL 2.5 Batch Inspection Logger</h3>
+                  <p class="text-xs text-slate-500">Auto-determines PASS / REWORK verdict based on AQL 2.5 acceptance limits</p>
+                </div>
+                <span class="px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-700 text-xs font-bold">AQL 2.5</span>
+              </div>
+
+              <form onsubmit="submitQcLog(event)" class="space-y-4">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-700 mb-1">Select Work Order Batch</label>
+                  <select id="qc-wo-select" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm bg-slate-50"></select>
+                </div>
+
+                <div class="grid grid-cols-3 gap-3">
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Sample Size</label>
+                    <input type="number" id="qc-sample-qty" value="50" min="5" oninput="previewAqlVerdict()" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm font-bold">
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Major Defects</label>
+                    <input type="number" id="qc-major-qty" value="0" min="0" oninput="previewAqlVerdict()" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm font-bold text-rose-600">
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Minor Defects</label>
+                    <input type="number" id="qc-minor-qty" value="1" min="0" oninput="previewAqlVerdict()" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm font-bold text-amber-600">
+                  </div>
+                </div>
+
+                <div>
+                  <label class="block text-xs font-semibold text-slate-700 mb-1">Inspector Name</label>
+                  <input type="text" id="qc-inspector" value="Ramesh Naidu (Senior QA)" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
+                </div>
+
+                <div>
+                  <label class="block text-xs font-semibold text-slate-700 mb-1">Inspection & Defect Remarks</label>
+                  <input type="text" id="qc-defect-notes" value="Seam tension, measurements & shade matching verified" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
+                </div>
+
+                <div id="qc-auto-verdict-box" class="p-3 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-between text-xs">
+                  <span class="font-semibold text-slate-700">AQL 2.5 Auto-Verdict:</span>
+                  <span id="qc-auto-verdict-text" class="font-extrabold text-emerald-700">PASS</span>
+                </div>
+
+                <button type="submit" class="w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold shadow-xs transition">
+                  Log Batch QC Inspection
+                </button>
+              </form>
+            </div>
+
+            <!-- Right 7 Columns: Recent QC Inspection Log -->
+            <div class="xl:col-span-7 bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden flex flex-col">
+              <div class="p-5 border-b border-slate-100 flex items-center justify-between">
+                <div>
+                  <h3 class="text-base font-bold text-slate-900">Batch Quality Inspection Ledger</h3>
+                  <p class="text-xs text-slate-500">Logged AQL 2.5 audits across Cutting, Inline Stitching, and Final Finishing</p>
+                </div>
+                <span id="qc-pass-rate-badge" class="px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-bold">100% Batch Pass</span>
+              </div>
+              <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                  <thead>
+                    <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                      <th class="py-3.5 px-4">Audit ID & Inspector</th>
+                      <th class="py-3.5 px-4">Sample / Defects</th>
+                      <th class="py-3.5 px-4">Notes</th>
+                      <th class="py-3.5 px-4">Verdict</th>
+                    </tr>
+                  </thead>
+                  <tbody id="qc-logs-tbody" class="divide-y divide-slate-100 text-sm">
+                    <!-- Rendered dynamically -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Dispatch & Waybill Generator -->
+          <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+            <div class="p-5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <h3 class="text-base font-bold text-slate-900">Dispatch Consignments & Delivery Challans</h3>
+                <p class="text-xs text-slate-500">Porter Mini-Truck / 3-Wheeler Local Hyderabad, BlueDart Surface/Air & Rapido Local Express</p>
+              </div>
+              <button onclick="openWaybillModal()" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs sm:text-sm font-semibold inline-flex items-center gap-2 self-start sm:self-auto transition">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                <span>Create Dispatch & Waybill</span>
+              </button>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                    <th class="py-3.5 px-4">Vehicle / AWB No.</th>
+                    <th class="py-3.5 px-4">Work Order & Destination</th>
+                    <th class="py-3.5 px-4">Courier / Freight Partner</th>
+                    <th class="py-3.5 px-4">Cartons & Qty</th>
+                    <th class="py-3.5 px-4 text-right">Manifest & Challan</th>
+                  </tr>
+                </thead>
+                <tbody id="dispatch-tbody" class="divide-y divide-slate-100 text-sm">
+                  <!-- Rendered dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- TallyPrime GST Tax Invoice & E-Way Bill Export Bridge -->
+          <div class="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-xs space-y-5">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100">
+              <div>
+                <div class="flex items-center gap-2">
+                  <h3 class="text-base font-bold text-slate-900">TallyPrime GST Tax Invoice & E-Way Bill Export Bridge</h3>
+                  <span class="px-2.5 py-0.5 rounded-full bg-indigo-50 text-indigo-700 text-[11px] font-bold border border-indigo-200">GSTIN State 36 (Telangana)</span>
+                </div>
+                <p class="text-xs text-slate-500 mt-0.5">Auto-computes HSN 6211 (Uniforms) & HSN 6302 (Bedsheets), CGST+SGST / IGST split, and > ₹50,000 E-Way Bill compliance</p>
+              </div>
+              <div class="flex flex-wrap gap-2">
+                <button onclick="openGstInvoicePreview()" class="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold transition">
+                  Preview & Print GST Invoice
+                </button>
+                <button onclick="downloadTallyCsv()" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold transition">
+                  Download TallyPrime CSV
+                </button>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-center">
+              <div class="lg:col-span-7 grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-700 mb-1">Work Order to Bill</label>
+                  <select id="gst-wo-select" onchange="calculateGstBridge()" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-xs font-semibold bg-slate-50"></select>
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-700 mb-1">Buyer GSTIN (15-Digit)</label>
+                  <input type="text" id="gst-buyer-gstin" value="36AABCA4812M1Z5" oninput="calculateGstBridge()" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold uppercase">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-700 mb-1">GST Slab & HSN</label>
+                  <select id="gst-slab-select" onchange="calculateGstBridge()" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-xs font-semibold bg-white">
+                    <option value="5|6211">5% GST — HSN 6211 (Scrubs/Uniforms ≤ ₹1000)</option>
+                    <option value="12|6211">12% GST — HSN 6211 (Industrial Workwear)</option>
+                    <option value="5|6302">5% GST — HSN 6302 (144 TC Bedsheets ≤ ₹1000)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="lg:col-span-5 grid grid-cols-3 gap-3 p-4 rounded-2xl bg-slate-900 text-white">
+                <div>
+                  <span class="text-[11px] text-slate-400 block">Taxable Value</span>
+                  <span id="gst-taxable-val" class="text-base sm:text-lg font-extrabold text-white">₹3,08,250</span>
+                </div>
+                <div>
+                  <span id="gst-tax-label" class="text-[11px] text-slate-400 block">CGST + SGST (5%)</span>
+                  <span id="gst-tax-val" class="text-base sm:text-lg font-extrabold text-amber-400">₹15,413</span>
+                </div>
+                <div>
+                  <span class="text-[11px] text-slate-400 block">Grand Total</span>
+                  <span id="gst-grand-val" class="text-base sm:text-lg font-extrabold text-emerald-400">₹3,23,663</span>
+                  <span id="gst-eway-badge" class="text-[10px] text-rose-300 font-bold block">E-Way Bill Req.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- MODAL 1: NEW WORK ORDER MODAL                                         -->
+  <!-- ===================================================================== -->
+  <div id="new-order-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/60 backdrop-blur-xs p-4 overflow-y-auto">
+    <div class="bg-white rounded-2xl max-w-2xl w-full shadow-2xl border border-slate-200 overflow-hidden my-auto">
+      <div class="px-6 py-4 bg-slate-900 text-white flex items-center justify-between">
+        <div>
+          <h3 class="text-base font-bold">New Production Work Order</h3>
+          <p class="text-xs text-slate-400">Configure client batch, line assignment, target unit price, and XS–XXL size matrix</p>
+        </div>
+        <button onclick="closeModal('new-order-modal')" class="p-2 text-slate-400 hover:text-white rounded-lg">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <form onsubmit="createWorkOrder(event)" class="p-6 space-y-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Work Order ID</label>
+            <input type="text" id="wo-new-id" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm font-bold bg-slate-50">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Client Name</label>
+            <input type="text" id="wo-new-client" placeholder="e.g., KIMS Hospitals Secunderabad / Amazon FBA" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Style / Product Name</label>
+            <input type="text" id="wo-new-style" placeholder="e.g., Classic Fit Maroon V-Neck Scrub Set" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Category</label>
+            <select id="wo-new-category" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm bg-white">
+              <option value="Healthcare Uniforms">Healthcare Uniforms</option>
+              <option value="Corporate & Industrial">Corporate & Industrial</option>
+              <option value="Home Textiles">Home Textiles</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Production Line</label>
+            <select id="wo-new-line" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm bg-white">
+              <option value="Line A - Scrubs">Line A - Scrubs</option>
+              <option value="Line B - Shirts/Trousers">Line B - Shirts/Trousers</option>
+              <option value="Line C - Home Textiles">Line C - Home Textiles</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Due Date</label>
+            <input type="date" id="wo-new-date" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Target Unit Price (₹)</label>
+            <input type="number" id="wo-new-price" value="680" min="1" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm font-bold">
+          </div>
+        </div>
+
+        <!-- Interactive XS-XXL Size Matrix -->
+        <div class="p-4 rounded-xl bg-slate-50 border border-slate-200">
+          <div class="flex items-center justify-between mb-2.5">
+            <label class="text-xs font-bold uppercase tracking-wider text-slate-700">XS–XXL Size Matrix (Auto-Calculates Total)</label>
+            <span id="wo-new-total-badge" class="text-xs font-extrabold text-indigo-700 bg-indigo-100 px-3 py-1 rounded-full">Total: 250 Units</span>
+          </div>
+          <div class="grid grid-cols-3 sm:grid-cols-6 gap-2.5">
+            <div>
+              <label class="block text-[11px] font-bold text-center text-slate-500 mb-1">XS</label>
+              <input type="number" id="sz-xs" value="20" min="0" oninput="updateNewOrderTotal()" class="w-full px-2 py-2 rounded-lg border border-slate-200 text-center text-sm font-bold bg-white">
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-center text-slate-500 mb-1">S</label>
+              <input type="number" id="sz-s" value="45" min="0" oninput="updateNewOrderTotal()" class="w-full px-2 py-2 rounded-lg border border-slate-200 text-center text-sm font-bold bg-white">
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-center text-slate-500 mb-1">M</label>
+              <input type="number" id="sz-m" value="75" min="0" oninput="updateNewOrderTotal()" class="w-full px-2 py-2 rounded-lg border border-slate-200 text-center text-sm font-bold bg-white">
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-center text-slate-500 mb-1">L</label>
+              <input type="number" id="sz-l" value="60" min="0" oninput="updateNewOrderTotal()" class="w-full px-2 py-2 rounded-lg border border-slate-200 text-center text-sm font-bold bg-white">
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-center text-slate-500 mb-1">XL</label>
+              <input type="number" id="sz-xl" value="30" min="0" oninput="updateNewOrderTotal()" class="w-full px-2 py-2 rounded-lg border border-slate-200 text-center text-sm font-bold bg-white">
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-center text-slate-500 mb-1">XXL</label>
+              <input type="number" id="sz-xxl" value="20" min="0" oninput="updateNewOrderTotal()" class="w-full px-2 py-2 rounded-lg border border-slate-200 text-center text-sm font-bold bg-white">
+            </div>
+          </div>
+        </div>
+
+        <div class="pt-3 border-t border-slate-100 flex items-center justify-end gap-3">
+          <button type="button" onclick="closeModal('new-order-modal')" class="px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-semibold text-slate-600 hover:bg-slate-50">
+            Cancel
+          </button>
+          <button type="submit" class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold shadow-sm">
+            Release Work Order
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- MODAL 2: VIEW SIZE MATRIX MODAL                                       -->
+  <!-- ===================================================================== -->
+  <div id="size-matrix-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/60 backdrop-blur-xs p-4">
+    <div class="bg-white rounded-2xl max-w-lg w-full shadow-2xl border border-slate-200 overflow-hidden">
+      <div class="px-6 py-4 bg-slate-900 text-white flex items-center justify-between">
+        <div>
+          <h3 id="sm-modal-title" class="text-base font-bold">Work Order Size Matrix</h3>
+          <p id="sm-modal-sub" class="text-xs text-slate-400">Cut & Stitch Size Breakdown</p>
+        </div>
+        <button onclick="closeModal('size-matrix-modal')" class="text-slate-400 hover:text-white">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div id="sm-modal-body" class="p-6 space-y-4">
+        <!-- Populated dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- MODAL 3: ADD MATERIAL SKU MODAL                                       -->
+  <!-- ===================================================================== -->
+  <div id="add-material-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/60 backdrop-blur-xs p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full shadow-2xl border border-slate-200 overflow-hidden">
+      <div class="px-6 py-4 bg-slate-900 text-white flex items-center justify-between">
+        <h3 class="text-base font-bold">Add Material / Trim SKU</h3>
+        <button onclick="closeModal('add-material-modal')" class="text-slate-400 hover:text-white">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <form onsubmit="addInventorySku(event)" class="p-6 space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Material Name</label>
+          <input type="text" id="mat-name" placeholder="e.g., Surgical Green Poly-Viscose Twill" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Color / Spec Code</label>
+            <input type="text" id="mat-color" placeholder="e.g., Surgical Green #0D9488" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Type & Unit</label>
+            <select id="mat-type-unit" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm bg-white">
+              <option value="Fabric|meters">Fabric (meters)</option>
+              <option value="Trims|pcs">Trims (pcs)</option>
+              <option value="Trims|cones">Trims (cones)</option>
+              <option value="Trims|boxes">Trims (boxes)</option>
+            </select>
+          </div>
+        </div>
+        <div class="grid grid-cols-3 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Available Stock</label>
+            <input type="number" id="mat-stock" value="500" min="1" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm font-bold">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Reorder Level</label>
+            <input type="number" id="mat-min" value="200" min="1" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm font-bold">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Unit Cost (₹)</label>
+            <input type="number" id="mat-rate" value="145" min="0.5" step="0.5" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm font-bold">
+          </div>
+        </div>
+        <div class="pt-3 flex justify-end gap-2">
+          <button type="button" onclick="closeModal('add-material-modal')" class="px-4 py-2 rounded-xl border border-slate-200 text-sm font-semibold text-slate-600">Cancel</button>
+          <button type="submit" class="px-4 py-2 rounded-xl bg-indigo-600 text-white text-sm font-semibold">Add SKU</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- MODAL 4: DISPATCH & WAYBILL GENERATOR MODAL                           -->
+  <!-- ===================================================================== -->
+  <div id="waybill-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/60 backdrop-blur-xs p-4">
+    <div class="bg-white rounded-2xl max-w-lg w-full shadow-2xl border border-slate-200 overflow-hidden">
+      <div class="px-6 py-4 bg-slate-900 text-white flex items-center justify-between">
+        <h3 class="text-base font-bold">Create Dispatch & Delivery Challan</h3>
+        <button onclick="closeModal('waybill-modal')" class="text-slate-400 hover:text-white">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <form onsubmit="createWaybill(event)" class="p-6 space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Select Work Order Batch</label>
+          <select id="wb-wo-select" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm bg-slate-50"></select>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Courier / Freight Partner</label>
+            <select id="wb-carrier" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm bg-white">
+              <option value="Porter Mini-Truck / 3-Wheeler Local Hyderabad">Porter Mini-Truck / 3-Wheeler Local Hyderabad</option>
+              <option value="BlueDart Surface/Air">BlueDart Surface/Air</option>
+              <option value="Rapido Local Express">Rapido Local Express</option>
+              <option value="Amazon ATS / Flipkart Ekart Pickup">Amazon ATS / Flipkart Ekart Pickup</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Vehicle / AWB Number</label>
+            <input type="text" id="wb-awb" value="TS09UB4821 / PRT-9921" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm font-bold">
+          </div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div class="sm:col-span-2">
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Destination Hub / Area</label>
+            <select id="wb-dest" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm bg-white">
+              <option value="Secunderabad Central Medical Depot">Secunderabad Central Medical Depot</option>
+              <option value="Cherlapally Industrial Estate, Hyd">Cherlapally Industrial Estate, Hyd</option>
+              <option value="Musheerabad Wholesale Textile Hub">Musheerabad Wholesale Textile Hub</option>
+              <option value="Shamshabad HYD3 Amazon FBA Fulfillment Center">Shamshabad HYD3 Amazon FBA Fulfillment Center</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Carton Count</label>
+            <input type="number" id="wb-cartons" value="9" min="1" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm font-bold">
+          </div>
+        </div>
+        <div class="pt-3 flex justify-end gap-2">
+          <button type="button" onclick="closeModal('waybill-modal')" class="px-4 py-2 rounded-xl border border-slate-200 text-sm font-semibold text-slate-600">Cancel</button>
+          <button type="submit" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold">Generate Waybill & Challan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- MODAL 5: PRINTABLE DOCUMENT PREVIEW (CHALLAN, COST SHEET, GST INV)    -->
+  <!-- ===================================================================== -->
+  <div id="print-preview-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/60 backdrop-blur-xs p-4 overflow-y-auto">
+    <div class="bg-white rounded-2xl max-w-2xl w-full shadow-2xl border border-slate-200 overflow-hidden my-auto">
+      <div class="px-6 py-4 bg-slate-900 text-white flex items-center justify-between">
+        <h3 id="print-modal-title" class="text-base font-bold">Printable Document Preview</h3>
+        <button onclick="closeModal('print-preview-modal')" class="text-slate-400 hover:text-white">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div id="print-area" class="p-6 space-y-4 text-sm text-slate-800 bg-white">
+        <!-- Populated dynamically -->
+      </div>
+      <div class="px-6 py-4 bg-slate-50 border-t border-slate-200 flex flex-wrap justify-end gap-2">
+        <button id="download-tally-csv-btn" onclick="downloadTallyCsv()" class="hidden px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold">
+          Download TallyPrime CSV
+        </button>
+        <button onclick="copyPrintText()" class="px-4 py-2 rounded-xl border border-slate-300 bg-white hover:bg-slate-100 text-slate-800 text-xs font-semibold">
+          Copy Text
+        </button>
+        <button onclick="window.print()" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold">
+          Print Document
+        </button>
+        <button onclick="closeModal('print-preview-modal')" class="px-4 py-2 rounded-xl bg-slate-800 text-white text-xs font-semibold">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- MODAL 6: TALLYPRIME GST TAX INVOICE & E-WAY BILL BRIDGE               -->
+  <!-- ===================================================================== -->
+  <div id="gst-invoice-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/60 backdrop-blur-xs p-4 overflow-y-auto">
+    <div class="bg-white rounded-2xl max-w-2xl w-full shadow-2xl border border-slate-200 overflow-hidden my-auto">
+      <div class="px-6 py-4 bg-slate-900 text-white flex items-center justify-between">
+        <div>
+          <h3 class="text-base font-bold">TallyPrime GST Tax Invoice & E-Way Bill Export Bridge</h3>
+          <p class="text-xs text-slate-400">S T Traders Annexe CheapJack • GSTIN: 36AAJFS8492K1Z5 (Telangana State Code 36)</p>
+        </div>
+        <button onclick="closeModal('gst-invoice-modal')" class="text-slate-400 hover:text-white">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+          <div class="p-6 space-y-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Select Work Order Batch</label>
+            <select id="gst-modal-wo-select" onchange="recalculateGstInvoice()" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm bg-slate-50 font-medium"></select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Tax Invoice No.</label>
+            <input type="text" id="gst-inv-no" value="STC/26-27/0418" oninput="recalculateGstInvoice()" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm font-bold">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">HSN & GST Slab</label>
+            <select id="gst-hsn-slab" onchange="recalculateGstInvoice()" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-xs font-semibold bg-white">
+              <option value="6211|5">HSN 6211 — Scrubs/Workwear (5% GST)</option>
+              <option value="6211|12">HSN 6211 — Scrubs/Workwear >₹1000 (12% GST)</option>
+              <option value="6302|5">HSN 6302 — 144 TC Bedsheet Sets (5% GST)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Place of Supply</label>
+            <select id="gst-supply-type" onchange="recalculateGstInvoice()" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-xs font-semibold bg-white">
+              <option value="INTRA">Intra-State Telangana (36) — CGST + SGST</option>
+              <option value="INTER">Inter-State (KA/MH/AP/DL) — IGST</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Buyer GSTIN</label>
+            <input type="text" id="gst-modal-buyer-gstin" value="36AAACA5443N1Z8" oninput="recalculateGstInvoice()" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-xs font-bold uppercase">
+          </div>
+        </div>
+
+        <!-- E-Way Bill Threshold Alert -->
+        <div id="gst-eway-alert" class="p-3.5 rounded-xl bg-amber-50 border border-amber-300 flex items-center justify-between text-xs">
+          <span class="font-bold text-amber-900">E-Way Bill Mandatory (&gt; ₹50,000 Consignment Value)</span>
+          <span id="gst-eway-status" class="px-2.5 py-0.5 rounded-full bg-amber-200 text-amber-950 font-extrabold">Part-A & Part-B Required</span>
+        </div>
+
+        <!-- Tax Calculation Summary Box -->
+        <div class="p-4 rounded-2xl bg-slate-900 text-white space-y-2 text-xs sm:text-sm">
+          <div class="flex justify-between text-slate-300">
+            <span>Taxable Value (<span id="gst-qty-rate">450 pcs × ₹685</span>)</span>
+            <span id="gst-modal-taxable-val" class="font-bold text-white">₹3,08,250.00</span>
+          </div>
+          <div id="gst-split-rows" class="space-y-1 text-slate-300">
+            <!-- Populated dynamically -->
+          </div>
+          <div class="flex justify-between pt-2 border-t border-slate-800 text-base font-extrabold text-emerald-400">
+            <span>Grand Total Invoice Value</span>
+            <span id="gst-grand-total">₹3,23,662.50</span>
+          </div>
+        </div>
+
+        <div class="pt-2 flex flex-wrap justify-end gap-2">
+          <button type="button" onclick="closeModal('gst-invoice-modal')" class="px-4 py-2 rounded-xl border border-slate-200 text-xs font-semibold text-slate-600">Cancel</button>
+          <button type="button" onclick="downloadTallyCsv(true)" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold">
+            Download TallyPrime CSV Voucher
+          </button>
+          <button type="button" onclick="renderGstInvoicePreview()" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold">
+            Preview & Print Tax Invoice
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- APPLICATION STATE & INTERACTIVE ERP LOGIC                             -->
+  <!-- ===================================================================== -->
+  <script>
+    const STAGES = [
+      "Cutting",
+      "Stitching",
+      "Embroidery/Printing",
+      "Finishing & Ironing",
+      "Quality Inspection",
+      "Packing & Dispatch"
+    ];
+
+    const STORAGE_KEY = "st_traders_cheapjack_erp_v3";
+
+    const DEFAULT_STATE = {
+      workOrders: [
+        {
+          id: "WO-2026-101",
+          client: "Apollo & KIMS Hospital Network (Hyd)",
+          style: "Classic Fit Maroon V-Neck Scrub Set",
+          category: "Healthcare Uniforms",
+          line: "Line A - Scrubs",
+          unitPrice: 685,
+          sizes: { XS: 30, S: 80, M: 140, L: 110, XL: 60, XXL: 30 },
+          totalQty: 450,
+          completedQty: 315,
+          stage: "Stitching",
+          dueDate: "2026-11-19"
+        },
+        {
+          id: "WO-2026-102",
+          client: "Amazon India FBA & Flipkart Assured",
+          style: "144 TC Solid Purple Single Bedsheet & Pillow Cover Set",
+          category: "Home Textiles",
+          line: "Line C - Home Textiles",
+          unitPrice: 440,
+          sizes: { XS: 0, S: 800, M: 0, L: 0, XL: 0, XXL: 0 },
+          totalQty: 800,
+          completedQty: 240,
+          stage: "Cutting",
+          dueDate: "2026-11-22"
+        },
+        {
+          id: "WO-2026-103",
+          client: "Cherlapally Industrial & Pharma Corp",
+          style: "Pacifica Blue (#1E77B4) Industrial Workwear Shirt & Trouser",
+          category: "Corporate & Industrial",
+          line: "Line B - Shirts/Trousers",
+          unitPrice: 890,
+          sizes: { XS: 10, S: 40, M: 90, L: 85, XL: 50, XXL: 25 },
+          totalQty: 300,
+          completedQty: 210,
+          stage: "Embroidery/Printing",
+          dueDate: "2026-11-20"
+        },
+        {
+          id: "WO-2026-104",
+          client: "Myntra & Musheerabad Wholesale Distributors",
+          style: "144 TC Checkered Blue & Orange Bedsheet Set",
+          category: "Home Textiles",
+          line: "Line C - Home Textiles",
+          unitPrice: 520,
+          sizes: { XS: 0, S: 0, M: 300, L: 300, XL: 0, XXL: 0 },
+          totalQty: 600,
+          completedQty: 540,
+          stage: "Finishing & Ironing",
+          dueDate: "2026-11-17"
+        }
+      ],
+      inventory: [
+        { sku: "FAB-PV-MAR01", name: "Maroon Poly-Viscose Twill", color: "Rich Maroon (#7F1D1D)", type: "Fabric", stock: 1480, reorder: 600, unit: "meters", cost: 142 },
+        { sku: "FAB-PC-PUR02", name: "144 TC Polycotton Dyed", color: "Solid Purple (#6B21A8)", type: "Fabric", stock: 1650, reorder: 1800, unit: "meters", cost: 98 },
+        { sku: "FAB-PC-CHK03", name: "144 TC Polycotton Yarn-Dyed", color: "Checkered Blue & Orange", type: "Fabric", stock: 2100, reorder: 800, unit: "meters", cost: 104 },
+        { sku: "FAB-PC-FLR04", name: "144 TC Polycotton Greige/Floral Print", color: "Botanical Floral Print", type: "Fabric", stock: 920, reorder: 500, unit: "meters", cost: 96 },
+        { sku: "FAB-CD-PAC05", name: "Pacifica Blue Cotton Drill", color: "Pacifica Blue (#1E77B4)", type: "Fabric", stock: 540, reorder: 750, unit: "meters", cost: 168 },
+        { sku: "TRM-BTN-18M", name: "18mm Resin Buttons (4-Hole)", color: "Pacifica Blue & Navy", type: "Trims", stock: 4800, reorder: 2000, unit: "pcs", cost: 1.5 },
+        { sku: "TRM-THD-MAR", name: "Maroon Polyester Sewing Thread Cones (4000m)", color: "Maroon #402", type: "Trims", stock: 64, reorder: 80, unit: "cones", cost: 68 },
+        { sku: "TRM-LBL-STC", name: "Woven Brand Labels ('S T Traders Annexe CheapJack')", color: "Satin Black / Gold", type: "Trims", stock: 6200, reorder: 1500, unit: "pcs", cost: 3.5 }
+      ],
+      qcLogs: [
+        {
+          id: "QC-2601",
+          orderId: "WO-2026-104",
+          style: "144 TC Checkered Blue & Orange Bedsheet Set",
+          sampleSize: 80,
+          major: 0,
+          minor: 2,
+          notes: "Hem straightness & colorfastness checked; 2 minor loose threads trimmed",
+          status: "PASS",
+          inspector: "Ramesh Naidu (Senior QA)",
+          date: "2026-11-14"
+        },
+        {
+          id: "QC-2602",
+          orderId: "WO-2026-101",
+          style: "Classic Fit Maroon V-Neck Scrub Set",
+          sampleSize: 50,
+          major: 0,
+          minor: 1,
+          notes: "Inline V-neck collar symmetry & chest pocket bartack verified",
+          status: "PASS",
+          inspector: "Saritha Devi (Inline QC)",
+          date: "2026-11-13"
+        }
+      ],
+      dispatches: [
+        {
+          awb: "TS09UB4821 / PRT-88412",
+          orderId: "WO-2026-104",
+          destination: "Musheerabad Wholesale Textile Hub",
+          carrier: "Porter Mini-Truck / 3-Wheeler Local Hyderabad",
+          cartons: 12,
+          units: 600,
+          date: "2026-11-14"
+        },
+        {
+          awb: "BD-994820174",
+          orderId: "WO-2026-101",
+          destination: "Secunderabad Central Medical Depot",
+          carrier: "BlueDart Surface/Air",
+          cartons: 9,
+          units: 450,
+          date: "2026-11-14"
+        }
+      ],
+      sewingLines: [
+        { name: "Sewing Line 1 (Scrubs)", plant: "Cherlapally Unit", operators: 26, sam: 18.5, shiftMins: 480, output: 435, target: 460 },
+        { name: "Sewing Line 2 (Workwear)", plant: "Cherlapally Unit", operators: 30, sam: 24.0, shiftMins: 480, output: 410, target: 440 },
+        { name: "Sewing Line 3 (Home Textiles)", plant: "Musheerabad Unit", operators: 16, sam: 6.2, shiftMins: 480, output: 890, target: 920 },
+        { name: "Finishing, Ironing & Packing", plant: "Cherlapally Unit", operators: 18, sam: 5.5, shiftMins: 480, output: 1180, target: 1250 }
+      ]
+    };
+
+    let appState = loadState();
+    let customBomItems = [];
+    let currentPrintableText = "";
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (!parsed.sewingLines) parsed.sewingLines = JSON.parse(JSON.stringify(DEFAULT_STATE.sewingLines));
+          delete parsed.channelOrders;
+          return parsed;
+        }
+      } catch (e) {
+        console.warn("localStorage unavailable, running in memory.");
+      }
+      return JSON.parse(JSON.stringify(DEFAULT_STATE));
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+      } catch (e) {
+        console.warn("Unable to persist state.");
+      }
+      refreshAllViews();
+    }
+
+    function resetDemoData() {
+      appState = JSON.parse(JSON.stringify(DEFAULT_STATE));
+      customBomItems = [];
+      saveState();
+      renderCustomBomList();
+      calculateGarmentCost();
+      showToast("Demo data reset to S T Traders Annexe CheapJack Hyderabad baseline.", "info");
+    }
+
+    function exportStateJson() {
+      const blob = new Blob([JSON.stringify(appState, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `ST_Traders_CheapJack_ERP_Backup_${new Date().toISOString().slice(0, 10)}.json`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      showToast("Exported factory ERP JSON backup.", "success");
+    }
+
+    function importStateJson(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const imported = JSON.parse(e.target.result);
+          if (!imported.workOrders || !imported.inventory) {
+            showToast("Invalid ERP JSON structure.", "warning");
+            return;
+          }
+          delete imported.channelOrders;
+          if (!imported.sewingLines) imported.sewingLines = JSON.parse(JSON.stringify(DEFAULT_STATE.sewingLines));
+          appState = imported;
+          saveState();
+          showToast("Factory ERP state restored from JSON backup.", "success");
+        } catch (err) {
+          showToast("Failed to parse JSON backup file.", "warning");
+        }
+        event.target.value = "";
+      };
+      reader.readAsText(file);
+    }
+
+    function formatINR(val) {
+      return "₹" + Number(val).toLocaleString("en-IN", { maximumFractionDigits: 0 });
+    }
+
+    function formatINR2(val) {
+      return "₹" + Number(val).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function showToast(msg, type = "success") {
+      const container = document.getElementById("toast-container");
+      const el = document.createElement("div");
+      const border = type === "warning" ? "border-amber-500" : type === "info" ? "border-indigo-500" : "border-emerald-500";
+      el.className = `pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-xl bg-slate-900 text-white border-l-4 ${border} shadow-xl text-xs sm:text-sm font-medium transition-all duration-300`;
+      el.innerHTML = `<span class="flex-1">${msg}</span>`;
+      container.appendChild(el);
+      setTimeout(() => {
+        el.style.opacity = "0";
+        el.style.transform = "translateY(8px)";
+        setTimeout(() => el.remove(), 250);
+      }, 3200);
+    }
+
+    // Navigation & Mobile Drawer
+    const TAB_META = {
+      dashboard: { title: "Dashboard Overview", subtitle: "Live shop-floor telemetry, cutting & stitching output, and dispatch readiness" },
+      production: { title: "Production & Work Order Management", subtitle: "Manage work orders, XS–XXL size matrices, output logging, and stage transitions" },
+      efficiency: { title: "Shop-Floor Line Balancing & SAM Tracker", subtitle: "Real-time sewing line efficiency %, SAM/SMV simulator, and Operation Bulletin bottlenecks" },
+      inventory: { title: "Fabric, Trims & Raw Material Inventory", subtitle: "Warehouse stock ledger, reorder alerts, and CAD marker efficiency calculator" },
+      costing: { title: "BOM & Garment Costing Calculator", subtitle: "Unit manufacturing cost sheet, B2B wholesale quotes, and portal MRP pricing" },
+      qc: { title: "Quality Control (QC) & Dispatch Logistics", subtitle: "AQL 2.5 batch inspections, delivery challans, and TallyPrime GST invoice bridge" }
+    };
+
+    function switchTab(tabId) {
+      document.querySelectorAll(".module-section").forEach(s => s.classList.add("hidden"));
+      document.getElementById(`tab-${tabId}`).classList.remove("hidden");
+
+      document.querySelectorAll(".nav-btn").forEach(btn => {
+        if (btn.dataset.tab === tabId) {
+          btn.className = "nav-btn w-full flex items-center justify-between px-3.5 py-3 rounded-xl text-sm font-medium transition-all bg-indigo-600 text-white shadow-sm";
+        } else {
+          btn.className = "nav-btn w-full flex items-center justify-between px-3.5 py-3 rounded-xl text-sm font-medium text-slate-300 hover:bg-slate-800/80 hover:text-white transition-all";
+        }
+      });
+
+      document.getElementById("page-title").textContent = TAB_META[tabId].title;
+      document.getElementById("page-subtitle").textContent = TAB_META[tabId].subtitle;
+      toggleMobileSidebar(false);
+    }
+
+    function toggleMobileSidebar(open) {
+      const sb = document.getElementById("sidebar");
+      const bd = document.getElementById("sidebar-backdrop");
+      if (open) {
+        sb.classList.remove("-translate-x-full");
+        bd.classList.remove("hidden");
+      } else {
+        sb.classList.add("-translate-x-full");
+        bd.classList.add("hidden");
+      }
+    }
+
+    document.getElementById("mobile-menu-btn").addEventListener("click", () => toggleMobileSidebar(true));
+    document.getElementById("close-sidebar-btn").addEventListener("click", () => toggleMobileSidebar(false));
+
+    // =========================================================================
+    // MODULE 1: DASHBOARD OVERVIEW
+    // =========================================================================
+    function renderDashboard() {
+      const orders = appState.workOrders;
+      const inventory = appState.inventory;
+
+      const totalUnits = orders.reduce((s, o) => s + o.totalQty, 0);
+      const completedUnits = orders.reduce((s, o) => s + o.completedQty, 0);
+      const pendingDispatches = orders.filter(o => o.stage === "Packing & Dispatch" || o.stage === "Quality Inspection").length;
+
+      document.getElementById("kpi-active-orders").textContent = orders.length;
+      document.getElementById("kpi-total-units").textContent = `${totalUnits.toLocaleString("en-IN")} total units in floor`;
+      document.getElementById("kpi-daily-output").textContent = completedUnits.toLocaleString("en-IN");
+      document.getElementById("kpi-pending-dispatch").textContent = pendingDispatches;
+      document.getElementById("nav-wo-count").textContent = orders.length;
+
+      // Fabric & trims stock valuation
+      const stockVal = inventory.reduce((s, i) => s + (i.stock * i.cost), 0);
+      const lowStock = inventory.filter(i => i.stock <= i.reorder);
+      document.getElementById("kpi-stock-value").textContent = formatINR(stockVal);
+      document.getElementById("kpi-low-stock-text").textContent = `${lowStock.length} SKU(s) at or below reorder`;
+
+      const badge = document.getElementById("nav-low-stock-badge");
+      if (lowStock.length > 0) {
+        badge.textContent = lowStock.length;
+        badge.classList.remove("hidden");
+      } else {
+        badge.classList.add("hidden");
+      }
+
+      // FPY QC %
+      const totalSampled = appState.qcLogs.reduce((s, l) => s + l.sampleSize, 0);
+      const totalMajor = appState.qcLogs.reduce((s, l) => s + l.major, 0);
+      const fpy = totalSampled > 0 ? (((totalSampled - totalMajor) / totalSampled) * 100).toFixed(1) : "100.0";
+      document.getElementById("kpi-fpy-pct").textContent = `${fpy}%`;
+
+      // 6-Stage Interactive Pipeline Cards
+      const grid = document.getElementById("pipeline-visual-grid");
+      grid.innerHTML = STAGES.map((stage, idx) => {
+        const stageOrders = orders.filter(o => o.stage === stage);
+        const stageUnits = stageOrders.reduce((s, o) => s + o.totalQty, 0);
+        return `
+          <div onclick="filterProductionByStage('${stage}')" class="cursor-pointer group p-4 rounded-xl border border-slate-200 bg-slate-50/70 hover:bg-white hover:border-indigo-500 hover:shadow-md transition">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-[11px] font-bold text-indigo-600">STAGE 0${idx + 1}</span>
+              <span class="w-2 h-2 rounded-full ${stageOrders.length > 0 ? 'bg-emerald-500' : 'bg-slate-300'}"></span>
+            </div>
+            <h4 class="text-xs font-bold text-slate-900 line-clamp-1">${stage}</h4>
+            <div class="mt-2.5 flex items-baseline justify-between">
+              <span class="text-lg font-extrabold text-slate-900">${stageOrders.length} <span class="text-xs font-normal text-slate-500">batches</span></span>
+              <span class="text-xs font-bold text-emerald-700">${stageUnits} pcs</span>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      // Priority Work Orders Quick-View Table
+      const tbody = document.getElementById("dashboard-orders-tbody");
+      tbody.innerHTML = orders.slice(0, 5).map(o => {
+        const pct = Math.min(100, Math.round((o.completedQty / o.totalQty) * 100));
+        return `
+          <tr class="hover:bg-slate-50 transition">
+            <td class="py-3 px-4">
+              <div class="font-bold text-slate-900 text-xs">${o.id}</div>
+              <div class="text-xs text-slate-500">${o.client}</div>
+            </td>
+            <td class="py-3 px-4">
+              <div class="font-semibold text-slate-800 text-xs">${o.style}</div>
+              <div class="text-[11px] text-slate-400">${o.line}</div>
+            </td>
+            <td class="py-3 px-4">
+              <div class="text-xs font-bold text-slate-700">${o.completedQty}/${o.totalQty} (${pct}%)</div>
+              <div class="w-24 h-1.5 bg-slate-100 rounded-full mt-1 overflow-hidden">
+                <div class="h-full bg-emerald-500 rounded-full" style="width:${pct}%"></div>
+              </div>
+            </td>
+            <td class="py-3 px-4">${getStageBadge(o.stage)}</td>
+            <td class="py-3 px-4 text-xs font-medium text-slate-600">${o.dueDate}</td>
+          </tr>
+        `;
+      }).join("");
+
+      // Low-Stock, Channel Gap & QC Alert Feed
+      const alertsEl = document.getElementById("dashboard-alerts-list");
+      const items = [];
+      lowStock.forEach(item => {
+        items.push(`
+          <div class="p-3 rounded-xl bg-rose-50 border border-rose-200 text-xs">
+            <div class="font-bold text-rose-900">Low Stock: ${item.name}</div>
+            <div class="text-rose-700 mt-0.5">${item.color} • Stock: <strong>${item.stock} ${item.unit}</strong> (Reorder: ${item.reorder})</div>
+      // Low-Stock & QC Alert Feed
+      const alertsEl = document.getElementById("dashboard-alerts-list");
+      const items = [];
+      lowStock.forEach(item => {
+        items.push(`
+          <div class="p-3 rounded-xl bg-rose-50 border border-rose-200 text-xs">
+            <div class="font-bold text-rose-900">Low Stock: ${item.name}</div>
+            <div class="text-rose-700 mt-0.5">${item.color} • Stock: <strong>${item.stock} ${item.unit}</strong> (Reorder: ${item.reorder})</div>
+          </div>
+        `);
+      });
+      appState.qcLogs.filter(l => l.status === "REWORK").forEach(l => {
+        items.push(`
+          <div class="p-3 rounded-xl bg-amber-50 border border-amber-200 text-xs">
+            <div class="font-bold text-amber-900">QC Rework Hold: ${l.orderId}</div>
+            <div class="text-amber-800 mt-0.5">${l.notes}</div>
+          </div>
+        `);
+      });
+      if (items.length === 0) {
+        items.push(`<div class="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-800 font-medium">All warehouse SKUs and AQL 2.5 inspections are within limits.</div>`);
+      }
+      alertsEl.innerHTML = items.slice(0, 4).join("");
+    }
+
+    function filterProductionByStage(stage) {
+      switchTab("production");
+      document.getElementById("wo-stage-filter").value = stage;
+      renderWorkOrders();
+    }
+
+    function getStageBadge(stage) {
+      const map = {
+        "Cutting": "bg-slate-100 text-slate-700 border-slate-200",
+        "Stitching": "bg-indigo-50 text-indigo-700 border-indigo-200",
+        "Embroidery/Printing": "bg-sky-50 text-sky-700 border-sky-200",
+        "Finishing & Ironing": "bg-amber-50 text-amber-700 border-amber-200",
+        "Quality Inspection": "bg-purple-50 text-purple-700 border-purple-200",
+        "Packing & Dispatch": "bg-emerald-50 text-emerald-700 border-emerald-200"
+      };
+      return `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold border ${map[stage] || map["Cutting"]}">${stage}</span>`;
+    }
+
+    // =========================================================================
+    // MODULE 2: PRODUCTION & WORK ORDER MANAGEMENT
+    // =========================================================================
+    function renderWorkOrders() {
+      const q = document.getElementById("wo-search-input").value.toLowerCase();
+      const cat = document.getElementById("wo-category-filter").value;
+      const stg = document.getElementById("wo-stage-filter").value;
+
+      const list = appState.workOrders.filter(o => {
+        const matchQ = o.id.toLowerCase().includes(q) || o.client.toLowerCase().includes(q) || o.style.toLowerCase().includes(q);
+        const matchCat = cat === "ALL" || o.category === cat;
+        const matchStg = stg === "ALL" || o.stage === stg;
+        return matchQ && matchCat && matchStg;
+      });
+
+      const tbody = document.getElementById("work-orders-tbody");
+      if (list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="py-10 text-center text-sm text-slate-500">No work orders match the current filter criteria.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = list.map(o => {
+        const pct = Math.min(100, Math.round((o.completedQty / o.totalQty) * 100));
+        const idx = STAGES.indexOf(o.stage);
+        const isFinal = idx === STAGES.length - 1;
+        const orderVal = o.totalQty * (o.unitPrice || 500);
+
+        return `
+          <tr class="hover:bg-slate-50/70 transition">
+            <td class="py-3.5 px-4 align-top">
+              <div class="font-bold text-slate-900 text-xs">${o.id}</div>
+              <div class="text-xs font-medium text-indigo-700 mt-0.5">${o.client}</div>
+              <div class="text-[11px] text-slate-400 mt-0.5">Due: ${o.dueDate}</div>
+            </td>
+            <td class="py-3.5 px-4 align-top">
+              <div class="font-semibold text-slate-800 text-xs">${o.style}</div>
+              <div class="text-[11px] text-slate-500 mt-0.5">${o.line}</div>
+              <span class="inline-block mt-1 px-2 py-0.5 rounded bg-slate-100 text-slate-600 text-[10px] font-semibold">${o.category}</span>
+            </td>
+            <td class="py-3.5 px-4 align-top text-xs">
+              <div class="font-bold text-slate-800">${formatINR(o.unitPrice || 500)} / pc</div>
+              <div class="text-[11px] text-slate-500">Batch: ${formatINR(orderVal)}</div>
+            </td>
+            <td class="py-3.5 px-4 align-top min-w-[175px]">
+              <div class="flex justify-between text-xs mb-1">
+                <span class="font-bold text-slate-800">${o.completedQty} / ${o.totalQty} pcs</span>
+                <span class="font-semibold text-slate-500">${pct}%</span>
+              </div>
+              <div class="w-full h-2 rounded-full bg-slate-100 overflow-hidden">
+                <div class="h-full rounded-full ${pct === 100 ? 'bg-emerald-500' : 'bg-indigo-600'}" style="width:${pct}%"></div>
+              </div>
+            </td>
+            <td class="py-3.5 px-4 align-top">
+              ${getStageBadge(o.stage)}
+            </td>
+            <td class="py-3.5 px-4 align-top text-right">
+              <div class="flex flex-wrap justify-end gap-1.5">
+                <button onclick="openSizeMatrixModal('${o.id}')" class="px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 text-xs font-semibold transition">
+                  View Size Matrix
+                </button>
+                <button onclick="logBatchOutput('${o.id}')" class="px-2.5 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 text-xs font-semibold transition">
+                  + Log Output
+                </button>
+                ${!isFinal ? `
+                  <button onclick="advanceOrderStage('${o.id}')" class="px-2.5 py-1.5 rounded-lg bg-slate-900 hover:bg-indigo-600 text-white text-xs font-semibold transition">
+                    Advance Stage →
+                  </button>
+                ` : `
+                  <span class="px-2.5 py-1.5 rounded-lg bg-emerald-600 text-white text-xs font-semibold">Ready</span>
+                `}
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    function logBatchOutput(orderId) {
+      const o = appState.workOrders.find(x => x.id === orderId);
+      if (!o) return;
+      const step = Math.max(25, Math.round(o.totalQty * 0.1));
+      o.completedQty = Math.min(o.totalQty, o.completedQty + step);
+      saveState();
+      showToast(`Logged +${step} units for ${o.id} (${o.completedQty}/${o.totalQty}).`, "success");
+    }
+
+    function advanceOrderStage(orderId) {
+      const o = appState.workOrders.find(x => x.id === orderId);
+      if (!o) return;
+      const idx = STAGES.indexOf(o.stage);
+      if (idx < STAGES.length - 1) {
+        o.stage = STAGES[idx + 1];
+        if (o.stage === "Packing & Dispatch") o.completedQty = o.totalQty;
+        saveState();
+        showToast(`${o.id} advanced to ${o.stage}.`, "info");
+      }
+    }
+
+    function openSizeMatrixModal(orderId) {
+      const o = appState.workOrders.find(x => x.id === orderId);
+      if (!o) return;
+      document.getElementById("sm-modal-title").textContent = `${o.id} — Size Matrix`;
+      document.getElementById("sm-modal-sub").textContent = `${o.style} • Total: ${o.totalQty} units`;
+      const cells = Object.entries(o.sizes).map(([sz, qty]) => `
+        <div class="p-3 rounded-xl border ${qty > 0 ? 'border-indigo-200 bg-indigo-50/60' : 'border-slate-200 bg-slate-50'} text-center">
+          <div class="text-xs font-bold text-slate-500">${sz}</div>
+          <div class="text-lg font-extrabold text-slate-900 mt-1">${qty}</div>
+          <div class="text-[10px] text-slate-400">pcs</div>
+        </div>
+      `).join("");
+      document.getElementById("sm-modal-body").innerHTML = `
+        <div class="grid grid-cols-3 sm:grid-cols-6 gap-2.5">${cells}</div>
+        <div class="p-3 rounded-xl bg-slate-900 text-white flex justify-between items-center text-xs">
+          <span>Production Line: <strong>${o.line}</strong></span>
+          <span>Batch Value: <strong class="text-emerald-400">${formatINR(o.totalQty * (o.unitPrice || 500))}</strong></span>
+        </div>
+      `;
+      document.getElementById("size-matrix-modal").classList.remove("hidden");
+      document.getElementById("size-matrix-modal").classList.add("flex");
+    }
+
+    function openNewOrderModal() {
+      const num = 101 + appState.workOrders.length;
+      document.getElementById("wo-new-id").value = `WO-2026-${num}`;
+      const dt = new Date();
+      dt.setDate(dt.getDate() + 7);
+      document.getElementById("wo-new-date").value = dt.toISOString().split("T")[0];
+      updateNewOrderTotal();
+      document.getElementById("new-order-modal").classList.remove("hidden");
+      document.getElementById("new-order-modal").classList.add("flex");
+    }
+
+    function closeModal(id) {
+      const el = document.getElementById(id);
+      el.classList.add("hidden");
+      el.classList.remove("flex");
+    }
+
+    function updateNewOrderTotal() {
+      const total = ["xs", "s", "m", "l", "xl", "xxl"].reduce((sum, sz) => sum + (parseInt(document.getElementById(`sz-${sz}`).value) || 0), 0);
+      document.getElementById("wo-new-total-badge").textContent = `Total: ${total} Units`;
+      return total;
+    }
+
+    function createWorkOrder(e) {
+      e.preventDefault();
+      const totalQty = updateNewOrderTotal();
+      if (totalQty <= 0) {
+        showToast("Enter at least 1 unit across the XS–XXL size matrix.", "warning");
+        return;
+      }
+      const order = {
+        id: document.getElementById("wo-new-id").value.trim(),
+        client: document.getElementById("wo-new-client").value.trim(),
+        style: document.getElementById("wo-new-style").value.trim(),
+        category: document.getElementById("wo-new-category").value,
+        line: document.getElementById("wo-new-line").value,
+        unitPrice: parseFloat(document.getElementById("wo-new-price").value) || 500,
+        sizes: {
+          XS: parseInt(document.getElementById("sz-xs").value) || 0,
+          S: parseInt(document.getElementById("sz-s").value) || 0,
+          M: parseInt(document.getElementById("sz-m").value) || 0,
+          L: parseInt(document.getElementById("sz-l").value) || 0,
+          XL: parseInt(document.getElementById("sz-xl").value) || 0,
+          XXL: parseInt(document.getElementById("sz-xxl").value) || 0
+        },
+        totalQty,
+        completedQty: 0,
+        stage: "Cutting",
+        dueDate: document.getElementById("wo-new-date").value
+      };
+      appState.workOrders.unshift(order);
+      saveState();
+      closeModal("new-order-modal");
+      showToast(`Work Order ${order.id} released to Cutting floor (${totalQty} pcs).`, "success");
+    }
+
+    // =========================================================================
+    // MODULE 2B: SHOP-FLOOR LINE BALANCING & SAM TRACKER
+    // =========================================================================
+    function renderLineEfficiency() {
+      const grid = document.getElementById("line-cards-grid");
+      grid.innerHTML = appState.sewingLines.map(ln => {
+        const eff = (((ln.output * ln.sam) / (ln.operators * ln.shiftMins)) * 100).toFixed(1);
+        const effNum = parseFloat(eff);
+        const badgeCls = effNum >= 68 ? "bg-emerald-50 text-emerald-700 border-emerald-200" : "bg-amber-50 text-amber-700 border-amber-200";
+        return `
+          <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs space-y-3">
+            <div class="flex items-start justify-between gap-2">
+              <div>
+                <h4 class="text-sm font-bold text-slate-900">${ln.name}</h4>
+                <span class="text-[11px] text-slate-500">${ln.plant} • ${ln.operators} Operators</span>
+              </div>
+              <span class="px-2.5 py-1 rounded-full text-xs font-extrabold border ${badgeCls}">${eff}%</span>
+            </div>
+            <div class="flex justify-between text-xs text-slate-600 pt-2 border-t border-slate-100">
+              <span>Output: <strong class="text-slate-900">${ln.output}</strong> / ${ln.target} pcs</span>
+              <span>SAM: <strong class="text-indigo-700">${ln.sam}m</strong></span>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      const obData = [
+        { op: "OP-01: Front V-Neck Placket & Facing", mc: "SNLS Lockstitch", smv: 3.1, ops: 4 },
+        { op: "OP-02: Shoulder Join & Sleeve Attach", mc: "4-Thread Overlock", smv: 4.2, ops: 5 },
+        { op: "OP-03: Chest & Hip Patch Pocket Topstitch", mc: "SNLS + Bartack", smv: 3.8, ops: 4 },
+        { op: "OP-04: Trouser Rise, Elastic Waist & Drawstring", mc: "Kansai Multi-Needle", smv: 4.6, ops: 5 },
+        { op: "OP-05: Side Seam Close & Bottom Hemming", mc: "5-Thread Safety", smv: 2.8, ops: 4 }
+      ];
+      const caps = obData.map(r => Math.round((r.ops * 60) / r.smv));
+      const minCap = Math.min(...caps);
+
+      document.getElementById("ob-table-tbody").innerHTML = obData.map((r, i) => {
+        const cap = caps[i];
+        const isBottleneck = cap === minCap;
+        return `
+          <tr class="${isBottleneck ? 'bg-rose-50/60' : 'hover:bg-slate-50'}">
+            <td class="py-3 px-4 font-semibold text-slate-800">${r.op}</td>
+            <td class="py-3 px-4 text-slate-500">${r.mc}</td>
+            <td class="py-3 px-4 font-bold text-slate-800">${r.smv.toFixed(1)}</td>
+            <td class="py-3 px-4 font-bold text-slate-800">${r.ops}</td>
+            <td class="py-3 px-4 font-extrabold text-slate-900">${cap} pcs/hr</td>
+            <td class="py-3 px-4">
+              ${isBottleneck
+                ? `<span class="px-2 py-0.5 rounded-full bg-rose-100 text-rose-700 text-[11px] font-bold">Bottleneck</span>`
+                : `<span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[11px] font-semibold">Balanced</span>`
+              }
+            </td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    function applySamPreset() {
+      const [sam, ops, mins, out, cost] = document.getElementById("sam-preset").value.split("|").map(Number);
+      document.getElementById("sam-val").value = sam;
+      document.getElementById("sam-ops").value = ops;
+      document.getElementById("sam-mins").value = mins;
+      document.getElementById("sam-output").value = out;
+      document.getElementById("sam-daily-cost").value = cost;
+      calculateLineEfficiency();
+    }
+
+    function calculateLineEfficiency() {
+      const sam = parseFloat(document.getElementById("sam-val").value) || 1;
+      const ops = parseInt(document.getElementById("sam-ops").value) || 1;
+      const mins = parseInt(document.getElementById("sam-mins").value) || 480;
+      const out = parseInt(document.getElementById("sam-output").value) || 0;
+      const dailyCost = parseFloat(document.getElementById("sam-daily-cost").value) || 0;
+
+      const availMins = ops * mins;
+      const eff = ((out * sam) / availMins) * 100;
+      const cap100 = Math.floor(availMins / sam);
+      const cpm = dailyCost / availMins;
+
+      document.getElementById("sam-res-eff").textContent = `${eff.toFixed(1)}%`;
+      document.getElementById("sam-res-cap").textContent = `${cap100} pcs`;
+      document.getElementById("sam-res-cpm").textContent = formatINR2(cpm);
+    }
+
+    // =========================================================================
+    // MODULE 3: FABRIC, TRIMS & RAW MATERIAL INVENTORY
+    // =========================================================================
+    function renderInventory() {
+      const filter = document.getElementById("inv-type-filter").value;
+      const items = appState.inventory.filter(i => filter === "ALL" || i.type === filter);
+
+      document.getElementById("inventory-tbody").innerHTML = items.map(item => {
+        const isLow = item.stock <= item.reorder;
+        const val = item.stock * item.cost;
+        return `
+          <tr class="hover:bg-slate-50/70 transition">
+            <td class="py-3.5 px-4">
+              <div class="font-bold text-slate-900 text-xs">${item.sku}</div>
+              <div class="text-xs font-medium text-slate-700">${item.name}</div>
+            </td>
+            <td class="py-3.5 px-4 text-xs text-slate-600">${item.color}</td>
+            <td class="py-3.5 px-4 text-xs font-extrabold ${isLow ? 'text-rose-600' : 'text-slate-900'}">${item.stock.toLocaleString("en-IN")} ${item.unit}</td>
+            <td class="py-3.5 px-4 text-xs text-slate-500">${item.reorder.toLocaleString("en-IN")} ${item.unit}</td>
+            <td class="py-3.5 px-4 text-xs font-semibold text-slate-700">${formatINR2(item.cost)}</td>
+            <td class="py-3.5 px-4 text-xs font-bold text-slate-900">${formatINR(val)}</td>
+            <td class="py-3.5 px-4">
+              ${isLow
+                ? `<span class="px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200 text-[11px] font-bold">Low Stock</span>`
+                : `<span class="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[11px] font-semibold">Optimal</span>`
+              }
+            </td>
+            <td class="py-3.5 px-4 text-right">
+              <div class="inline-flex gap-1.5">
+                <button onclick="adjustStock('${item.sku}', -50)" class="px-2.5 py-1 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 text-xs font-semibold transition">
+                  - Issue
+                </button>
+                <button onclick="adjustStock('${item.sku}', 200)" class="px-2.5 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 text-xs font-semibold transition">
+                  + Restock
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    function adjustStock(sku, delta) {
+      const item = appState.inventory.find(i => i.sku === sku);
+      if (!item) return;
+      if (delta < 0 && item.stock + delta < 0) {
+        showToast(`Insufficient ${item.name} balance to issue.`, "warning");
+        return;
+      }
+      item.stock += delta;
+      saveState();
+      showToast(`${delta < 0 ? 'Issued' : 'Restocked'} ${Math.abs(delta)} ${item.unit} of ${item.sku}.`, delta < 0 ? "info" : "success");
+    }
+
+    function openAddMaterialModal() {
+      document.getElementById("add-material-modal").classList.remove("hidden");
+      document.getElementById("add-material-modal").classList.add("flex");
+    }
+
+    function addInventorySku(e) {
+      e.preventDefault();
+      const [type, unit] = document.getElementById("mat-type-unit").value.split("|");
+      const skuPrefix = type === "Fabric" ? "FAB" : "TRM";
+      const sku = `${skuPrefix}-HYD-${100 + appState.inventory.length}`;
+      appState.inventory.unshift({
+        sku,
+        name: document.getElementById("mat-name").value.trim(),
+        color: document.getElementById("mat-color").value.trim(),
+        type,
+        stock: parseFloat(document.getElementById("mat-stock").value) || 0,
+        reorder: parseFloat(document.getElementById("mat-min").value) || 0,
+        unit,
+        cost: parseFloat(document.getElementById("mat-rate").value) || 0
+      });
+      saveState();
+      closeModal("add-material-modal");
+      showToast(`Added ${sku} to warehouse ledger.`, "success");
+    }
+
+    function applyFabricPreset() {
+      const [avg, rate] = document.getElementById("calc-fabric-preset").value.split("|").map(Number);
+      document.getElementById("calc-fab-avg").value = avg;
+      document.getElementById("calc-fab-rate").value = rate;
+      calculateFabricRequirement();
+    }
+
+    function calculateFabricRequirement() {
+      const qty = parseFloat(document.getElementById("calc-fab-qty").value) || 0;
+      const avg = parseFloat(document.getElementById("calc-fab-avg").value) || 0;
+      const eff = Math.min(100, Math.max(10, parseFloat(document.getElementById("calc-fab-eff").value) || 85));
+      const rate = parseFloat(document.getElementById("calc-fab-rate").value) || 0;
+
+      const netMeters = qty * avg;
+      const grossMeters = netMeters / (eff / 100);
+      const wastageMeters = grossMeters - netMeters;
+      const totalCost = grossMeters * rate;
+
+      document.getElementById("res-gross-meters").textContent = `${grossMeters.toFixed(2)} m`;
+      document.getElementById("res-net-sub").textContent = `Net: ${netMeters.toFixed(2)} m`;
+      document.getElementById("res-wastage-meters").textContent = `${wastageMeters.toFixed(2)} m`;
+      document.getElementById("res-wastage-pct").textContent = `${(100 - eff).toFixed(0)}% CAD loss`;
+      document.getElementById("res-fabric-cost").textContent = formatINR(totalCost);
+    }
+
+    // =========================================================================
+    // MODULE 4: BOM & GARMENT COSTING CALCULATOR
+    // =========================================================================
+    function loadCostingPreset(preset) {
+      const map = {
+        scrub: { title: "Classic Fit Maroon V-Neck Medical Scrub Set", qty: 450, rate: 142, cons: 2.15, trims: 26, cm: 90, emb: 22, wash: 18, pack: 14, oh: 12, margin: 25, mrp: 125 },
+        bedsheet: { title: "144 TC Solid Purple Single Bedsheet & Pillow Cover Set", qty: 800, rate: 98, cons: 2.45, trims: 12, cm: 42, emb: 0, wash: 14, pack: 18, oh: 10, margin: 22, mrp: 110 },
+        coverall: { title: "Pacifica Blue (#1E77B4) Industrial Workwear Shirt & Trouser", qty: 300, rate: 168, cons: 2.75, trims: 44, cm: 135, emb: 35, wash: 24, pack: 18, oh: 14, margin: 28, mrp: 130 }
+      };
+      const p = map[preset];
+      if (!p) return;
+      document.getElementById("cost-title").value = p.title;
+      document.getElementById("cost-batch-qty").value = p.qty;
+      document.getElementById("cost-fab-rate").value = p.rate;
+      document.getElementById("cost-fab-cons").value = p.cons;
+      document.getElementById("cost-trims").value = p.trims;
+      document.getElementById("cost-cm").value = p.cm;
+      document.getElementById("cost-emb").value = p.emb;
+      document.getElementById("cost-wash").value = p.wash;
+      document.getElementById("cost-pack").value = p.pack;
+      document.getElementById("cost-overhead").value = p.oh;
+      document.getElementById("cost-margin").value = p.margin;
+      document.getElementById("cost-mrp-margin").value = p.mrp;
+      calculateGarmentCost();
+    }
+
+    function addCustomBomItem() {
+      customBomItems.push({ label: "Reflective Safety Tape / Woven Label", cost: 15 });
+      renderCustomBomList();
+      calculateGarmentCost();
+    }
+
+    function removeCustomBomItem(idx) {
+      customBomItems.splice(idx, 1);
+      renderCustomBomList();
+      calculateGarmentCost();
+    }
+
+    function updateCustomBomItem(idx, field, val) {
+      if (field === "label") customBomItems[idx].label = val;
+      if (field === "cost") customBomItems[idx].cost = parseFloat(val) || 0;
+      calculateGarmentCost();
+    }
+
+    function renderCustomBomList() {
+      const container = document.getElementById("custom-bom-list");
+      container.innerHTML = customBomItems.map((item, idx) => `
+        <div class="flex items-center gap-2 p-2.5 rounded-xl bg-slate-50 border border-slate-200">
+          <input type="text" value="${item.label}" oninput="updateCustomBomItem(${idx}, 'label', this.value)" class="flex-1 px-3 py-1.5 rounded-lg border border-slate-200 text-xs font-medium bg-white">
+          <input type="number" value="${item.cost}" min="0" step="0.5" oninput="updateCustomBomItem(${idx}, 'cost', this.value)" class="w-24 px-3 py-1.5 rounded-lg border border-slate-200 text-xs font-bold bg-white">
+          <button type="button" onclick="removeCustomBomItem(${idx})" class="p-1.5 text-rose-600 hover:bg-rose-50 rounded-lg text-xs font-bold">✕</button>
+        </div>
+      `).join("");
+    }
+
+    function calculateGarmentCost() {
+      const title = document.getElementById("cost-title").value.trim() || "Custom Garment Style";
+      const batchQty = parseInt(document.getElementById("cost-batch-qty").value) || 1;
+      const rate = parseFloat(document.getElementById("cost-fab-rate").value) || 0;
+      const cons = parseFloat(document.getElementById("cost-fab-cons").value) || 0;
+      const trims = parseFloat(document.getElementById("cost-trims").value) || 0;
+      const cm = parseFloat(document.getElementById("cost-cm").value) || 0;
+      const emb = parseFloat(document.getElementById("cost-emb").value) || 0;
+      const wash = parseFloat(document.getElementById("cost-wash").value) || 0;
+      const pack = parseFloat(document.getElementById("cost-pack").value) || 0;
+      const ohPct = parseFloat(document.getElementById("cost-overhead").value) || 0;
+      const marginPct = parseFloat(document.getElementById("cost-margin").value) || 0;
+      const mrpMarginPct = parseFloat(document.getElementById("cost-mrp-margin").value) || 0;
+
+      const fabCost = rate * cons;
+      const customSum = customBomItems.reduce((s, x) => s + (parseFloat(x.cost) || 0), 0);
+      const primeCost = fabCost + trims + cm + emb + wash + pack + customSum;
+      const ohCost = primeCost * (ohPct / 100);
+      const unitMfg = primeCost + ohCost;
+      const wholesale = unitMfg * (1 + marginPct / 100);
+      const mrp = Math.ceil((unitMfg * (1 + mrpMarginPct / 100)) / 10) * 10 - 1;
+      const batchProfit = (wholesale - unitMfg) * batchQty;
+
+      document.getElementById("sheet-style-name").textContent = title;
+      document.getElementById("sheet-fab-desc").textContent = `${cons}m @ ₹${rate}`;
+      document.getElementById("sheet-fab-cost").textContent = formatINR2(fabCost);
+      document.getElementById("sheet-trim-cost").textContent = formatINR2(trims);
+      document.getElementById("sheet-cm-cost").textContent = formatINR2(cm);
+      document.getElementById("sheet-emb-cost").textContent = formatINR2(emb);
+      document.getElementById("sheet-wash-pack-cost").textContent = formatINR2(wash + pack);
+
+      const customRow = document.getElementById("sheet-custom-row");
+      if (customSum > 0) {
+        customRow.classList.remove("hidden");
+        document.getElementById("sheet-custom-cost").textContent = formatINR2(customSum);
+      } else {
+        customRow.classList.add("hidden");
+      }
+
+      document.getElementById("sheet-oh-pct").textContent = ohPct;
+      document.getElementById("sheet-oh-cost").textContent = formatINR2(ohCost);
+      document.getElementById("sheet-unit-mfg").textContent = formatINR2(unitMfg);
+      document.getElementById("sheet-wholesale").textContent = formatINR2(wholesale);
+      document.getElementById("sheet-mrp").textContent = formatINR(Math.max(0, mrp));
+      document.getElementById("sheet-batch-profit").textContent = formatINR(batchProfit);
+    }
+
+    function openPrintCostSheet() {
+      const style = document.getElementById("cost-title").value;
+      const unitMfg = document.getElementById("sheet-unit-mfg").textContent;
+      const wholesale = document.getElementById("sheet-wholesale").textContent;
+      const mrp = document.getElementById("sheet-mrp").textContent;
+      const profit = document.getElementById("sheet-batch-profit").textContent;
+      const qty = document.getElementById("cost-batch-qty").value;
+
+      document.getElementById("print-modal-title").textContent = "Garment BOM & Costing Sheet — S T Traders Annexe CheapJack";
+      document.getElementById("print-area").innerHTML = `
+        <div class="border-b-2 border-slate-900 pb-3 flex justify-between items-start">
+          <div>
+            <h2 class="text-lg font-extrabold text-slate-900">S T TRADERS ANNEXE CHEAPJACK</h2>
+            <p class="text-xs text-slate-500">Apparel & Uniform Manufacturing Unit • Hyderabad, Telangana</p>
+          </div>
+          <span class="px-2.5 py-1 rounded bg-slate-900 text-white text-xs font-bold">COST SHEET</span>
+        </div>
+        <div class="grid grid-cols-2 gap-3 text-xs bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+          <div><strong>Style Name:</strong> ${style}</div>
+          <div><strong>Batch Qty:</strong> ${qty} pcs</div>
+          <div><strong>Unit Mfg. Cost:</strong> ${unitMfg}</div>
+          <div><strong>B2B Wholesale Quote:</strong> ${wholesale}</div>
+          <div><strong>Suggested MRP:</strong> ${mrp}</div>
+          <div><strong>Projected Batch Profit:</strong> ${profit}</div>
+        </div>
+      `;
+      currentPrintableText = [
+        "S T TRADERS ANNEXE CHEAPJACK — GARMENT COST SHEET",
+        `Style: ${style} | Batch Qty: ${qty} pcs`,
+        `Unit Mfg. Cost: ${unitMfg} | B2B Wholesale: ${wholesale} | Portal MRP: ${mrp} | Batch Profit: ${profit}`
+      ].join("\n");
+
+      document.getElementById("print-preview-modal").classList.remove("hidden");
+      document.getElementById("print-preview-modal").classList.add("flex");
+    }
+
+    // =========================================================================
+    // MODULE 5: QC, DISPATCH LOGISTICS & TALLYPRIME GST BRIDGE
+    // =========================================================================
+    function renderQcAndDispatch() {
+      const woOptions = appState.workOrders.map(o => `<option value="${o.id}">${o.id} — ${o.style} (${o.totalQty} pcs)</option>`).join("");
+      document.getElementById("qc-wo-select").innerHTML = woOptions;
+      document.getElementById("wb-wo-select").innerHTML = woOptions;
+      document.getElementById("gst-wo-select").innerHTML = woOptions;
+
+      const passCount = appState.qcLogs.filter(l => l.status === "PASS").length;
+      const passRate = appState.qcLogs.length ? Math.round((passCount / appState.qcLogs.length) * 100) : 100;
+      document.getElementById("qc-pass-rate-badge").textContent = `${passRate}% Batch Pass`;
+
+      document.getElementById("qc-logs-tbody").innerHTML = appState.qcLogs.map(l => `
+        <tr class="hover:bg-slate-50">
+          <td class="py-3 px-4">
+            <div class="font-bold text-slate-900 text-xs">${l.id} • ${l.orderId}</div>
+            <div class="text-[11px] text-slate-500">${l.inspector} (${l.date})</div>
+          </td>
+          <td class="py-3 px-4 text-xs">
+            <span class="font-bold text-slate-800">${l.sampleSize}</span> /
+            <span class="font-bold text-rose-600">${l.major} Maj</span> /
+            <span class="font-bold text-amber-600">${l.minor} Min</span>
+          </td>
+          <td class="py-3 px-4 text-xs text-slate-600 max-w-xs">${l.notes}</td>
+          <td class="py-3 px-4">
+            ${l.status === "PASS"
+              ? `<span class="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[11px] font-bold">PASS</span>`
+              : `<span class="px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200 text-[11px] font-bold">REWORK</span>`
+            }
+          </td>
+        </tr>
+      `).join("");
+
+      document.getElementById("dispatch-tbody").innerHTML = appState.dispatches.map((d, idx) => `
+        <tr class="hover:bg-slate-50">
+          <td class="py-3.5 px-4 font-bold text-slate-900 text-xs">${d.awb}</td>
+          <td class="py-3.5 px-4">
+            <div class="font-bold text-indigo-700 text-xs">${d.orderId}</div>
+            <div class="text-xs text-slate-600">${d.destination}</div>
+          </td>
+          <td class="py-3.5 px-4 text-xs font-medium text-slate-700">${d.carrier}</td>
+          <td class="py-3.5 px-4 text-xs font-bold text-slate-800">${d.cartons} Cartons (${d.units} pcs)</td>
+          <td class="py-3.5 px-4 text-right">
+            <button onclick="openChallanPreview(${idx})" class="px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-indigo-600 text-white text-xs font-semibold transition">
+              Delivery Challan
+            </button>
+          </td>
+        </tr>
+      `).join("");
+
+      calculateGstBridge();
+    }
+
+    function previewAqlVerdict() {
+      const sample = parseInt(document.getElementById("qc-sample-qty").value) || 50;
+      const major = parseInt(document.getElementById("qc-major-qty").value) || 0;
+      const minor = parseInt(document.getElementById("qc-minor-qty").value) || 0;
+
+      const maxMajor = Math.max(1, Math.floor(sample * 0.05));
+      const maxMinor = Math.max(3, Math.floor(sample * 0.1));
+      const isPass = major <= maxMajor && minor <= maxMinor;
+
+      const box = document.getElementById("qc-auto-verdict-box");
+      const txt = document.getElementById("qc-auto-verdict-text");
+      if (isPass) {
+        box.className = "p-3 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-between text-xs";
+        txt.className = "font-extrabold text-emerald-700";
+        txt.textContent = `PASS (Max Allowed: ${maxMajor} Maj / ${maxMinor} Min)`;
+      } else {
+        box.className = "p-3 rounded-xl bg-rose-50 border border-rose-200 flex items-center justify-between text-xs";
+        txt.className = "font-extrabold text-rose-700";
+        txt.textContent = `REWORK HOLD (Exceeds AQL 2.5 Limit)`;
+      }
+      return isPass ? "PASS" : "REWORK";
+    }
+
+    function submitQcLog(e) {
+      e.preventDefault();
+      const orderId = document.getElementById("qc-wo-select").value;
+      const order = appState.workOrders.find(o => o.id === orderId);
+      const status = previewAqlVerdict();
+      const sampleSize = parseInt(document.getElementById("qc-sample-qty").value) || 50;
+      const major = parseInt(document.getElementById("qc-major-qty").value) || 0;
+      const minor = parseInt(document.getElementById("qc-minor-qty").value) || 0;
+
+      appState.qcLogs.unshift({
+        id: `QC-${2601 + appState.qcLogs.length}`,
+        orderId,
+        style: order ? order.style : "Garment Batch",
+        sampleSize,
+        major,
+        minor,
+        notes: document.getElementById("qc-defect-notes").value.trim(),
+        status,
+        inspector: document.getElementById("qc-inspector").value.trim(),
+        date: new Date().toISOString().split("T")[0]
+      });
+
+      if (order && status === "PASS") {
+        order.stage = "Packing & Dispatch";
+        order.completedQty = order.totalQty;
+      }
+
+      saveState();
+      showToast(`QC Inspection recorded (${status}) for ${orderId}.`, status === "PASS" ? "success" : "warning");
+    }
+
+    function openWaybillModal() {
+      const selectEl = document.getElementById("wb-wo-select");
+      selectEl.innerHTML = appState.workOrders
+        .map(o => `<option value="${o.id}">${o.id} — ${o.style} (${o.totalQty} pcs)</option>`)
+        .join("");
+      const firstWo = appState.workOrders[0];
+      if (firstWo) {
+        document.getElementById("wb-cartons").value = Math.max(1, Math.ceil(firstWo.totalQty / 50));
+      }
+      const modal = document.getElementById("waybill-modal");
+      modal.classList.remove("hidden");
+      modal.classList.add("flex");
+    }
+
+    function createWaybill(e) {
+      e.preventDefault();
+      const orderId = document.getElementById("wb-wo-select").value;
+      const order = appState.workOrders.find(o => o.id === orderId);
+      const carrier = document.getElementById("wb-carrier").value;
+      const awb = document.getElementById("wb-awb").value.trim();
+      const destination = document.getElementById("wb-dest").value;
+      const cartons = parseInt(document.getElementById("wb-cartons").value) || 1;
+      const units = order ? order.totalQty : cartons * 50;
+
+      appState.dispatches.unshift({
+        awb,
+        orderId,
+        destination,
+        carrier,
+        cartons,
+        units,
+        date: new Date().toISOString().split("T")[0]
+      });
+
+      if (order) {
+        order.stage = "Packing & Dispatch";
+        order.completedQty = order.totalQty;
+      }
+
+      saveState();
+      closeModal("waybill-modal");
+      showToast(`Waybill ${awb} generated for ${orderId} (${cartons} cartons).`, "success");
+    }
+
+    function openChallanPreview(idx) {
+      const d = appState.dispatches[idx];
+      if (!d) return;
+      const order = appState.workOrders.find(o => o.id === d.orderId);
+      const styleName = order ? order.style : "Finished Garments & Uniforms";
+
+      document.getElementById("print-modal-title").textContent = `Delivery Challan & Packing Manifest — ${d.awb}`;
+      document.getElementById("print-area").innerHTML = `
+        <div class="border-b-2 border-slate-900 pb-3 flex justify-between items-start">
+          <div>
+            <h2 class="text-lg font-extrabold text-slate-900">S T TRADERS ANNEXE CHEAPJACK</h2>
+            <p class="text-xs text-slate-500">Cherlapally & Musheerabad Units • Hyderabad, Telangana (GSTIN: 36AAJFS8492K1Z5)</p>
+          </div>
+          <span class="px-2.5 py-1 rounded bg-emerald-700 text-white text-xs font-bold">DELIVERY CHALLAN</span>
+        </div>
+        <div class="grid grid-cols-2 gap-3 text-xs bg-slate-50 p-4 rounded-xl border border-slate-200">
+          <div><strong>Vehicle / AWB No.:</strong> ${d.awb}</div>
+          <div><strong>Dispatch Date:</strong> ${d.date}</div>
+          <div><strong>Work Order Ref:</strong> ${d.orderId}</div>
+          <div><strong>Carrier Partner:</strong> ${d.carrier}</div>
+          <div class="col-span-2"><strong>Consignee / Hub:</strong> ${d.destination}</div>
+          <div class="col-span-2"><strong>Cargo Description:</strong> ${styleName}</div>
+          <div><strong>Total Packages:</strong> ${d.cartons} Master Cartons</div>
+          <div><strong>Total Quantity:</strong> ${d.units.toLocaleString("en-IN")} Pcs</div>
+        </div>
+        <div class="pt-6 flex justify-between text-xs text-slate-500">
+          <span>Driver / Courier Signature</span>
+          <span>Authorized Signatory — S T Traders Annexe CheapJack</span>
+        </div>
+      `;
+      currentPrintableText = [
+        `S T TRADERS ANNEXE CHEAPJACK — DELIVERY CHALLAN (${d.awb})`,
+        `Date: ${d.date} | Work Order: ${d.orderId} | Carrier: ${d.carrier}`,
+        `Destination: ${d.destination} | Item: ${styleName}`,
+        `Packages: ${d.cartons} Cartons | Total Units: ${d.units} Pcs`
+      ].join("\n");
+
+      document.getElementById("print-preview-modal").classList.remove("hidden");
+      document.getElementById("print-preview-modal").classList.add("flex");
+    }
+
+    function calculateGstBridge() {
+      const selectEl = document.getElementById("gst-wo-select");
+      if (!selectEl) return null;
+      const woId = selectEl.value;
+      const order = appState.workOrders.find(o => o.id === woId) || appState.workOrders[0];
+      if (!order) return null;
+
+      const buyerGstin = document.getElementById("gst-buyer-gstin").value.trim().toUpperCase();
+      const [gstPctStr, hsn] = document.getElementById("gst-slab-select").value.split("|");
+      const gstPct = parseFloat(gstPctStr) || 5;
+
+      const taxable = order.totalQty * (order.unitPrice || 500);
+      const taxAmt = taxable * (gstPct / 100);
+      const grandTotal = taxable + taxAmt;
+      const isIntraState = buyerGstin.startsWith("36");
+
+      document.getElementById("gst-taxable-val").textContent = formatINR(taxable);
+      document.getElementById("gst-tax-label").textContent = isIntraState
+        ? `CGST + SGST (${gstPct}%)`
+        : `IGST (${gstPct}%)`;
+      document.getElementById("gst-tax-val").textContent = formatINR(taxAmt);
+      document.getElementById("gst-grand-val").textContent = formatINR(grandTotal);
+
+      const ewayBadge = document.getElementById("gst-eway-badge");
+      if (grandTotal > 50000) {
+        ewayBadge.textContent = "E-Way Bill Req. (> ₹50k)";
+        ewayBadge.className = "text-[10px] text-rose-300 font-bold block";
+      } else {
+        ewayBadge.textContent = "E-Way Bill Exempt";
+        ewayBadge.className = "text-[10px] text-emerald-300 font-bold block";
+      }
+
+      return { order, buyerGstin, gstPct, hsn, taxable, taxAmt, grandTotal, isIntraState };
+    }
+
+    function openGstInvoiceModal() {
+      const selectEl = document.getElementById("gst-modal-wo-select");
+      selectEl.innerHTML = appState.workOrders
+        .map(o => `<option value="${o.id}">${o.id} — ${o.style} (${o.totalQty} pcs)</option>`)
+        .join("");
+      recalculateGstInvoice();
+      const modal = document.getElementById("gst-invoice-modal");
+      modal.classList.remove("hidden");
+      modal.classList.add("flex");
+    }
+
+    function recalculateGstInvoice() {
+      const woId = document.getElementById("gst-modal-wo-select").value;
+      const order = appState.workOrders.find(o => o.id === woId) || appState.workOrders[0];
+      if (!order) return null;
+
+      const invNo = document.getElementById("gst-inv-no").value.trim() || "STC/26-27/0418";
+      const [hsn, gstPctStr] = document.getElementById("gst-hsn-slab").value.split("|");
+      const gstPct = parseFloat(gstPctStr) || 5;
+      const supplyType = document.getElementById("gst-supply-type").value;
+      const buyerGstin = document.getElementById("gst-modal-buyer-gstin").value.trim().toUpperCase();
+
+      const taxable = order.totalQty * (order.unitPrice || 500);
+      const taxAmt = taxable * (gstPct / 100);
+      const grandTotal = taxable + taxAmt;
+      const isIntraState = supplyType === "INTRA";
+
+      document.getElementById("gst-qty-rate").textContent = `${order.totalQty} pcs × ${formatINR(order.unitPrice || 500)}`;
+      document.getElementById("gst-modal-taxable-val").textContent = formatINR2(taxable);
+      document.getElementById("gst-grand-total").textContent = formatINR2(grandTotal);
+
+      document.getElementById("gst-split-rows").innerHTML = isIntraState
+        ? `<div class="flex justify-between"><span>CGST (${gstPct / 2}%)</span><span class="font-semibold text-white">${formatINR2(taxAmt / 2)}</span></div>
+           <div class="flex justify-between"><span>SGST (${gstPct / 2}%)</span><span class="font-semibold text-white">${formatINR2(taxAmt / 2)}</span></div>`
+        : `<div class="flex justify-between"><span>IGST (${gstPct}%)</span><span class="font-semibold text-white">${formatINR2(taxAmt)}</span></div>`;
+
+      const alertBox = document.getElementById("gst-eway-alert");
+      const statusBadge = document.getElementById("gst-eway-status");
+      if (grandTotal > 50000) {
+        alertBox.className = "p-3.5 rounded-xl bg-amber-50 border border-amber-300 flex items-center justify-between text-xs";
+        statusBadge.className = "px-2.5 py-0.5 rounded-full bg-amber-200 text-amber-950 font-extrabold";
+        statusBadge.textContent = "Part-A & Part-B Required (> ₹50,000)";
+      } else {
+        alertBox.className = "p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-between text-xs";
+        statusBadge.className = "px-2.5 py-0.5 rounded-full bg-emerald-200 text-emerald-950 font-extrabold";
+        statusBadge.textContent = "Exempt (≤ ₹50,000)";
+      }
+
+      return { order, invNo, buyerGstin, gstPct, hsn, taxable, taxAmt, grandTotal, isIntraState };
+    }
+
+    function renderGstInvoicePreview() {
+      const g = recalculateGstInvoice();
+      if (!g) return;
+      closeModal("gst-invoice-modal");
+
+      const taxBreakdown = g.isIntraState
+        ? `CGST (${g.gstPct / 2}%): ${formatINR2(g.taxAmt / 2)} | SGST (${g.gstPct / 2}%): ${formatINR2(g.taxAmt / 2)}`
+        : `IGST (${g.gstPct}%): ${formatINR2(g.taxAmt)}`;
+
+      document.getElementById("print-modal-title").textContent = `GST Tax Invoice ${g.invNo} — TallyPrime Ready`;
+      document.getElementById("print-area").innerHTML = `
+        <div class="border-b-2 border-slate-900 pb-3 flex justify-between items-start">
+          <div>
+            <h2 class="text-lg font-extrabold text-slate-900">S T TRADERS ANNEXE CHEAPJACK</h2>
+            <p class="text-xs text-slate-500">Supplier GSTIN: 36AAJFS8492K1Z5 (Telangana State Code: 36)</p>
+          </div>
+          <span class="px-2.5 py-1 rounded bg-indigo-700 text-white text-xs font-bold">TAX INVOICE • ${g.invNo}</span>
+        </div>
+        <div class="grid grid-cols-2 gap-3 text-xs bg-slate-50 p-4 rounded-xl border border-slate-200">
+          <div><strong>Billed To:</strong> ${g.order.client}</div>
+          <div><strong>Buyer GSTIN:</strong> ${g.buyerGstin}</div>
+          <div><strong>Work Order:</strong> ${g.order.id}</div>
+          <div><strong>HSN Code:</strong> ${g.hsn}</div>
+          <div class="col-span-2"><strong>Description:</strong> ${g.order.style} (${g.order.totalQty} Pcs @ ${formatINR(g.order.unitPrice)})</div>
+          <div class="col-span-2 pt-2 border-t border-slate-200"><strong>Taxable Value:</strong> ${formatINR2(g.taxable)} • ${taxBreakdown}</div>
+          <div class="col-span-2 text-sm font-extrabold text-slate-900">Grand Invoice Total: ${formatINR2(g.grandTotal)}</div>
+        </div>
+      `;
+      currentPrintableText = [
+        `S T TRADERS ANNEXE CHEAPJACK — GST TAX INVOICE (${g.invNo})`,
+        `Supplier GSTIN: 36AAJFS8492K1Z5 | Buyer: ${g.order.client} (${g.buyerGstin})`,
+        `Item: ${g.order.style} | HSN: ${g.hsn} | Qty: ${g.order.totalQty} pcs`,
+        `Taxable: ${formatINR2(g.taxable)} | ${taxBreakdown} | Grand Total: ${formatINR2(g.grandTotal)}`
+      ].join("\n");
+
+      document.getElementById("print-preview-modal").classList.remove("hidden");
+      document.getElementById("print-preview-modal").classList.add("flex");
+    }
+
+    function openGstInvoicePreview() {
+      const g = calculateGstBridge();
+      if (!g) return;
+      const taxBreakdown = g.isIntraState
+        ? `CGST (${g.gstPct / 2}%): ${formatINR2(g.taxAmt / 2)} | SGST (${g.gstPct / 2}%): ${formatINR2(g.taxAmt / 2)}`
+        : `IGST (${g.gstPct}%): ${formatINR2(g.taxAmt)}`;
+
+      document.getElementById("print-modal-title").textContent = "GST Tax Invoice — TallyPrime Ready";
+      document.getElementById("print-area").innerHTML = `
+        <div class="border-b-2 border-slate-900 pb-3 flex justify-between items-start">
+          <div>
+            <h2 class="text-lg font-extrabold text-slate-900">S T TRADERS ANNEXE CHEAPJACK</h2>
+            <p class="text-xs text-slate-500">Supplier GSTIN: 36AAJFS8492K1Z5 (Telangana State Code: 36)</p>
+          </div>
+          <span class="px-2.5 py-1 rounded bg-indigo-700 text-white text-xs font-bold">TAX INVOICE</span>
+        </div>
+        <div class="grid grid-cols-2 gap-3 text-xs bg-slate-50 p-4 rounded-xl border border-slate-200">
+          <div><strong>Billed To:</strong> ${g.order.client}</div>
+          <div><strong>Buyer GSTIN:</strong> ${g.buyerGstin}</div>
+          <div><strong>Work Order:</strong> ${g.order.id}</div>
+          <div><strong>HSN Code:</strong> ${g.hsn}</div>
+          <div class="col-span-2"><strong>Description:</strong> ${g.order.style} (${g.order.totalQty} Pcs @ ${formatINR(g.order.unitPrice)})</div>
+          <div class="col-span-2 pt-2 border-t border-slate-200"><strong>Taxable Value:</strong> ${formatINR2(g.taxable)} • ${taxBreakdown}</div>
+          <div class="col-span-2 text-sm font-extrabold text-slate-900">Grand Invoice Total: ${formatINR2(g.grandTotal)}</div>
+        </div>
+      `;
+      currentPrintableText = [
+        "S T TRADERS ANNEXE CHEAPJACK — GST TAX INVOICE",
+        `Supplier GSTIN: 36AAJFS8492K1Z5 | Buyer: ${g.order.client} (${g.buyerGstin})`,
+        `Item: ${g.order.style} | HSN: ${g.hsn} | Qty: ${g.order.totalQty} pcs`,
+        `Taxable: ${formatINR2(g.taxable)} | ${taxBreakdown} | Grand Total: ${formatINR2(g.grandTotal)}`
+      ].join("\n");
+
+      document.getElementById("print-preview-modal").classList.remove("hidden");
+      document.getElementById("print-preview-modal").classList.add("flex");
+    }
+
+    function downloadTallyCsv(fromModal = false) {
+      const g = fromModal ? recalculateGstInvoice() : calculateGstBridge();
+      if (!g) return;
+      const rows = [
+        ["Voucher Type", "Date", "Party Name", "Buyer GSTIN", "HSN Code", "Qty", "Rate", "Taxable Value", "GST %", "Tax Amount", "Grand Total"],
+        ["Sales", new Date().toISOString().split("T")[0], `"${g.order.client}"`, g.buyerGstin, g.hsn, g.order.totalQty, g.order.unitPrice, g.taxable.toFixed(2), g.gstPct, g.taxAmt.toFixed(2), g.grandTotal.toFixed(2)]
+      ];
+      const csv = rows.map(r => r.join(",")).join("\n");
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `TallyPrime_Sales_${g.order.id}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast(`Downloaded TallyPrime CSV voucher for ${g.order.id}.`, "success");
+    }
+
+    function copyPrintText() {
+      const ta = document.createElement("textarea");
+      ta.value = currentPrintableText;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      document.body.removeChild(ta);
+      showToast("Document summary copied to clipboard.", "success");
+    }
+
+    function exportFactoryBackup() {
+      const blob = new Blob([JSON.stringify(appState, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `ST_Traders_CheapJack_Backup_${new Date().toISOString().split("T")[0]}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast("Exported factory JSON backup.", "success");
+    }
+
+    function importFactoryBackup(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        try {
+          const parsed = JSON.parse(evt.target.result);
+          if (parsed && Array.isArray(parsed.workOrders) && Array.isArray(parsed.inventory)) {
+            delete parsed.channelOrders;
+            if (!parsed.sewingLines) parsed.sewingLines = JSON.parse(JSON.stringify(DEFAULT_STATE.sewingLines));
+            appState = parsed;
+            saveState();
+            showToast("Factory JSON backup restored successfully.", "success");
+          } else {
+            showToast("Invalid ERP backup file format.", "warning");
+          }
+        } catch (err) {
+          showToast("Failed to parse JSON backup file.", "warning");
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function refreshAllViews() {
+      renderDashboard();
+      renderWorkOrders();
+      renderLineEfficiency();
+      renderInventory();
+      renderQcAndDispatch();
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      refreshAllViews();
+      calculateLineEfficiency();
+      calculateFabricRequirement();
+      calculateGarmentCost();
+      previewAqlVerdict();
+    });
+  </script>
+</body>
+</html>
