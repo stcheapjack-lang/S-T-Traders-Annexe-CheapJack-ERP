@@ -68,7 +68,7 @@
     <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-72 bg-slate-900 text-slate-300 flex flex-col transition-transform duration-300 -translate-x-full lg:translate-x-0 lg:static lg:shrink-0 shadow-xl">
       <!-- Brand Header -->
       <div class="p-5 border-b border-slate-800 flex items-center justify-between">
-        <div class="flex items-center gap-3">
+        <a href="#dashboard" onclick="switchTab('dashboard'); return false;" class="flex items-center gap-3">
           <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-700 flex items-center justify-center text-white font-extrabold text-base shadow-lg ring-1 ring-white/15">
             ST
           </div>
@@ -76,7 +76,7 @@
             <div class="font-bold text-white text-sm leading-snug">S T Traders Annexe</div>
             <div class="text-xs font-semibold text-emerald-400 tracking-wide">CheapJack ERP • Hyd</div>
           </div>
-        </div>
+        </a>
         <button id="close-sidebar-btn" aria-label="Close menu" class="lg:hidden p-2 text-slate-400 hover:text-white">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
         </button>
@@ -91,47 +91,47 @@
         <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300 font-semibold">GST 36 • ₹</span>
       </div>
 
-      <!-- Navigation Links -->
+      <!-- Navigation Links (Hash-routed <a> links for bookmarking & instant switching) -->
       <nav class="flex-1 p-4 space-y-1.5 overflow-y-auto">
-        <p class="px-3 text-[11px] font-semibold uppercase tracking-wider text-slate-500 mb-2">ERP Core & Floor Intelligence</p>
+        <p class="px-3 text-[11px] font-semibold uppercase tracking-wider text-slate-500 mb-2">ERP Pages & Modules</p>
         
-        <button onclick="switchTab('dashboard')" data-tab="dashboard" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium transition-all bg-indigo-600 text-white shadow-sm">
+        <a href="#dashboard" onclick="switchTab('dashboard'); return false;" data-tab="dashboard" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium transition-all bg-indigo-600 text-white shadow-sm">
           <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
           <span>Dashboard Overview</span>
-        </button>
+        </a>
 
-        <button onclick="switchTab('production')" data-tab="production" class="nav-btn w-full flex items-center justify-between px-3.5 py-3 rounded-xl text-sm font-medium text-slate-300 hover:bg-slate-800/80 hover:text-white transition-all">
+        <a href="#production" onclick="switchTab('production'); return false;" data-tab="production" class="nav-btn w-full flex items-center justify-between px-3.5 py-3 rounded-xl text-sm font-medium text-slate-300 hover:bg-slate-800/80 hover:text-white transition-all">
           <div class="flex items-center gap-3">
             <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
             <span>Production & Work Orders</span>
           </div>
           <span id="nav-wo-count" class="px-2 py-0.5 text-xs rounded-full bg-slate-800 text-slate-300">4</span>
-        </button>
+        </a>
 
-        <button onclick="switchTab('efficiency')" data-tab="efficiency" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium text-slate-300 hover:bg-slate-800/80 hover:text-white transition-all">
+        <a href="#efficiency" onclick="switchTab('efficiency'); return false;" data-tab="efficiency" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium text-slate-300 hover:bg-slate-800/80 hover:text-white transition-all">
           <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-          <span>Line Efficiency & SAM</span>
-        </button>
+          <span>Line Efficiency, SAM & Payroll</span>
+        </a>
 
-        <button onclick="switchTab('inventory')" data-tab="inventory" class="nav-btn w-full flex items-center justify-between px-3.5 py-3 rounded-xl text-sm font-medium text-slate-300 hover:bg-slate-800/80 hover:text-white transition-all">
+        <a href="#inventory" onclick="switchTab('inventory'); return false;" data-tab="inventory" class="nav-btn w-full flex items-center justify-between px-3.5 py-3 rounded-xl text-sm font-medium text-slate-300 hover:bg-slate-800/80 hover:text-white transition-all">
           <div class="flex items-center gap-3">
             <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
-            <span>Fabric & Trims Stock</span>
+            <span>Fabric, Trims & Mill POs</span>
           </div>
           <span id="nav-low-stock-badge" class="hidden px-2 py-0.5 text-xs rounded-full bg-rose-500/20 text-rose-400 font-bold">!</span>
-        </button>
+        </a>
 
-        <button onclick="switchTab('costing')" data-tab="costing" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium text-slate-300 hover:bg-slate-800/80 hover:text-white transition-all">
+        <a href="#costing" onclick="switchTab('costing'); return false;" data-tab="costing" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium text-slate-300 hover:bg-slate-800/80 hover:text-white transition-all">
           <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
           <span>BOM & Garment Costing</span>
-        </button>
+        </a>
 
-        <button onclick="switchTab('qc')" data-tab="qc" class="nav-btn w-full flex items-center justify-between px-3.5 py-3 rounded-xl text-sm font-medium text-slate-300 hover:bg-slate-800/80 hover:text-white transition-all">
+        <a href="#qc" onclick="switchTab('qc'); return false;" data-tab="qc" class="nav-btn w-full flex items-center justify-between px-3.5 py-3 rounded-xl text-sm font-medium text-slate-300 hover:bg-slate-800/80 hover:text-white transition-all">
           <div class="flex items-center gap-3">
             <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-            <span>QC & Dispatch Logistics</span>
+            <span>QC, GST Invoice & Dispatch</span>
           </div>
-        </button>
+        </a>
       </nav>
 
       <!-- Sidebar Footer CTA -->
@@ -154,29 +154,44 @@
     <main class="flex-1 flex flex-col min-w-0 overflow-x-hidden">
       
       <!-- Sticky Top Header Bar -->
-      <div class="bg-white border-b border-slate-200 px-4 sm:px-8 py-4 flex flex-col xl:flex-row xl:items-center xl:justify-between gap-3 sticky top-0 z-20">
-        <div>
-          <h2 id="page-title" class="text-xl font-bold text-slate-900 tracking-tight">Dashboard Overview</h2>
-          <p id="page-subtitle" class="text-xs sm:text-sm text-slate-500">Live shop-floor telemetry, cutting & stitching output, and dispatch readiness</p>
+      <div class="bg-white border-b border-slate-200 px-4 sm:px-8 py-4 space-y-3 sticky top-0 z-20">
+        <div class="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-3">
+          <div>
+            <div class="flex items-center gap-2">
+              <h2 id="page-title" class="text-xl font-bold text-slate-900 tracking-tight">Dashboard Overview</h2>
+              <span id="page-route-pill" class="px-2 py-0.5 rounded bg-indigo-50 text-indigo-700 font-mono text-[11px] font-semibold">#dashboard</span>
+            </div>
+            <p id="page-subtitle" class="text-xs sm:text-sm text-slate-500">Live shop-floor telemetry, cutting & stitching output, and dispatch readiness</p>
+          </div>
+          <div class="flex flex-wrap items-center gap-2 self-start sm:self-auto">
+            <button onclick="exportFactoryBackup()" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold border border-slate-200 transition">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+              <span>Export JSON</span>
+            </button>
+            <label class="cursor-pointer inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold border border-slate-200 transition">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+              <span>Import JSON</span>
+              <input type="file" accept=".json" onchange="importFactoryBackup(event)" class="hidden">
+            </label>
+            <button onclick="resetDemoData()" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold border border-slate-200 transition">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+              <span>Reset Demo</span>
+            </button>
+            <button onclick="openNewOrderModal()" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs sm:text-sm font-semibold shadow-xs transition">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+              <span>New Work Order</span>
+            </button>
+          </div>
         </div>
-        <div class="flex flex-wrap items-center gap-2 self-start sm:self-auto">
-          <button onclick="exportFactoryBackup()" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold border border-slate-200 transition">
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-            <span>Export JSON</span>
-          </button>
-          <label class="cursor-pointer inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold border border-slate-200 transition">
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
-            <span>Import JSON</span>
-            <input type="file" accept=".json" onchange="importFactoryBackup(event)" class="hidden">
-          </label>
-          <button onclick="resetDemoData()" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold border border-slate-200 transition">
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-            <span>Reset Demo</span>
-          </button>
-          <button onclick="openNewOrderModal()" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs sm:text-sm font-semibold shadow-xs transition">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
-            <span>New Work Order</span>
-          </button>
+
+        <!-- Quick-Jump Horizontal Page Pill Bar (Always Accessible Across All Views) -->
+        <div class="flex items-center gap-1.5 overflow-x-auto pb-1 pt-1 border-t border-slate-100">
+          <a href="#dashboard" onclick="switchTab('dashboard'); return false;" data-pill="dashboard" class="pill-btn shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 text-white transition">1. Dashboard</a>
+          <a href="#production" onclick="switchTab('production'); return false;" data-pill="production" class="pill-btn shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition">2. Production & Work Orders</a>
+          <a href="#efficiency" onclick="switchTab('efficiency'); return false;" data-pill="efficiency" class="pill-btn shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition">3. Line SAM & Tailor Payroll</a>
+          <a href="#inventory" onclick="switchTab('inventory'); return false;" data-pill="inventory" class="pill-btn shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition">4. Fabric, Trims & Mill POs</a>
+          <a href="#costing" onclick="switchTab('costing'); return false;" data-pill="costing" class="pill-btn shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition">5. BOM & Costing</a>
+          <a href="#qc" onclick="switchTab('qc'); return false;" data-pill="qc" class="pill-btn shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition">6. QC, GST & Dispatch</a>
         </div>
       </div>
 
@@ -184,14 +199,13 @@
       <div class="p-4 sm:p-8 max-w-[1600px] w-full mx-auto space-y-6">
 
         <!-- ========================================================= -->
-        <!-- MODULE 1: DASHBOARD OVERVIEW                              -->
+        <!-- PAGE 1: DASHBOARD OVERVIEW (#dashboard)                   -->
         <!-- ========================================================= -->
         <section id="tab-dashboard" class="module-section tab-fade space-y-6">
           
           <!-- 5 Real-Time KPI Cards -->
           <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-4">
-            <!-- KPI 1: Active Work Orders -->
-            <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs hover:shadow-md transition">
+            <div onclick="switchTab('production')" class="cursor-pointer bg-white rounded-2xl p-5 border border-slate-200 shadow-xs hover:border-indigo-400 hover:shadow-md transition">
               <div class="flex items-center justify-between">
                 <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Active Work Orders</span>
                 <div class="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
@@ -205,8 +219,7 @@
               <p id="kpi-total-units" class="mt-1 text-xs text-slate-500">0 units scheduled</p>
             </div>
 
-            <!-- KPI 2: Daily Output Units -->
-            <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs hover:shadow-md transition">
+            <div onclick="switchTab('efficiency')" class="cursor-pointer bg-white rounded-2xl p-5 border border-slate-200 shadow-xs hover:border-emerald-400 hover:shadow-md transition">
               <div class="flex items-center justify-between">
                 <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Daily Output Units</span>
                 <div class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
@@ -220,8 +233,7 @@
               <p id="kpi-avg-line-eff" class="mt-1 text-xs text-emerald-600 font-semibold">Avg Line Efficiency: 78.4%</p>
             </div>
 
-            <!-- KPI 3: Fabric Stock Value -->
-            <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs hover:shadow-md transition">
+            <div onclick="switchTab('inventory')" class="cursor-pointer bg-white rounded-2xl p-5 border border-slate-200 shadow-xs hover:border-amber-400 hover:shadow-md transition">
               <div class="flex items-center justify-between">
                 <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Fabric Stock Value</span>
                 <div class="w-9 h-9 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold text-base">
@@ -234,8 +246,7 @@
               <p id="kpi-low-stock-text" class="mt-1 text-xs text-slate-500">0 SKUs below reorder level</p>
             </div>
 
-            <!-- KPI 4: Pending Dispatches -->
-            <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs hover:shadow-md transition">
+            <div onclick="switchTab('qc')" class="cursor-pointer bg-white rounded-2xl p-5 border border-slate-200 shadow-xs hover:border-sky-400 hover:shadow-md transition">
               <div class="flex items-center justify-between">
                 <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Pending Dispatches</span>
                 <div class="w-9 h-9 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center">
@@ -249,8 +260,7 @@
               <p class="mt-1 text-xs text-slate-500">Porter / BlueDart / FBA queue</p>
             </div>
 
-            <!-- KPI 5: Overall FPY QC % -->
-            <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs hover:shadow-md transition">
+            <div onclick="switchTab('qc')" class="cursor-pointer bg-white rounded-2xl p-5 border border-slate-200 shadow-xs hover:border-emerald-400 hover:shadow-md transition">
               <div class="flex items-center justify-between">
                 <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Overall FPY QC %</span>
                 <div class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
@@ -270,11 +280,11 @@
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-5">
               <div>
                 <h3 class="text-base font-bold text-slate-900">Shop-Floor Production Pipeline Tracker</h3>
-                <p class="text-xs text-slate-500">Click any manufacturing stage card to filter and inspect active batches on that floor</p>
+                <p class="text-xs text-slate-500">Click any manufacturing stage card to open the Production page filtered to that stage</p>
               </div>
               <div class="flex items-center gap-3">
                 <button onclick="switchTab('efficiency')" class="text-xs font-semibold text-emerald-700 hover:text-emerald-800 inline-flex items-center gap-1">
-                  <span>Open Line SAM & IE Tracker</span>
+                  <span>Open Line SAM & Payroll</span>
                   <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
                 </button>
                 <button onclick="filterProductionByStage('ALL')" class="text-xs font-semibold text-indigo-600 hover:text-indigo-800 inline-flex items-center gap-1">
@@ -334,7 +344,7 @@
               </div>
               <div class="mt-5 pt-4 border-t border-slate-100 flex gap-2">
                 <button onclick="switchTab('inventory')" class="flex-1 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold transition">
-                  Stock Ledger
+                  Stock & Mill POs
                 </button>
                 <button onclick="openGstInvoiceModal()" class="flex-1 py-2.5 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-semibold transition">
                   GST & Tally
@@ -346,7 +356,7 @@
         </section>
 
         <!-- ========================================================= -->
-        <!-- MODULE 2: PRODUCTION & WORK ORDER MANAGEMENT              -->
+        <!-- PAGE 2: PRODUCTION & WORK ORDER MANAGEMENT (#production)  -->
         <!-- ========================================================= -->
         <section id="tab-production" class="module-section hidden tab-fade space-y-6">
           
@@ -405,7 +415,7 @@
         </section>
 
         <!-- ========================================================= -->
-        <!-- MODULE 2B: SHOP-FLOOR LINE BALANCING & SAM TRACKER        -->
+        <!-- PAGE 3: LINE EFFICIENCY, SAM & TAILOR PAYROLL (#efficiency) -->
         <!-- ========================================================= -->
         <section id="tab-efficiency" class="module-section hidden tab-fade space-y-6">
           
@@ -501,10 +511,44 @@
               </div>
             </div>
           </div>
+
+          <!-- Tailor & Operator Piece-Rate Shift Payroll Ledger -->
+          <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+            <div class="p-5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <h3 class="text-base font-bold text-slate-900">Tailor & Operator Piece-Rate Shift Payroll Ledger</h3>
+                <p class="text-xs text-slate-500">Log stitched bundles by operator and calculate daily piece-rate wages + efficiency incentive in ₹</p>
+              </div>
+              <form onsubmit="logOperatorPieces(event)" class="flex flex-wrap items-center gap-2">
+                <select id="pay-op-select" class="px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold bg-slate-50"></select>
+                <input type="number" id="pay-add-pcs" value="15" min="1" placeholder="Pcs" class="w-20 px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold">
+                <button type="submit" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold transition">
+                  + Log Pieces
+                </button>
+              </form>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                    <th class="py-3 px-4">Operator ID & Name</th>
+                    <th class="py-3 px-4">Assigned Line & Operation</th>
+                    <th class="py-3 px-4">Pieces Stitched</th>
+                    <th class="py-3 px-4">Piece Rate (₹)</th>
+                    <th class="py-3 px-4">Shift Incentive</th>
+                    <th class="py-3 px-4 text-right">Net Daily Wage (₹)</th>
+                  </tr>
+                </thead>
+                <tbody id="payroll-tbody" class="divide-y divide-slate-100 text-sm">
+                  <!-- Populated via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
         </section>
 
         <!-- ========================================================= -->
-        <!-- MODULE 3: FABRIC, TRIMS & RAW MATERIAL INVENTORY          -->
+        <!-- PAGE 4: FABRIC, TRIMS & MILL PURCHASE ORDERS (#inventory) -->
         <!-- ========================================================= -->
         <section id="tab-inventory" class="module-section hidden tab-fade space-y-6">
           
@@ -544,6 +588,41 @@
                 </thead>
                 <tbody id="inventory-tbody" class="divide-y divide-slate-100 text-sm">
                   <!-- Rendered via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Mill & Vendor Purchase Orders (POs) -->
+          <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+            <div class="p-5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <h3 class="text-base font-bold text-slate-900">Textile Mill & Vendor Purchase Orders (POs)</h3>
+                <p class="text-xs text-slate-500">Procure grey/dyed fabric rolls from Surat, Bhiwandi & Secunderabad mills and receive directly into stock</p>
+              </div>
+              <form onsubmit="createMillPo(event)" class="flex flex-wrap items-center gap-2">
+                <select id="po-sku-select" class="px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold bg-slate-50"></select>
+                <input type="text" id="po-vendor-input" value="Arvind & Surat Mill Depot" placeholder="Mill Vendor" required class="px-3 py-2 rounded-xl border border-slate-200 text-xs">
+                <input type="number" id="po-qty-input" value="1000" min="50" required class="w-24 px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold">
+                <button type="submit" class="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-indigo-600 text-white text-xs font-semibold transition">
+                  + Raise Mill PO
+                </button>
+              </form>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                    <th class="py-3 px-4">PO Number & Vendor</th>
+                    <th class="py-3 px-4">Material SKU</th>
+                    <th class="py-3 px-4">Ordered Qty</th>
+                    <th class="py-3 px-4">PO Value (₹)</th>
+                    <th class="py-3 px-4">Status</th>
+                    <th class="py-3 px-4 text-right">GRN Action</th>
+                  </tr>
+                </thead>
+                <tbody id="mill-po-tbody" class="divide-y divide-slate-100 text-sm">
+                  <!-- Populated via JS -->
                 </tbody>
               </table>
             </div>
@@ -611,7 +690,7 @@
         </section>
 
         <!-- ========================================================= -->
-        <!-- MODULE 4: BOM & GARMENT COSTING CALCULATOR                -->
+        <!-- PAGE 5: BOM & GARMENT COSTING CALCULATOR (#costing)       -->
         <!-- ========================================================= -->
         <section id="tab-costing" class="module-section hidden tab-fade space-y-6">
           
@@ -777,7 +856,7 @@
         </section>
 
         <!-- ========================================================= -->
-        <!-- MODULE 5: QUALITY CONTROL (QC), GST INVOICE & DISPATCH    -->
+        <!-- PAGE 6: QC, GST INVOICE & DISPATCH LOGISTICS (#qc)        -->
         <!-- ========================================================= -->
         <section id="tab-qc" class="module-section hidden tab-fade space-y-6">
           
@@ -1237,7 +1316,7 @@
         </button>
       </div>
 
-          <div class="p-6 space-y-4">
+      <div class="p-6 space-y-4">
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label class="block text-xs font-semibold text-slate-700 mb-1">Select Work Order Batch</label>
@@ -1271,21 +1350,17 @@
           </div>
         </div>
 
-        <!-- E-Way Bill Threshold Alert -->
         <div id="gst-eway-alert" class="p-3.5 rounded-xl bg-amber-50 border border-amber-300 flex items-center justify-between text-xs">
           <span class="font-bold text-amber-900">E-Way Bill Mandatory (&gt; ₹50,000 Consignment Value)</span>
           <span id="gst-eway-status" class="px-2.5 py-0.5 rounded-full bg-amber-200 text-amber-950 font-extrabold">Part-A & Part-B Required</span>
         </div>
 
-        <!-- Tax Calculation Summary Box -->
         <div class="p-4 rounded-2xl bg-slate-900 text-white space-y-2 text-xs sm:text-sm">
           <div class="flex justify-between text-slate-300">
             <span>Taxable Value (<span id="gst-qty-rate">450 pcs × ₹685</span>)</span>
             <span id="gst-modal-taxable-val" class="font-bold text-white">₹3,08,250.00</span>
           </div>
-          <div id="gst-split-rows" class="space-y-1 text-slate-300">
-            <!-- Populated dynamically -->
-          </div>
+          <div id="gst-split-rows" class="space-y-1 text-slate-300"></div>
           <div class="flex justify-between pt-2 border-t border-slate-800 text-base font-extrabold text-emerald-400">
             <span>Grand Total Invoice Value</span>
             <span id="gst-grand-total">₹3,23,662.50</span>
@@ -1318,7 +1393,7 @@
       "Packing & Dispatch"
     ];
 
-    const STORAGE_KEY = "st_traders_cheapjack_erp_v3";
+    const STORAGE_KEY = "st_traders_cheapjack_erp_v4";
 
     const DEFAULT_STATE = {
       workOrders: [
@@ -1337,7 +1412,7 @@
         },
         {
           id: "WO-2026-102",
-          client: "Amazon India FBA & Flipkart Assured",
+          client: "Apollo Diagnostics & Care Hospitals",
           style: "144 TC Solid Purple Single Bedsheet & Pillow Cover Set",
           category: "Home Textiles",
           line: "Line C - Home Textiles",
@@ -1363,7 +1438,7 @@
         },
         {
           id: "WO-2026-104",
-          client: "Myntra & Musheerabad Wholesale Distributors",
+          client: "Musheerabad Wholesale Textile Distributors",
           style: "144 TC Checkered Blue & Orange Bedsheet Set",
           category: "Home Textiles",
           line: "Line C - Home Textiles",
@@ -1384,6 +1459,16 @@
         { sku: "TRM-BTN-18M", name: "18mm Resin Buttons (4-Hole)", color: "Pacifica Blue & Navy", type: "Trims", stock: 4800, reorder: 2000, unit: "pcs", cost: 1.5 },
         { sku: "TRM-THD-MAR", name: "Maroon Polyester Sewing Thread Cones (4000m)", color: "Maroon #402", type: "Trims", stock: 64, reorder: 80, unit: "cones", cost: 68 },
         { sku: "TRM-LBL-STC", name: "Woven Brand Labels ('S T Traders Annexe CheapJack')", color: "Satin Black / Gold", type: "Trims", stock: 6200, reorder: 1500, unit: "pcs", cost: 3.5 }
+      ],
+      millPos: [
+        { poNo: "PO-HYD-801", vendor: "Surat Poly-Viscose Mills", sku: "FAB-PV-MAR01", qty: 1200, rate: 142, status: "In Transit" },
+        { poNo: "PO-HYD-802", vendor: "Bhiwandi Cotton & Drill Works", sku: "FAB-CD-PAC05", qty: 800, rate: 168, status: "In Transit" }
+      ],
+      operators: [
+        { id: "OP-101", name: "Mohammed Riyaz", line: "Line A - Scrubs", op: "V-Neck Placket & Collar", pieces: 44, rate: 22, target: 40 },
+        { id: "OP-102", name: "Lakshmi Narayana", line: "Line A - Scrubs", op: "5-Thread Side Seam & Hem", pieces: 52, rate: 18, target: 48 },
+        { id: "OP-103", name: "Kavitha Rani", line: "Line B - Shirts/Trousers", op: "Pocket & Reflective Tape", pieces: 36, rate: 26, target: 35 },
+        { id: "OP-104", name: "Srinivas Rao", line: "Line C - Home Textiles", op: "144 TC Bedsheet Lock Hem", pieces: 110, rate: 9.5, target: 100 }
       ],
       qcLogs: [
         {
@@ -1449,6 +1534,8 @@
         if (raw) {
           const parsed = JSON.parse(raw);
           if (!parsed.sewingLines) parsed.sewingLines = JSON.parse(JSON.stringify(DEFAULT_STATE.sewingLines));
+          if (!parsed.millPos) parsed.millPos = JSON.parse(JSON.stringify(DEFAULT_STATE.millPos));
+          if (!parsed.operators) parsed.operators = JSON.parse(JSON.stringify(DEFAULT_STATE.operators));
           delete parsed.channelOrders;
           return parsed;
         }
@@ -1476,43 +1563,6 @@
       showToast("Demo data reset to S T Traders Annexe CheapJack Hyderabad baseline.", "info");
     }
 
-    function exportStateJson() {
-      const blob = new Blob([JSON.stringify(appState, null, 2)], { type: "application/json" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `ST_Traders_CheapJack_ERP_Backup_${new Date().toISOString().slice(0, 10)}.json`;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(url);
-      showToast("Exported factory ERP JSON backup.", "success");
-    }
-
-    function importStateJson(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        try {
-          const imported = JSON.parse(e.target.result);
-          if (!imported.workOrders || !imported.inventory) {
-            showToast("Invalid ERP JSON structure.", "warning");
-            return;
-          }
-          delete imported.channelOrders;
-          if (!imported.sewingLines) imported.sewingLines = JSON.parse(JSON.stringify(DEFAULT_STATE.sewingLines));
-          appState = imported;
-          saveState();
-          showToast("Factory ERP state restored from JSON backup.", "success");
-        } catch (err) {
-          showToast("Failed to parse JSON backup file.", "warning");
-        }
-        event.target.value = "";
-      };
-      reader.readAsText(file);
-    }
-
     function formatINR(val) {
       return "₹" + Number(val).toLocaleString("en-IN", { maximumFractionDigits: 0 });
     }
@@ -1535,19 +1585,22 @@
       }, 3200);
     }
 
-    // Navigation & Mobile Drawer
+    // Navigation & Hash Routing (#dashboard, #production, #efficiency, #inventory, #costing, #qc)
     const TAB_META = {
       dashboard: { title: "Dashboard Overview", subtitle: "Live shop-floor telemetry, cutting & stitching output, and dispatch readiness" },
       production: { title: "Production & Work Order Management", subtitle: "Manage work orders, XS–XXL size matrices, output logging, and stage transitions" },
-      efficiency: { title: "Shop-Floor Line Balancing & SAM Tracker", subtitle: "Real-time sewing line efficiency %, SAM/SMV simulator, and Operation Bulletin bottlenecks" },
-      inventory: { title: "Fabric, Trims & Raw Material Inventory", subtitle: "Warehouse stock ledger, reorder alerts, and CAD marker efficiency calculator" },
+      efficiency: { title: "Line Efficiency, SAM & Tailor Payroll", subtitle: "Real-time sewing line efficiency %, SAM/SMV simulator, OB bottlenecks & piece-rate payroll" },
+      inventory: { title: "Fabric, Trims & Mill Purchase Orders", subtitle: "Warehouse stock ledger, mill PO procurement, reorder alerts & CAD marker calculator" },
       costing: { title: "BOM & Garment Costing Calculator", subtitle: "Unit manufacturing cost sheet, B2B wholesale quotes, and portal MRP pricing" },
-      qc: { title: "Quality Control (QC) & Dispatch Logistics", subtitle: "AQL 2.5 batch inspections, delivery challans, and TallyPrime GST invoice bridge" }
+      qc: { title: "QC, GST Invoice & Dispatch Logistics", subtitle: "AQL 2.5 batch inspections, delivery challans, and TallyPrime GST invoice bridge" }
     };
 
-    function switchTab(tabId) {
+    function switchTab(tabId, updateHash = true) {
+      if (!TAB_META[tabId]) tabId = "dashboard";
+
       document.querySelectorAll(".module-section").forEach(s => s.classList.add("hidden"));
-      document.getElementById(`tab-${tabId}`).classList.remove("hidden");
+      const targetSection = document.getElementById(`tab-${tabId}`);
+      if (targetSection) targetSection.classList.remove("hidden");
 
       document.querySelectorAll(".nav-btn").forEach(btn => {
         if (btn.dataset.tab === tabId) {
@@ -1557,10 +1610,28 @@
         }
       });
 
+      document.querySelectorAll(".pill-btn").forEach(pill => {
+        if (pill.dataset.pill === tabId) {
+          pill.className = "pill-btn shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 text-white transition";
+        } else {
+          pill.className = "pill-btn shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition";
+        }
+      });
+
       document.getElementById("page-title").textContent = TAB_META[tabId].title;
       document.getElementById("page-subtitle").textContent = TAB_META[tabId].subtitle;
+      document.getElementById("page-route-pill").textContent = `#${tabId}`;
+
+      if (updateHash && window.location.hash !== `#${tabId}`) {
+        history.replaceState(null, "", `#${tabId}`);
+      }
       toggleMobileSidebar(false);
     }
+
+    window.addEventListener("hashchange", () => {
+      const hashTab = window.location.hash.replace("#", "").trim();
+      if (TAB_META[hashTab]) switchTab(hashTab, false);
+    });
 
     function toggleMobileSidebar(open) {
       const sb = document.getElementById("sidebar");
@@ -1578,7 +1649,7 @@
     document.getElementById("close-sidebar-btn").addEventListener("click", () => toggleMobileSidebar(false));
 
     // =========================================================================
-    // MODULE 1: DASHBOARD OVERVIEW
+    // PAGE 1: DASHBOARD OVERVIEW
     // =========================================================================
     function renderDashboard() {
       const orders = appState.workOrders;
@@ -1594,7 +1665,6 @@
       document.getElementById("kpi-pending-dispatch").textContent = pendingDispatches;
       document.getElementById("nav-wo-count").textContent = orders.length;
 
-      // Fabric & trims stock valuation
       const stockVal = inventory.reduce((s, i) => s + (i.stock * i.cost), 0);
       const lowStock = inventory.filter(i => i.stock <= i.reorder);
       document.getElementById("kpi-stock-value").textContent = formatINR(stockVal);
@@ -1608,13 +1678,11 @@
         badge.classList.add("hidden");
       }
 
-      // FPY QC %
       const totalSampled = appState.qcLogs.reduce((s, l) => s + l.sampleSize, 0);
       const totalMajor = appState.qcLogs.reduce((s, l) => s + l.major, 0);
       const fpy = totalSampled > 0 ? (((totalSampled - totalMajor) / totalSampled) * 100).toFixed(1) : "100.0";
       document.getElementById("kpi-fpy-pct").textContent = `${fpy}%`;
 
-      // 6-Stage Interactive Pipeline Cards
       const grid = document.getElementById("pipeline-visual-grid");
       grid.innerHTML = STAGES.map((stage, idx) => {
         const stageOrders = orders.filter(o => o.stage === stage);
@@ -1634,7 +1702,6 @@
         `;
       }).join("");
 
-      // Priority Work Orders Quick-View Table
       const tbody = document.getElementById("dashboard-orders-tbody");
       tbody.innerHTML = orders.slice(0, 5).map(o => {
         const pct = Math.min(100, Math.round((o.completedQty / o.totalQty) * 100));
@@ -1660,15 +1727,6 @@
         `;
       }).join("");
 
-      // Low-Stock, Channel Gap & QC Alert Feed
-      const alertsEl = document.getElementById("dashboard-alerts-list");
-      const items = [];
-      lowStock.forEach(item => {
-        items.push(`
-          <div class="p-3 rounded-xl bg-rose-50 border border-rose-200 text-xs">
-            <div class="font-bold text-rose-900">Low Stock: ${item.name}</div>
-            <div class="text-rose-700 mt-0.5">${item.color} • Stock: <strong>${item.stock} ${item.unit}</strong> (Reorder: ${item.reorder})</div>
-      // Low-Stock & QC Alert Feed
       const alertsEl = document.getElementById("dashboard-alerts-list");
       const items = [];
       lowStock.forEach(item => {
@@ -1712,7 +1770,7 @@
     }
 
     // =========================================================================
-    // MODULE 2: PRODUCTION & WORK ORDER MANAGEMENT
+    // PAGE 2: PRODUCTION & WORK ORDER MANAGEMENT
     // =========================================================================
     function renderWorkOrders() {
       const q = document.getElementById("wo-search-input").value.toLowerCase();
@@ -1889,7 +1947,7 @@
     }
 
     // =========================================================================
-    // MODULE 2B: SHOP-FLOOR LINE BALANCING & SAM TRACKER
+    // PAGE 3: LINE EFFICIENCY, SAM & TAILOR PIECE-RATE PAYROLL
     // =========================================================================
     function renderLineEfficiency() {
       const grid = document.getElementById("line-cards-grid");
@@ -1943,6 +2001,47 @@
           </tr>
         `;
       }).join("");
+
+      // Render Tailor Piece-Rate Payroll
+      const paySelect = document.getElementById("pay-op-select");
+      if (paySelect) {
+        paySelect.innerHTML = appState.operators.map(op => `<option value="${op.id}">${op.id} — ${op.name}</option>`).join("");
+      }
+      const payTbody = document.getElementById("payroll-tbody");
+      if (payTbody) {
+        payTbody.innerHTML = appState.operators.map(op => {
+          const baseWage = op.pieces * op.rate;
+          const bonus = op.pieces > op.target ? (op.pieces - op.target) * 5 : 0;
+          const totalWage = baseWage + bonus;
+          return `
+            <tr class="hover:bg-slate-50">
+              <td class="py-3 px-4">
+                <div class="font-bold text-slate-900 text-xs">${op.name}</div>
+                <div class="text-[11px] text-slate-500">${op.id}</div>
+              </td>
+              <td class="py-3 px-4 text-xs">
+                <div class="font-semibold text-slate-800">${op.op}</div>
+                <div class="text-[11px] text-slate-500">${op.line}</div>
+              </td>
+              <td class="py-3 px-4 text-xs font-extrabold text-slate-900">${op.pieces} pcs <span class="font-normal text-slate-400">(Tgt: ${op.target})</span></td>
+              <td class="py-3 px-4 text-xs font-semibold text-slate-700">${formatINR2(op.rate)}</td>
+              <td class="py-3 px-4 text-xs font-bold ${bonus > 0 ? 'text-emerald-600' : 'text-slate-400'}">+${formatINR(bonus)}</td>
+              <td class="py-3 px-4 text-right text-xs font-extrabold text-indigo-700">${formatINR2(totalWage)}</td>
+            </tr>
+          `;
+        }).join("");
+      }
+    }
+
+    function logOperatorPieces(e) {
+      e.preventDefault();
+      const opId = document.getElementById("pay-op-select").value;
+      const addPcs = parseInt(document.getElementById("pay-add-pcs").value) || 0;
+      const op = appState.operators.find(x => x.id === opId);
+      if (!op || addPcs <= 0) return;
+      op.pieces += addPcs;
+      saveState();
+      showToast(`Logged +${addPcs} pcs for ${op.name} (Total: ${op.pieces} pcs).`, "success");
     }
 
     function applySamPreset() {
@@ -1973,7 +2072,7 @@
     }
 
     // =========================================================================
-    // MODULE 3: FABRIC, TRIMS & RAW MATERIAL INVENTORY
+    // PAGE 4: FABRIC, TRIMS & MILL PURCHASE ORDERS
     // =========================================================================
     function renderInventory() {
       const filter = document.getElementById("inv-type-filter").value;
@@ -2012,6 +2111,66 @@
           </tr>
         `;
       }).join("");
+
+      // Populate Mill POs
+      const poSelect = document.getElementById("po-sku-select");
+      if (poSelect) {
+        poSelect.innerHTML = appState.inventory.map(i => `<option value="${i.sku}">${i.sku} — ${i.name}</option>`).join("");
+      }
+      const poTbody = document.getElementById("mill-po-tbody");
+      if (poTbody) {
+        poTbody.innerHTML = appState.millPos.map((po, idx) => {
+          const mat = appState.inventory.find(m => m.sku === po.sku);
+          const unitLabel = mat ? mat.unit : "units";
+          return `
+            <tr class="hover:bg-slate-50">
+              <td class="py-3 px-4">
+                <div class="font-bold text-slate-900 text-xs">${po.poNo}</div>
+                <div class="text-[11px] text-slate-500">${po.vendor}</div>
+              </td>
+              <td class="py-3 px-4 text-xs font-semibold text-indigo-700">${po.sku} ${mat ? `(${mat.name})` : ''}</td>
+              <td class="py-3 px-4 text-xs font-bold text-slate-800">${po.qty.toLocaleString("en-IN")} ${unitLabel}</td>
+              <td class="py-3 px-4 text-xs font-bold text-slate-900">${formatINR(po.qty * po.rate)}</td>
+              <td class="py-3 px-4">
+                ${po.status === "Received (GRN)"
+                  ? `<span class="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[11px] font-bold">Received (GRN)</span>`
+                  : `<span class="px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200 text-[11px] font-bold">In Transit</span>`
+                }
+              </td>
+              <td class="py-3 px-4 text-right">
+                ${po.status !== "Received (GRN)"
+                  ? `<button onclick="receiveMillPo(${idx})" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold transition">Receive GRN into Stock</button>`
+                  : `<span class="text-xs text-slate-400 font-medium">Stock Updated</span>`
+                }
+              </td>
+            </tr>
+          `;
+        }).join("");
+      }
+    }
+
+    function createMillPo(e) {
+      e.preventDefault();
+      const sku = document.getElementById("po-sku-select").value;
+      const vendor = document.getElementById("po-vendor-input").value.trim();
+      const qty = parseInt(document.getElementById("po-qty-input").value) || 0;
+      const mat = appState.inventory.find(i => i.sku === sku);
+      if (!mat || qty <= 0) return;
+
+      const poNo = `PO-HYD-${801 + appState.millPos.length}`;
+      appState.millPos.unshift({ poNo, vendor, sku, qty, rate: mat.cost, status: "In Transit" });
+      saveState();
+      showToast(`Raised ${poNo} for ${qty} ${mat.unit} of ${sku}.`, "success");
+    }
+
+    function receiveMillPo(idx) {
+      const po = appState.millPos[idx];
+      if (!po || po.status === "Received (GRN)") return;
+      po.status = "Received (GRN)";
+      const mat = appState.inventory.find(i => i.sku === po.sku);
+      if (mat) mat.stock += po.qty;
+      saveState();
+      showToast(`GRN posted for ${po.poNo}: +${po.qty} added to ${po.sku}.`, "success");
     }
 
     function adjustStock(sku, delta) {
@@ -2077,7 +2236,7 @@
     }
 
     // =========================================================================
-    // MODULE 4: BOM & GARMENT COSTING CALCULATOR
+    // PAGE 5: BOM & GARMENT COSTING CALCULATOR
     // =========================================================================
     function loadCostingPreset(preset) {
       const map = {
@@ -2215,7 +2374,7 @@
     }
 
     // =========================================================================
-    // MODULE 5: QC, DISPATCH LOGISTICS & TALLYPRIME GST BRIDGE
+    // PAGE 6: QC, DISPATCH LOGISTICS & TALLYPRIME GST BRIDGE
     // =========================================================================
     function renderQcAndDispatch() {
       const woOptions = appState.workOrders.map(o => `<option value="${o.id}">${o.id} — ${o.style} (${o.totalQty} pcs)</option>`).join("");
@@ -2618,6 +2777,8 @@
           if (parsed && Array.isArray(parsed.workOrders) && Array.isArray(parsed.inventory)) {
             delete parsed.channelOrders;
             if (!parsed.sewingLines) parsed.sewingLines = JSON.parse(JSON.stringify(DEFAULT_STATE.sewingLines));
+            if (!parsed.millPos) parsed.millPos = JSON.parse(JSON.stringify(DEFAULT_STATE.millPos));
+            if (!parsed.operators) parsed.operators = JSON.parse(JSON.stringify(DEFAULT_STATE.operators));
             appState = parsed;
             saveState();
             showToast("Factory JSON backup restored successfully.", "success");
@@ -2645,6 +2806,11 @@
       calculateFabricRequirement();
       calculateGarmentCost();
       previewAqlVerdict();
+
+      const initialHash = window.location.hash.replace("#", "").trim();
+      if (TAB_META[initialHash]) {
+        switchTab(initialHash, false);
+      }
     });
   </script>
 </body>
