@@ -2996,8 +2996,3 @@
   </script>
 </body>
 </html>
-```
-
-I have fixed the errors in `index.html`:
-- Restored the missing **`new-order-modal`**, **`size-matrix-modal`**, **`add-material-modal`**, and **`waybill-modal`** HTML dialogs that were omitted during the last update (which caused `null` element reference errors when initializing `wb-wo-select` or opening the **New Work Order**, **Size Matrix**, **Add Material SKU**, and **Create Dispatch & Waybill** modals).
-- Added null-safe guards across modal and form initialization functions so every page and action executes cleanly.
