@@ -2197,19 +2197,131 @@
               <span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200">${so.stage}</span>
             </td>
             <td class="py-3.5 px-4 text-right">
-              ${!hasSlip ? `
-                <button onclick="generateCuttingSlipFromSo('${so.id}')" class="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold transition">
-                  Generate Cutting Slip →
+              <div class="inline-flex flex-wrap justify-end gap-1.5">
+                <button onclick="openSaleOrderPrint('${so.id}')" class="px-2.5 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition">
+                  Print SO
                 </button>
-              ` : `
-                <button onclick="switchStep('cutting-slips')" class="px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-bold">
-                  View Cutting Slip →
-                </button>
-              `}
+                ${!hasSlip ? `
+                  <button onclick="generateCuttingSlipFromSo('${so.id}')" class="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold transition">
+                    Generate Cutting Slip →
+                  </button>
+                ` : `
+                  <button onclick="switchStep('cutting-slips')" class="px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-bold">
+                    View Cutting Slip →
+                  </button>
+                `}
+              </div>
             </td>
           </tr>
         `;
       }).join("");
+    }
+
+    function openSaleOrderPrint(soId) {
+      const so = state.saleOrders.find(x => x.id === soId);
+      if (!so) return;
+      const totalVal = so.totalQty * so.rate;
+      const sz = so.sizes || {};
+
+      document.getElementById("cutting-slip-toolbar").classList.add("hidden");
+      document.getElementById("print-modal-title").textContent = `Sale Order Confirmation — ${so.id}`;
+      document.getElementById("print-area").innerHTML = `
+        <div class="border-2 border-slate-900 p-6 space-y-5 text-slate-900 bg-white">
+          <div class="border-b-2 border-slate-900 pb-3 flex justify-between items-start">
+            <div>
+              <h2 class="text-xl font-extrabold tracking-tight">S T TRADERS ANNEXE CHEAPJACK</h2>
+              <p class="text-xs text-slate-600">Musheerabad & Cherlapally Units, Hyderabad, Telangana • GSTIN: 36AAJFS8492K1Z5</p>
+            </div>
+            <div class="text-right">
+              <span class="px-3 py-1 bg-slate-900 text-white text-xs font-extrabold">SALE ORDER</span>
+              <div class="text-xs font-extrabold mt-1">${so.id}</div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3 text-xs bg-slate-50 p-4 rounded-xl border border-slate-200">
+            <div><strong>Hospital / Client:</strong> ${so.client}</div>
+            <div><strong>Client Code (NAME):</strong> ${so.nameCode || '-'}</div>
+            <div><strong>Buyer GSTIN:</strong> <span class="font-mono font-bold">${so.gstin}</span></div>
+            <div><strong>Delivery / Order Date:</strong> ${so.date}</div>
+            <div><strong>PO Reference:</strong> ${so.poCode || 'STTNP-06'}</div>
+            <div><strong>Current Floor Stage:</strong> ${so.stage}</div>
+          </div>
+
+          <div class="space-y-2">
+            <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-700">Garment & Stitching Specifications</h3>
+            <table class="w-full text-left border-collapse border border-slate-300 text-xs">
+              <tbody>
+                <tr class="border-b border-slate-300">
+                  <td class="p-2.5 font-bold bg-slate-50 w-1/4 border-r border-slate-300">Garment Style</td>
+                  <td class="p-2.5 font-extrabold" colspan="3">${so.style} (${so.gender})</td>
+                </tr>
+                <tr class="border-b border-slate-300">
+                  <td class="p-2.5 font-bold bg-slate-50 border-r border-slate-300">Cloth Quality</td>
+                  <td class="p-2.5 font-semibold border-r border-slate-300">${so.cloth}</td>
+                  <td class="p-2.5 font-bold bg-slate-50 border-r border-slate-300 w-1/5">Colour</td>
+                  <td class="p-2.5 font-semibold">${so.colour}</td>
+                </tr>
+                <tr class="border-b border-slate-300">
+                  <td class="p-2.5 font-bold bg-slate-50 border-r border-slate-300">Collar Style</td>
+                  <td class="p-2.5 font-semibold border-r border-slate-300">${so.collar}</td>
+                  <td class="p-2.5 font-bold bg-slate-50 border-r border-slate-300">Bottom Pattern</td>
+                  <td class="p-2.5 font-semibold">${so.bottomPattern || 'Nada Phyajam'}</td>
+                </tr>
+                <tr class="border-b border-slate-300">
+                  <td class="p-2.5 font-bold bg-slate-50 border-r border-slate-300">Top / Shirt Pattern</td>
+                  <td class="p-2.5" colspan="3">${so.pattern}</td>
+                </tr>
+                <tr>
+                  <td class="p-2.5 font-bold bg-slate-50 border-r border-slate-300">Embroidery / Logo</td>
+                  <td class="p-2.5 font-semibold" colspan="3">${so.embrDesign}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="space-y-2">
+            <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-700">Size Ratio Breakdown & Commercial Valuation</h3>
+            <table class="w-full text-center border-collapse border border-slate-300 text-xs">
+              <thead>
+                <tr class="bg-slate-100 border-b border-slate-300 font-extrabold">
+                  <th class="p-2 border-r border-slate-300">34 / XS</th>
+                  <th class="p-2 border-r border-slate-300">36 / S</th>
+                  <th class="p-2 border-r border-slate-300">38 / M</th>
+                  <th class="p-2 border-r border-slate-300">40 / L</th>
+                  <th class="p-2 border-r border-slate-300">42 / XL</th>
+                  <th class="p-2 border-r border-slate-300">44 / XXL</th>
+                  <th class="p-2 border-r border-slate-300 bg-indigo-50">Total Pairs</th>
+                  <th class="p-2 border-r border-slate-300">Rate (₹)</th>
+                  <th class="p-2 bg-emerald-50">Order Total (₹)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="font-bold">
+                  <td class="p-2.5 border-r border-slate-300">${sz["34"] || 0}</td>
+                  <td class="p-2.5 border-r border-slate-300">${sz["36"] || 0}</td>
+                  <td class="p-2.5 border-r border-slate-300">${sz["38"] || 0}</td>
+                  <td class="p-2.5 border-r border-slate-300">${sz["40"] || 0}</td>
+                  <td class="p-2.5 border-r border-slate-300">${sz["42"] || 0}</td>
+                  <td class="p-2.5 border-r border-slate-300">${sz["44"] || 0}</td>
+                  <td class="p-2.5 border-r border-slate-300 font-extrabold text-indigo-700 bg-indigo-50/40">${so.totalQty}</td>
+                  <td class="p-2.5 border-r border-slate-300">${formatINR2(so.rate)}</td>
+                  <td class="p-2.5 font-extrabold text-emerald-700 bg-emerald-50/40">${formatINR2(totalVal)}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="pt-8 flex justify-between text-xs text-slate-600">
+            <span>Customer / Hospital Approval Sign</span>
+            <span>For S T Traders Annexe CheapJack (Authorised Signatory)</span>
+          </div>
+        </div>
+      `;
+
+      currentPrintableText = `SALE ORDER ${so.id} | Client: ${so.client} (${so.gstin}) | Date: ${so.date} | Style: ${so.style} (${so.gender}) | Cloth: ${so.cloth} (${so.colour}) | Size Ratio: ${formatSizeRatio(so.sizes)} | Total: ${so.totalQty} Pairs @ ₹${so.rate} = ${formatINR2(totalVal)}`;
+
+      document.getElementById("print-preview-modal").classList.remove("hidden");
+      document.getElementById("print-preview-modal").classList.add("flex");
     }
 
     function openNewSaleOrderModal() {
