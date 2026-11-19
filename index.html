@@ -57,6 +57,15 @@
           </div>
         </div>
 
+        <!-- Global Quick Search Bar -->
+        <div class="flex-1 max-w-md w-full">
+          <div class="relative">
+            <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 103.5 10.5a7.5 7.5 0 0013.15 6.15z"/></svg>
+            <input type="text" id="global-search-input" oninput="handleGlobalSearch(this.value)" placeholder="Search Sale Order, Cutting Slip, Invoice, or Company..." class="w-full pl-10 pr-8 py-2 rounded-xl bg-slate-800 border border-slate-700 text-xs sm:text-sm text-white placeholder-slate-400 focus:outline-none focus:border-indigo-400">
+            <button id="global-search-clear" onclick="clearGlobalSearch()" class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white text-xs font-bold">✕</button>
+          </div>
+        </div>
+
         <div class="flex flex-wrap items-center gap-2">
           <button onclick="exportBackupJson()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-slate-700 transition">
             Export JSON
@@ -79,62 +88,84 @@
     <!-- DASHBOARD + 5-STEP SEQUENTIAL PROCESS STEPPER BAR -->
     <div class="bg-white border-b border-slate-200 shadow-2xs">
       <div class="max-w-[1560px] mx-auto px-4 sm:px-8 py-4">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-2.5">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-8 gap-2">
           
-          <button onclick="switchStep('dashboard')" data-step="dashboard" class="step-card text-left p-3.5 rounded-xl border-2 border-indigo-600 bg-indigo-50/70 transition flex items-center justify-between shadow-xs">
+          <button onclick="switchStep('dashboard')" data-step="dashboard" class="step-card text-left p-3 rounded-xl border-2 border-indigo-600 bg-indigo-50/70 transition flex items-center justify-between shadow-xs">
             <div>
-              <div class="text-[11px] font-extrabold uppercase tracking-wider text-indigo-600">Overview</div>
-              <div class="text-sm font-bold text-slate-900">Dashboard</div>
-              <div id="step-sub-dash" class="text-[11px] text-slate-500 mt-0.5">Live Plant Summary</div>
+              <div class="text-[10px] font-extrabold uppercase tracking-wider text-indigo-600">Overview</div>
+              <div class="text-xs sm:text-sm font-bold text-slate-900">Dashboard</div>
+              <div id="step-sub-dash" class="text-[11px] text-slate-500 mt-0.5">Live Summary</div>
             </div>
-            <span id="badge-step-0" class="w-7 h-7 rounded-full bg-indigo-600 text-white text-xs font-extrabold flex items-center justify-center">
+            <span id="badge-step-0" class="w-6 h-6 rounded-full bg-indigo-600 text-white text-xs font-extrabold flex items-center justify-center shrink-0">
               <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
             </span>
           </button>
 
-          <button onclick="switchStep('sale-orders')" data-step="sale-orders" class="step-card text-left p-3.5 rounded-xl border border-slate-200 bg-white hover:border-indigo-400 transition flex items-center justify-between">
+          <button onclick="switchStep('tracking')" data-step="tracking" class="step-card text-left p-3 rounded-xl border border-slate-200 bg-white hover:border-indigo-400 transition flex items-center justify-between">
             <div>
-              <div class="text-[11px] font-extrabold uppercase tracking-wider text-slate-400">Step 1</div>
-              <div class="text-sm font-bold text-slate-900">Sale Orders</div>
+              <div class="text-[10px] font-extrabold uppercase tracking-wider text-emerald-600">Search & Track</div>
+              <div class="text-xs sm:text-sm font-bold text-slate-900">Order Tracker</div>
+              <div id="step-sub-track" class="text-[11px] text-slate-500 mt-0.5">SO / Slip / Inv</div>
+            </div>
+            <span id="badge-step-1" class="w-6 h-6 rounded-full bg-slate-100 text-slate-700 text-xs font-extrabold flex items-center justify-center shrink-0">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 103.5 10.5a7.5 7.5 0 0013.15 6.15z"/></svg>
+            </span>
+          </button>
+
+          <button onclick="switchStep('masters')" data-step="masters" class="step-card text-left p-3 rounded-xl border border-slate-200 bg-white hover:border-indigo-400 transition flex items-center justify-between">
+            <div>
+              <div class="text-[10px] font-extrabold uppercase tracking-wider text-purple-600">Catalog</div>
+              <div class="text-xs sm:text-sm font-bold text-slate-900">Products & Clients</div>
+              <div id="step-sub-masters" class="text-[11px] text-slate-500 mt-0.5">0 items • 0 clients</div>
+            </div>
+            <span id="badge-step-2" class="w-6 h-6 rounded-full bg-slate-100 text-slate-700 text-xs font-extrabold flex items-center justify-center shrink-0">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+            </span>
+          </button>
+
+          <button onclick="switchStep('sale-orders')" data-step="sale-orders" class="step-card text-left p-3 rounded-xl border border-slate-200 bg-white hover:border-indigo-400 transition flex items-center justify-between">
+            <div>
+              <div class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Step 1</div>
+              <div class="text-xs sm:text-sm font-bold text-slate-900">Sale Orders</div>
               <div id="step-sub-so" class="text-[11px] text-slate-500 mt-0.5">0 active orders</div>
             </div>
-            <span id="badge-step-1" class="w-7 h-7 rounded-full bg-slate-100 text-slate-700 text-xs font-extrabold flex items-center justify-center">0</span>
+            <span id="badge-step-3" class="w-6 h-6 rounded-full bg-slate-100 text-slate-700 text-xs font-extrabold flex items-center justify-center shrink-0">0</span>
           </button>
 
-          <button onclick="switchStep('cutting-slips')" data-step="cutting-slips" class="step-card text-left p-3.5 rounded-xl border border-slate-200 bg-white hover:border-indigo-400 transition flex items-center justify-between">
+          <button onclick="switchStep('cutting-slips')" data-step="cutting-slips" class="step-card text-left p-3 rounded-xl border border-slate-200 bg-white hover:border-indigo-400 transition flex items-center justify-between">
             <div>
-              <div class="text-[11px] font-extrabold uppercase tracking-wider text-slate-400">Step 2</div>
-              <div class="text-sm font-bold text-slate-900">Cutting Slips</div>
-              <div id="step-sub-cut" class="text-[11px] text-slate-500 mt-0.5">0 slips generated</div>
+              <div class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Step 2</div>
+              <div class="text-xs sm:text-sm font-bold text-slate-900">Cutting Slips</div>
+              <div id="step-sub-cut" class="text-[11px] text-slate-500 mt-0.5">0 slips</div>
             </div>
-            <span id="badge-step-2" class="w-7 h-7 rounded-full bg-slate-100 text-slate-700 text-xs font-extrabold flex items-center justify-center">0</span>
+            <span id="badge-step-4" class="w-6 h-6 rounded-full bg-slate-100 text-slate-700 text-xs font-extrabold flex items-center justify-center shrink-0">0</span>
           </button>
 
-          <button onclick="switchStep('allocation')" data-step="allocation" class="step-card text-left p-3.5 rounded-xl border border-slate-200 bg-white hover:border-indigo-400 transition flex items-center justify-between">
+          <button onclick="switchStep('allocation')" data-step="allocation" class="step-card text-left p-3 rounded-xl border border-slate-200 bg-white hover:border-indigo-400 transition flex items-center justify-between">
             <div>
-              <div class="text-[11px] font-extrabold uppercase tracking-wider text-slate-400">Step 3</div>
-              <div class="text-sm font-bold text-slate-900">Tailor & Unit</div>
-              <div id="step-sub-alloc" class="text-[11px] text-slate-500 mt-0.5">0 on stitching floor</div>
+              <div class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Step 3</div>
+              <div class="text-xs sm:text-sm font-bold text-slate-900">Tailor & Unit</div>
+              <div id="step-sub-alloc" class="text-[11px] text-slate-500 mt-0.5">0 on floor</div>
             </div>
-            <span id="badge-step-3" class="w-7 h-7 rounded-full bg-slate-100 text-slate-700 text-xs font-extrabold flex items-center justify-center">0</span>
+            <span id="badge-step-5" class="w-6 h-6 rounded-full bg-slate-100 text-slate-700 text-xs font-extrabold flex items-center justify-center shrink-0">0</span>
           </button>
 
-          <button onclick="switchStep('receiving-fg')" data-step="receiving-fg" class="step-card text-left p-3.5 rounded-xl border border-slate-200 bg-white hover:border-indigo-400 transition flex items-center justify-between">
+          <button onclick="switchStep('receiving-fg')" data-step="receiving-fg" class="step-card text-left p-3 rounded-xl border border-slate-200 bg-white hover:border-indigo-400 transition flex items-center justify-between">
             <div>
-              <div class="text-[11px] font-extrabold uppercase tracking-wider text-slate-400">Step 4</div>
-              <div class="text-sm font-bold text-slate-900">Receive FG</div>
-              <div id="step-sub-fg" class="text-[11px] text-slate-500 mt-0.5">0 pcs in FG store</div>
+              <div class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Step 4</div>
+              <div class="text-xs sm:text-sm font-bold text-slate-900">Receive FG</div>
+              <div id="step-sub-fg" class="text-[11px] text-slate-500 mt-0.5">0 pcs in store</div>
             </div>
-            <span id="badge-step-4" class="w-7 h-7 rounded-full bg-slate-100 text-slate-700 text-xs font-extrabold flex items-center justify-center">0</span>
+            <span id="badge-step-6" class="w-6 h-6 rounded-full bg-slate-100 text-slate-700 text-xs font-extrabold flex items-center justify-center shrink-0">0</span>
           </button>
 
-          <button onclick="switchStep('tax-invoice')" data-step="tax-invoice" class="step-card text-left p-3.5 rounded-xl border border-slate-200 bg-white hover:border-indigo-400 transition flex items-center justify-between">
+          <button onclick="switchStep('tax-invoice')" data-step="tax-invoice" class="step-card text-left p-3 rounded-xl border border-slate-200 bg-white hover:border-indigo-400 transition flex items-center justify-between">
             <div>
-              <div class="text-[11px] font-extrabold uppercase tracking-wider text-slate-400">Step 5</div>
-              <div class="text-sm font-bold text-slate-900">Tax Invoice</div>
-              <div id="step-sub-inv" class="text-[11px] text-slate-500 mt-0.5">0 invoices raised</div>
+              <div class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Step 5</div>
+              <div class="text-xs sm:text-sm font-bold text-slate-900">Tax Invoice</div>
+              <div id="step-sub-inv" class="text-[11px] text-slate-500 mt-0.5">0 invoices</div>
             </div>
-            <span id="badge-step-5" class="w-7 h-7 rounded-full bg-slate-100 text-slate-700 text-xs font-extrabold flex items-center justify-center">0</span>
+            <span id="badge-step-7" class="w-6 h-6 rounded-full bg-slate-100 text-slate-700 text-xs font-extrabold flex items-center justify-center shrink-0">0</span>
           </button>
 
         </div>
@@ -143,6 +174,210 @@
 
     <!-- MAIN CONTENT WORKSPACE -->
     <main class="flex-1 max-w-[1560px] w-full mx-auto px-4 sm:px-8 py-6 space-y-6">
+
+      <!-- =============================================================== -->
+      <!-- VIEW: PRODUCTS & CLIENTS MASTER CATALOG                         -->
+      <!-- =============================================================== -->
+      <section id="view-masters" class="step-view hidden tab-fade space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h2 class="text-xl font-extrabold text-slate-900">Products & Clients Master Directory</h2>
+            <p class="text-xs sm:text-sm text-slate-500">Save reusable <strong>Uniform/Garment Styles</strong> and <strong>Hospital/Corporate Companies</strong> for 1-click auto-fill when booking Sale Orders</p>
+          </div>
+          <button onclick="openNewSaleOrderModal()" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-xs self-start sm:self-auto transition">
+            + Book Sale Order Using Masters →
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          
+          <!-- LEFT COLUMN: ADD & MANAGE PRODUCTS (GARMENT TEMPLATES) -->
+          <div class="lg:col-span-6 space-y-4">
+            <div class="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-xs">
+              <h3 class="text-base font-bold text-slate-900 mb-1">Add New Garment / Uniform Product</h3>
+              <p class="text-xs text-slate-500 mb-4">Define standard cutting specs, cloth, collar & wholesale rate</p>
+              
+              <form onsubmit="addMasterProduct(event)" class="space-y-3">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div class="sm:col-span-2">
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Garment / Product Name</label>
+                    <input type="text" id="prod-name" placeholder="e.g., FEMALE NURSE PANT SHIRT" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold">
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Default Rate (₹)</label>
+                    <input type="number" id="prod-rate" value="720" min="1" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold">
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Gender / Fit</label>
+                    <select id="prod-gender" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold bg-white">
+                      <option value="FEMALE">FEMALE</option>
+                      <option value="MALE">MALE</option>
+                      <option value="UNISEX">UNISEX</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Cloth Quality</label>
+                    <input type="text" id="prod-cloth" value="Alaskar" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold">
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Default Colour</label>
+                    <input type="text" id="prod-colour" value="White" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold">
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Collar Style</label>
+                    <input type="text" id="prod-collar" value="Yashoda Collar" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs">
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Bottom / Male Pattern</label>
+                    <input type="text" id="prod-bottom" value="Nada Phyajam" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs">
+                  </div>
+                </div>
+
+                <div>
+                  <label class="block text-xs font-semibold text-slate-700 mb-1">Top / Shirt Pattern & Embroidery Spec</label>
+                  <input type="text" id="prod-pattern" value="3 Tucks Shirt Pattern Down 2 Pocket Front Open Buttons" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs">
+                </div>
+
+                <button type="submit" class="w-full py-2.5 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-xs transition">
+                  + Save Product to Catalog
+                </button>
+              </form>
+            </div>
+
+            <!-- Saved Products List -->
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+              <div class="p-4 border-b border-slate-100 flex items-center justify-between">
+                <h3 class="text-sm font-bold text-slate-900">Saved Garment & Uniform Catalog</h3>
+                <span id="master-prod-count" class="text-xs font-semibold text-indigo-600">0 products</span>
+              </div>
+              <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                  <thead>
+                    <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                      <th class="py-3 px-4">Product / Style</th>
+                      <th class="py-3 px-4">Cloth & Collar</th>
+                      <th class="py-3 px-4">Rate (₹)</th>
+                      <th class="py-3 px-4 text-right">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody id="master-products-tbody" class="divide-y divide-slate-100 text-xs"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT COLUMN: ADD & MANAGE CLIENTS / COMPANIES -->
+          <div class="lg:col-span-6 space-y-4">
+            <div class="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-xs">
+              <h3 class="text-base font-bold text-slate-900 mb-1">Add New Client / Hospital / Company</h3>
+              <p class="text-xs text-slate-500 mb-4">Store GSTIN, billing location & contact details for instant Sale Orders & Tax Invoices</p>
+              
+              <form onsubmit="addMasterClient(event)" class="space-y-3">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div class="sm:col-span-2">
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Hospital / Company Name</label>
+                    <input type="text" id="cli-name" placeholder="e.g., Yashoda Hospitals Secunderabad" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold">
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Client Code</label>
+                    <input type="text" id="cli-code" placeholder="e.g., 1088" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold">
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">15-Digit GSTIN</label>
+                    <input type="text" id="cli-gstin" placeholder="36AAACY4912K1Z2" maxlength="15" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold uppercase">
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Sector / Category</label>
+                    <select id="cli-category" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold bg-white">
+                      <option value="Hospital & Healthcare">Hospital & Healthcare</option>
+                      <option value="Industrial & Pharma">Industrial & Pharma</option>
+                      <option value="Corporate & Hospitality">Corporate & Hospitality</option>
+                      <option value="Retail / Wholesale Dealer">Retail / Wholesale Dealer</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Contact Person & Phone</label>
+                    <input type="text" id="cli-contact" placeholder="Purchase Dept • +91 98490 11223" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs">
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">City / Delivery Address</label>
+                    <input type="text" id="cli-city" value="Hyderabad, Telangana" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs">
+                  </div>
+                </div>
+
+                <button type="submit" class="w-full py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-xs transition">
+                  + Save Client / Company
+                </button>
+              </form>
+            </div>
+
+            <!-- Saved Clients List -->
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+              <div class="p-4 border-b border-slate-100 flex items-center justify-between">
+                <h3 class="text-sm font-bold text-slate-900">Saved Clients & Companies Directory</h3>
+                <span id="master-cli-count" class="text-xs font-semibold text-emerald-700">0 clients</span>
+              </div>
+              <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                  <thead>
+                    <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                      <th class="py-3 px-4">Client / Hospital</th>
+                      <th class="py-3 px-4">GSTIN & Category</th>
+                      <th class="py-3 px-4">Contact</th>
+                      <th class="py-3 px-4 text-right">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody id="master-clients-tbody" class="divide-y divide-slate-100 text-xs"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- =============================================================== -->
+      <!-- VIEW: END-TO-END ORDER, SLIP & INVOICE TRACKING                 -->
+      <!-- =============================================================== -->
+      <section id="view-tracking" class="step-view hidden tab-fade space-y-6">
+        <div class="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-xs space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h2 class="text-xl font-extrabold text-slate-900">Live Order, Cutting Slip & Tax Invoice Tracker</h2>
+              <p class="text-xs sm:text-sm text-slate-500">Search by <strong>Sale Order No.</strong> (e.g. <code>AM-H/26-27/2716</code>), <strong>Cutting Slip</strong> (<code>CS-2716</code>), <strong>Invoice No.</strong> (<code>STC/26-27/0415</code>), <strong>Company/Hospital Name</strong>, or <strong>Tailor</strong></p>
+            </div>
+            <div class="flex gap-2">
+              <button onclick="filterTrackingCategory('ALL')" id="track-pill-ALL" class="track-pill px-3 py-1.5 rounded-lg bg-slate-900 text-white text-xs font-bold">All Records</button>
+              <button onclick="filterTrackingCategory('SO')" id="track-pill-SO" class="track-pill px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 text-xs font-bold">Sale Orders</button>
+              <button onclick="filterTrackingCategory('SLIP')" id="track-pill-SLIP" class="track-pill px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 text-xs font-bold">Cutting Slips</button>
+              <button onclick="filterTrackingCategory('INV')" id="track-pill-INV" class="track-pill px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 text-xs font-bold">Tax Invoices</button>
+            </div>
+          </div>
+
+          <div class="relative">
+            <svg class="w-5 h-5 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 103.5 10.5a7.5 7.5 0 0013.15 6.15z"/></svg>
+            <input type="text" id="tracking-search-box" oninput="syncTrackingSearch(this.value)" placeholder="Type Sale Order ID, Cutting Slip No., Tax Invoice No., Hospital/Company Name, GSTIN, or Tailor Name..." class="w-full pl-12 pr-24 py-3.5 rounded-2xl border-2 border-indigo-200 focus:border-indigo-600 focus:outline-none text-sm font-semibold text-slate-900 bg-slate-50">
+            <button onclick="clearGlobalSearch()" class="absolute right-3 top-1/2 -translate-y-1/2 px-3 py-1.5 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-bold">Clear</button>
+          </div>
+
+          <div id="tracking-summary-bar" class="text-xs font-semibold text-slate-500">Showing all tracked orders, slips & invoices</div>
+        </div>
+
+        <!-- Unified Timeline Tracking Cards -->
+        <div id="tracking-results-grid" class="space-y-4"></div>
+      </section>
 
       <!-- =============================================================== -->
       <!-- VIEW 0: DASHBOARD OVERVIEW                                      -->
@@ -542,11 +777,23 @@
       <div class="px-6 py-4 bg-slate-900 text-white flex items-center justify-between">
         <div>
           <h3 class="text-base font-bold">Step 1: Book New Sale Order</h3>
-          <p class="text-xs text-slate-400">Enter customer details, garment pattern & size breakdown</p>
+          <p class="text-xs text-slate-400">Quick-pick from saved Clients & Products or type custom details</p>
         </div>
         <button onclick="closeModal('new-so-modal')" class="text-slate-400 hover:text-white">✕</button>
       </div>
       <form onsubmit="createSaleOrder(event)" class="p-6 space-y-4">
+        <!-- Quick Master Auto-Fill Selectors -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3 rounded-xl bg-indigo-50/70 border border-indigo-100">
+          <div>
+            <label class="block text-[11px] font-bold text-indigo-900 mb-1">Auto-Fill Saved Client / Company</label>
+            <select id="so-client-preset" onchange="applyClientPreset(this.value)" class="w-full px-3 py-1.5 rounded-lg border border-indigo-200 text-xs font-semibold bg-white"></select>
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold text-indigo-900 mb-1">Auto-Fill Saved Product / Style</label>
+            <select id="so-product-preset" onchange="applyProductPreset(this.value)" class="w-full px-3 py-1.5 rounded-lg border border-indigo-200 text-xs font-semibold bg-white"></select>
+          </div>
+        </div>
+
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div>
             <label class="block text-xs font-semibold text-slate-700 mb-1">Sale Order / SNo.</label>
@@ -817,16 +1064,107 @@
         { name: "Maroon Poly-Viscose Twill", stock: 1480, rate: 142 },
         { name: "Pacifica Blue Cotton Drill", stock: 690, rate: 168 },
         { name: "144 TC Polycotton", stock: 2150, rate: 98 }
+      ],
+      masterProducts: [
+        {
+          id: "PRD-01",
+          name: "NURSE PANT SHIRT (3 TUCKS)",
+          gender: "FEMALE",
+          cloth: "Alaskar",
+          colour: "White",
+          collar: "Yashoda Collar",
+          pattern: "3 Tucks Shirt Pattern Down 2 Pocket Front Open Buttons",
+          bottomPattern: "Nada Phyajam",
+          rate: 720
+        },
+        {
+          id: "PRD-02",
+          name: "CLASSIC FIT MAROON V-NECK SCRUB SET",
+          gender: "UNISEX",
+          cloth: "Maroon Poly-Viscose Twill",
+          colour: "Maroon",
+          collar: "V-Neck Scrub Collar",
+          pattern: "V-Neck Top 1 Chest Pocket 2 Hip Pockets",
+          bottomPattern: "Elastic Drawstring Cargo Trouser",
+          rate: 685
+        },
+        {
+          id: "PRD-03",
+          name: "PACIFICA BLUE WORKWEAR SHIRT & TROUSER",
+          gender: "MALE",
+          cloth: "Pacifica Blue Cotton Drill",
+          colour: "Pacifica Blue (#1E77B4)",
+          collar: "Regular Shirt Collar",
+          pattern: "Full Sleeve 2 Flap Pockets Front Button Placket",
+          bottomPattern: "5-Pocket Industrial Work Trouser",
+          rate: 890
+        },
+        {
+          id: "PRD-04",
+          name: "144 TC SOLID PURPLE BEDSHEET & PILLOW SET",
+          gender: "UNISEX",
+          cloth: "144 TC Polycotton",
+          colour: "Solid Purple",
+          collar: "N/A (Home Textile)",
+          pattern: "Double-Stitched 1-Inch Hem Bedsheet (60x90 in)",
+          bottomPattern: "Envelope Pillow Cover (18x27 in)",
+          rate: 440
+        }
+      ],
+      masterClients: [
+        {
+          id: "CLI-01",
+          code: "1077",
+          name: "Yashoda & Apollo Nursing Wing (Hyd)",
+          gstin: "36AAACY4912K1Z2",
+          category: "Hospital & Healthcare",
+          contact: "Nursing Admin • +91 98490 22110",
+          city: "Secunderabad, Telangana"
+        },
+        {
+          id: "CLI-02",
+          code: "1082",
+          name: "KIMS Hospitals Secunderabad",
+          gstin: "36AAACK6219P1Z9",
+          category: "Hospital & Healthcare",
+          contact: "Central Stores • +91 98480 33445",
+          city: "Minister Road, Hyderabad"
+        },
+        {
+          id: "CLI-03",
+          code: "1085",
+          name: "Cherlapally Industrial & Pharma Corp",
+          gstin: "36AABCC8821M1Z4",
+          category: "Industrial & Pharma",
+          contact: "HR & Safety • +91 90001 77889",
+          city: "IDA Cherlapally, Hyderabad"
+        },
+        {
+          id: "CLI-04",
+          code: "1090",
+          name: "Care Hospitals Banjara Hills",
+          gstin: "36AAACC3910L1Z1",
+          category: "Hospital & Healthcare",
+          contact: "Procurement • +91 98491 55667",
+          city: "Banjara Hills, Hyderabad"
+        }
       ]
     };
 
     let state = loadFlowState();
     let currentPrintableText = "";
+    let trackingQuery = "";
+    let trackingFilterType = "ALL";
 
     function loadFlowState() {
       try {
         const raw = localStorage.getItem(FLOW_STORAGE_KEY);
-        if (raw) return JSON.parse(raw);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (!Array.isArray(parsed.masterProducts)) parsed.masterProducts = JSON.parse(JSON.stringify(DEFAULT_FLOW_STATE.masterProducts));
+          if (!Array.isArray(parsed.masterClients)) parsed.masterClients = JSON.parse(JSON.stringify(DEFAULT_FLOW_STATE.masterClients));
+          return parsed;
+        }
       } catch (e) {}
       return JSON.parse(JSON.stringify(DEFAULT_FLOW_STATE));
     }
@@ -872,15 +1210,397 @@
         const isCurrent = card.dataset.step === stepId;
         const badge = document.getElementById(`badge-step-${idx}`);
         if (isCurrent) {
-          card.className = "step-card text-left p-3.5 rounded-xl border-2 border-indigo-600 bg-indigo-50/70 transition flex items-center justify-between shadow-xs";
-          if (badge) badge.className = "w-7 h-7 rounded-full bg-indigo-600 text-white text-xs font-extrabold flex items-center justify-center";
+          card.className = "step-card text-left p-3 rounded-xl border-2 border-indigo-600 bg-indigo-50/70 transition flex items-center justify-between shadow-xs";
+          if (badge) badge.className = "w-6 h-6 rounded-full bg-indigo-600 text-white text-xs font-extrabold flex items-center justify-center shrink-0";
         } else {
-          card.className = "step-card text-left p-3.5 rounded-xl border border-slate-200 bg-white hover:border-indigo-400 transition flex items-center justify-between";
-          if (badge) badge.className = "w-7 h-7 rounded-full bg-slate-100 text-slate-700 text-xs font-extrabold flex items-center justify-center";
+          card.className = "step-card text-left p-3 rounded-xl border border-slate-200 bg-white hover:border-indigo-400 transition flex items-center justify-between";
+          if (badge) badge.className = "w-6 h-6 rounded-full bg-slate-100 text-slate-700 text-xs font-extrabold flex items-center justify-center shrink-0";
         }
       });
 
       history.replaceState(null, "", `#${stepId}`);
+      if (stepId === "tracking") renderTrackingPage();
+      if (stepId === "masters") renderMastersPage();
+    }
+
+    // =========================================================================
+    // RENDER & MANAGE PRODUCTS & CLIENTS MASTER CATALOG
+    // =========================================================================
+    function renderMastersPage() {
+      const prodTbody = document.getElementById("master-products-tbody");
+      const cliTbody = document.getElementById("master-clients-tbody");
+      if (!prodTbody || !cliTbody) return;
+
+      document.getElementById("master-prod-count").textContent = `${state.masterProducts.length} products`;
+      document.getElementById("master-cli-count").textContent = `${state.masterClients.length} clients`;
+
+      prodTbody.innerHTML = state.masterProducts.map((p, idx) => `
+        <tr class="hover:bg-slate-50">
+          <td class="py-3 px-4">
+            <div class="font-bold text-slate-900">${p.name}</div>
+            <div class="text-[11px] text-slate-500">${p.gender} • ${p.colour}</div>
+          </td>
+          <td class="py-3 px-4">
+            <div class="font-semibold text-slate-800">${p.cloth}</div>
+            <div class="text-[11px] text-slate-500">${p.collar}</div>
+          </td>
+          <td class="py-3 px-4 font-extrabold text-emerald-700">${formatINR(p.rate)}</td>
+          <td class="py-3 px-4 text-right">
+            <div class="inline-flex gap-1.5">
+              <button onclick="bookOrderWithProduct(${idx})" class="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold">
+                + Order
+              </button>
+              <button onclick="deleteMasterProduct(${idx})" class="px-2 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold">
+                ✕
+              </button>
+            </div>
+          </td>
+        </tr>
+      `).join("");
+
+      cliTbody.innerHTML = state.masterClients.map((c, idx) => `
+        <tr class="hover:bg-slate-50">
+          <td class="py-3 px-4">
+            <div class="font-bold text-slate-900">${c.name}</div>
+            <div class="text-[11px] text-slate-500">Code: ${c.code} • ${c.city}</div>
+          </td>
+          <td class="py-3 px-4">
+            <div class="font-mono font-bold text-slate-800">${c.gstin}</div>
+            <div class="text-[11px] text-indigo-600 font-semibold">${c.category}</div>
+          </td>
+          <td class="py-3 px-4 text-slate-600">${c.contact}</td>
+          <td class="py-3 px-4 text-right">
+            <div class="inline-flex gap-1.5">
+              <button onclick="bookOrderWithClient(${idx})" class="px-2.5 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold">
+                + Order
+              </button>
+              <button onclick="deleteMasterClient(${idx})" class="px-2 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold">
+                ✕
+              </button>
+            </div>
+          </td>
+        </tr>
+      `).join("");
+    }
+
+    function addMasterProduct(e) {
+      e.preventDefault();
+      const prod = {
+        id: `PRD-${String(state.masterProducts.length + 1).padStart(2, "0")}`,
+        name: document.getElementById("prod-name").value.trim().toUpperCase(),
+        gender: document.getElementById("prod-gender").value,
+        cloth: document.getElementById("prod-cloth").value.trim(),
+        colour: document.getElementById("prod-colour").value.trim(),
+        collar: document.getElementById("prod-collar").value.trim(),
+        bottomPattern: document.getElementById("prod-bottom").value.trim(),
+        pattern: document.getElementById("prod-pattern").value.trim(),
+        rate: parseFloat(document.getElementById("prod-rate").value) || 650
+      };
+      state.masterProducts.unshift(prod);
+      saveFlowState();
+      document.getElementById("prod-name").value = "";
+      showToast(`Added product "${prod.name}" to catalog.`, "success");
+    }
+
+    function deleteMasterProduct(idx) {
+      state.masterProducts.splice(idx, 1);
+      saveFlowState();
+      showToast("Removed product from catalog.", "info");
+    }
+
+    function addMasterClient(e) {
+      e.preventDefault();
+      const cli = {
+        id: `CLI-${String(state.masterClients.length + 1).padStart(2, "0")}`,
+        code: document.getElementById("cli-code").value.trim(),
+        name: document.getElementById("cli-name").value.trim(),
+        gstin: document.getElementById("cli-gstin").value.trim().toUpperCase(),
+        category: document.getElementById("cli-category").value,
+        contact: document.getElementById("cli-contact").value.trim(),
+        city: document.getElementById("cli-city").value.trim()
+      };
+      state.masterClients.unshift(cli);
+      saveFlowState();
+      document.getElementById("cli-name").value = "";
+      document.getElementById("cli-gstin").value = "";
+      showToast(`Added client "${cli.name}" to directory.`, "success");
+    }
+
+    function deleteMasterClient(idx) {
+      state.masterClients.splice(idx, 1);
+      saveFlowState();
+      showToast("Removed client from directory.", "info");
+    }
+
+    function populateSaleOrderPresets() {
+      const cliSel = document.getElementById("so-client-preset");
+      const prodSel = document.getElementById("so-product-preset");
+      if (cliSel) {
+        cliSel.innerHTML = `<option value="">-- Choose Saved Client / Hospital --</option>` +
+          state.masterClients.map((c, idx) => `<option value="${idx}">${c.name} (${c.gstin})</option>`).join("");
+      }
+      if (prodSel) {
+        prodSel.innerHTML = `<option value="">-- Choose Saved Garment / Uniform --</option>` +
+          state.masterProducts.map((p, idx) => `<option value="${idx}">${p.name} — ₹${p.rate}</option>`).join("");
+      }
+    }
+
+    function applyClientPreset(idxStr) {
+      if (idxStr === "") return;
+      const c = state.masterClients[parseInt(idxStr)];
+      if (!c) return;
+      document.getElementById("so-client").value = c.name;
+      document.getElementById("so-gstin").value = c.gstin;
+    }
+
+    function applyProductPreset(idxStr) {
+      if (idxStr === "") return;
+      const p = state.masterProducts[parseInt(idxStr)];
+      if (!p) return;
+      document.getElementById("so-style").value = p.name;
+      document.getElementById("so-gender").value = p.gender;
+      document.getElementById("so-rate").value = p.rate;
+      document.getElementById("so-colour").value = p.colour;
+      document.getElementById("so-collar").value = p.collar;
+      document.getElementById("so-pattern").value = p.pattern;
+      const clothSel = document.getElementById("so-cloth");
+      if (clothSel) {
+        const exists = Array.from(clothSel.options).some(o => o.value === p.cloth);
+        if (!exists) {
+          const opt = document.createElement("option");
+          opt.value = p.cloth;
+          opt.textContent = p.cloth;
+          clothSel.appendChild(opt);
+        }
+        clothSel.value = p.cloth;
+      }
+    }
+
+    function bookOrderWithProduct(idx) {
+      openNewSaleOrderModal();
+      document.getElementById("so-product-preset").value = String(idx);
+      applyProductPreset(String(idx));
+    }
+
+    function bookOrderWithClient(idx) {
+      openNewSaleOrderModal();
+      document.getElementById("so-client-preset").value = String(idx);
+      applyClientPreset(String(idx));
+    }
+
+    function handleGlobalSearch(val) {
+      trackingQuery = (val || "").trim();
+      const topInput = document.getElementById("global-search-input");
+      const pageInput = document.getElementById("tracking-search-box");
+      const clearBtn = document.getElementById("global-search-clear");
+      if (topInput && topInput.value !== val) topInput.value = val;
+      if (pageInput && pageInput.value !== val) pageInput.value = val;
+      if (clearBtn) {
+        if (trackingQuery.length > 0) clearBtn.classList.remove("hidden");
+        else clearBtn.classList.add("hidden");
+      }
+      if (trackingQuery.length > 0) {
+        switchStep("tracking");
+      } else {
+        renderTrackingPage();
+      }
+    }
+
+    function syncTrackingSearch(val) {
+      trackingQuery = (val || "").trim();
+      const topInput = document.getElementById("global-search-input");
+      const clearBtn = document.getElementById("global-search-clear");
+      if (topInput) topInput.value = val;
+      if (clearBtn) {
+        if (trackingQuery.length > 0) clearBtn.classList.remove("hidden");
+        else clearBtn.classList.add("hidden");
+      }
+      renderTrackingPage();
+    }
+
+    function clearGlobalSearch() {
+      trackingQuery = "";
+      const topInput = document.getElementById("global-search-input");
+      const pageInput = document.getElementById("tracking-search-box");
+      const clearBtn = document.getElementById("global-search-clear");
+      if (topInput) topInput.value = "";
+      if (pageInput) pageInput.value = "";
+      if (clearBtn) clearBtn.classList.add("hidden");
+      renderTrackingPage();
+    }
+
+    function filterTrackingCategory(cat) {
+      trackingFilterType = cat;
+      document.querySelectorAll(".track-pill").forEach(btn => {
+        btn.className = "track-pill px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 text-xs font-bold";
+      });
+      const active = document.getElementById(`track-pill-${cat}`);
+      if (active) active.className = "track-pill px-3 py-1.5 rounded-lg bg-slate-900 text-white text-xs font-bold";
+      renderTrackingPage();
+    }
+
+    function renderTrackingPage() {
+      const grid = document.getElementById("tracking-results-grid");
+      const summary = document.getElementById("tracking-summary-bar");
+      if (!grid) return;
+
+      const q = trackingQuery.toLowerCase();
+
+      // Build unified lifecycle records anchored on Sale Orders + standalone Invoices
+      const trackedSoIds = new Set();
+      const records = [];
+
+      state.saleOrders.forEach(so => {
+        trackedSoIds.add(so.id);
+        const slip = state.cuttingSlips.find(c => c.soId === so.id) || null;
+        const alloc = state.allocations.find(a => a.soId === so.id) || null;
+        const fg = state.finishedGoods.find(f => f.soId === so.id) || null;
+        const invIndex = state.invoices.findIndex(i => i.soId === so.id);
+        const inv = invIndex >= 0 ? state.invoices[invIndex] : null;
+
+        records.push({
+          type: "ORDER_FLOW",
+          soId: so.id,
+          nameCode: so.nameCode || "",
+          date: so.date,
+          client: so.client,
+          gstin: so.gstin,
+          style: so.style,
+          qty: so.totalQty,
+          cloth: so.cloth,
+          colour: so.colour,
+          stage: so.stage,
+          slip,
+          alloc,
+          fg,
+          inv,
+          invIndex
+        });
+      });
+
+      state.invoices.forEach((inv, idx) => {
+        if (!trackedSoIds.has(inv.soId)) {
+          const fg = state.finishedGoods.find(f => f.soId === inv.soId) || null;
+          records.push({
+            type: "INVOICE_FLOW",
+            soId: inv.soId,
+            nameCode: "",
+            date: inv.date,
+            client: inv.client,
+            gstin: inv.gstin,
+            style: inv.style,
+            qty: inv.qty,
+            cloth: "Finished Lot",
+            colour: "-",
+            stage: "Tax Invoice Raised",
+            slip: null,
+            alloc: null,
+            fg,
+            inv,
+            invIndex: idx
+          });
+        }
+      });
+
+      const filtered = records.filter(r => {
+        if (trackingFilterType === "SLIP" && !r.slip) return false;
+        if (trackingFilterType === "INV" && !r.inv) return false;
+        if (!q) return true;
+
+        const haystack = [
+          r.soId,
+          r.nameCode,
+          r.client,
+          r.gstin,
+          r.style,
+          r.cloth,
+          r.colour,
+          r.stage,
+          r.slip ? r.slip.slipId : "",
+          r.alloc ? `${r.alloc.allocId} ${r.alloc.tailor} ${r.alloc.unit}` : "",
+          r.fg ? r.fg.fgId : "",
+          r.inv ? `${r.inv.invNo} ${r.inv.transport}` : ""
+        ].join(" ").toLowerCase();
+
+        return haystack.includes(q);
+      });
+
+      if (summary) {
+        summary.textContent = q
+          ? `Found ${filtered.length} matching record(s) for "${trackingQuery}"`
+          : `Showing ${filtered.length} end-to-end order, slip & invoice records`;
+      }
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `
+          <div class="bg-white rounded-2xl border border-slate-200 p-10 text-center space-y-2">
+            <div class="text-base font-bold text-slate-800">No matching Sale Order, Cutting Slip, Invoice, or Company found</div>
+            <p class="text-xs text-slate-500">Try searching by Order ID (e.g. <code>2716</code>), Slip ID (<code>CS-2716</code>), Invoice (<code>0415</code>), or Hospital Name (<code>Yashoda</code>, <code>KIMS</code>, <code>Care</code>).</p>
+          </div>
+        `;
+        return;
+      }
+
+      grid.innerHTML = filtered.map(r => {
+        const s1Done = true;
+        const s2Done = Boolean(r.slip);
+        const s3Done = Boolean(r.alloc);
+        const s4Done = Boolean(r.fg);
+        const s5Done = Boolean(r.inv);
+
+        const stepBadge = (done, label, detail) => `
+          <div class="p-3 rounded-xl border ${done ? 'border-emerald-200 bg-emerald-50/50' : 'border-slate-200 bg-slate-50/70 opacity-70'}">
+            <div class="flex items-center justify-between text-[11px] font-extrabold ${done ? 'text-emerald-700' : 'text-slate-400'}">
+              <span>${label}</span>
+              <span>${done ? '✓' : 'Pending'}</span>
+            </div>
+            <div class="text-xs font-bold text-slate-800 mt-1 truncate">${detail}</div>
+          </div>
+        `;
+
+        return `
+          <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs space-y-4">
+            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3 border-b border-slate-100 pb-3.5">
+              <div>
+                <div class="flex flex-wrap items-center gap-2">
+                  <span class="px-2.5 py-0.5 rounded-lg bg-slate-900 text-white text-xs font-extrabold">${r.soId}</span>
+                  ${r.slip ? `<span class="px-2.5 py-0.5 rounded-lg bg-amber-100 text-amber-900 text-xs font-extrabold">Slip: ${r.slip.slipId}</span>` : ''}
+                  ${r.inv ? `<span class="px-2.5 py-0.5 rounded-lg bg-emerald-100 text-emerald-900 text-xs font-extrabold">Invoice: ${r.inv.invNo}</span>` : ''}
+                  <span class="px-2.5 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200 text-[11px] font-bold">${r.stage}</span>
+                </div>
+                <h3 class="text-base font-extrabold text-slate-900 mt-1.5">${r.client} <span class="text-xs font-mono font-normal text-slate-500">(${r.gstin})</span></h3>
+                <p class="text-xs text-slate-600 mt-0.5"><strong>${r.style}</strong> • ${r.qty} Pairs/Pcs • Cloth: ${r.cloth} (${r.colour}) • Date: ${r.date}</p>
+              </div>
+
+              <div class="flex flex-wrap gap-2">
+                ${r.slip ? `
+                  <button onclick="openCuttingSlipPreview('${r.slip.slipId}')" class="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-indigo-600 text-white text-xs font-bold transition">
+                    Print Cutting Slip
+                  </button>
+                ` : `
+                  <button onclick="generateCuttingSlipFromSo('${r.soId}')" class="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold transition">
+                    Generate Cutting Slip →
+                  </button>
+                `}
+                ${r.inv ? `
+                  <button onclick="openTaxInvoicePrint(${r.invIndex})" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition">
+                    Print Tax Invoice
+                  </button>
+                ` : ''}
+              </div>
+            </div>
+
+            <!-- 5-Stage Visual Progress Strip -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2.5">
+              ${stepBadge(s1Done, "1. Sale Order", `${r.soId} (${r.qty} pcs)`)}
+              ${stepBadge(s2Done, "2. Cutting Slip", r.slip ? `${r.slip.slipId} • ${r.slip.metersIssued}m` : "Not generated yet")}
+              ${stepBadge(s3Done, "3. Tailor & Unit", r.alloc ? `${r.alloc.tailor.split(' (')[0]} (${r.alloc.stitchedQty}/${r.alloc.totalQty})` : "Awaiting allocation")}
+              ${stepBadge(s4Done, "4. Finished Goods", r.fg ? `${r.fg.fgId} • ${r.fg.passedQty} Passed (${r.fg.cartons} Ctn)` : "In production")}
+              ${stepBadge(s5Done, "5. Tax Invoice", r.inv ? `${r.inv.invNo} • ${formatINR(r.inv.grandTotal)}` : "Not billed yet")}
+            </div>
+          </div>
+        `;
+      }).join("");
     }
 
     function formatSizeRatio(sizes) {
@@ -1033,6 +1753,7 @@
       const num = 2716 + state.saleOrders.length + 1;
       document.getElementById("so-id").value = `AM-H/26-27/${num}`;
       document.getElementById("so-date").value = new Date().toISOString().split("T")[0];
+      populateSaleOrderPresets();
       updateSoTotal();
       document.getElementById("new-so-modal").classList.remove("hidden");
       document.getElementById("new-so-modal").classList.add("flex");
@@ -1733,25 +2454,29 @@
 
     function updateStepperBadges() {
       const fgTotalPcs = state.finishedGoods.reduce((s, f) => s + f.passedQty, 0);
-      document.getElementById("badge-step-1").textContent = state.saleOrders.length;
+      document.getElementById("step-sub-masters").textContent = `${state.masterProducts.length} items • ${state.masterClients.length} clients`;
+
+      document.getElementById("badge-step-3").textContent = state.saleOrders.length;
       document.getElementById("step-sub-so").textContent = `${state.saleOrders.length} active orders`;
 
-      document.getElementById("badge-step-2").textContent = state.cuttingSlips.length;
-      document.getElementById("step-sub-cut").textContent = `${state.cuttingSlips.length} slips generated`;
+      document.getElementById("badge-step-4").textContent = state.cuttingSlips.length;
+      document.getElementById("step-sub-cut").textContent = `${state.cuttingSlips.length} slips`;
 
-      document.getElementById("badge-step-3").textContent = state.allocations.length;
-      document.getElementById("step-sub-alloc").textContent = `${state.allocations.length} tailor/unit runs`;
+      document.getElementById("badge-step-5").textContent = state.allocations.length;
+      document.getElementById("step-sub-alloc").textContent = `${state.allocations.length} tailor runs`;
 
-      document.getElementById("badge-step-4").textContent = state.finishedGoods.length;
-      document.getElementById("step-sub-fg").textContent = `${fgTotalPcs} pcs in FG store`;
+      document.getElementById("badge-step-6").textContent = state.finishedGoods.length;
+      document.getElementById("step-sub-fg").textContent = `${fgTotalPcs} pcs in store`;
 
-      document.getElementById("badge-step-5").textContent = state.invoices.length;
-      document.getElementById("step-sub-inv").textContent = `${state.invoices.length} invoices raised`;
+      document.getElementById("badge-step-7").textContent = state.invoices.length;
+      document.getElementById("step-sub-inv").textContent = `${state.invoices.length} invoices`;
     }
 
     function renderAllSteps() {
       updateStepperBadges();
       renderDashboardOverview();
+      renderTrackingPage();
+      renderMastersPage();
       renderSaleOrders();
       renderCuttingSlips();
       renderAllocations();
@@ -1762,7 +2487,7 @@
     window.addEventListener("DOMContentLoaded", () => {
       renderAllSteps();
       const hash = window.location.hash.replace("#", "").trim();
-      if (["dashboard", "sale-orders", "cutting-slips", "allocation", "receiving-fg", "tax-invoice"].includes(hash)) {
+      if (["dashboard", "tracking", "masters", "sale-orders", "cutting-slips", "allocation", "receiving-fg", "tax-invoice"].includes(hash)) {
         switchStep(hash);
       } else {
         switchStep("dashboard");
