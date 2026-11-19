@@ -52,6 +52,15 @@
       .cutting-slip-left { grid-column: span 7 / span 7 !important; padding: 7px 10px !important; font-size: 12.5px !important; line-height: 1.3 !important; }
       .cutting-slip-right { grid-column: span 5 / span 5 !important; min-height: 112mm !important; max-height: 118mm !important; padding: 4px !important; }
       .cutting-slip-image-box svg, .cutting-slip-image-box img { max-height: 108mm !important; width: auto !important; }
+      .so-a4-sheet {
+        height: 282mm !important;
+        max-height: 282mm !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: space-between !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
     }
   </style>
 </head>
@@ -320,16 +329,16 @@
           <!-- Report Section Switcher Tabs -->
           <div class="flex flex-wrap gap-2 pt-2 border-t border-slate-100">
             <button onclick="switchReportTab('ORDERS')" id="rep-tab-ORDERS" class="rep-tab-btn px-3.5 py-2 rounded-xl bg-indigo-600 text-white text-xs font-bold">
-              1. Sale Orders & Stage Register
+1. Sale Orders & Stage Register
             </button>
             <button onclick="switchReportTab('TAILOR')" id="rep-tab-TAILOR" class="rep-tab-btn px-3.5 py-2 rounded-xl bg-slate-100 text-slate-700 text-xs font-bold">
-              2. Tailor Piece-Rate Wages & Unit Output
+2. Tailor Piece-Rate Wages & Unit Output
             </button>
             <button onclick="switchReportTab('FABRIC')" id="rep-tab-FABRIC" class="rep-tab-btn px-3.5 py-2 rounded-xl bg-slate-100 text-slate-700 text-xs font-bold">
-              3. Fabric Consumption & Stock Valuation
+3. Fabric Consumption & Stock Valuation
             </button>
             <button onclick="switchReportTab('GST')" id="rep-tab-GST" class="rep-tab-btn px-3.5 py-2 rounded-xl bg-slate-100 text-slate-700 text-xs font-bold">
-              4. GST Tax & Sales Register (GSTR-1 Ready)
+4. GST Tax & Sales Register (GSTR-1 Ready)
             </button>
           </div>
         </div>
@@ -994,11 +1003,11 @@
 
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div>
-            <label class="block text-xs font-semibold text-slate-700 mb-1">Sale Order / SNo.</label>
-            <input type="text" id="so-id" value="AM-H/26-27/2717" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold bg-slate-50">
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Sale Order / SO No.</label>
+            <input type="text" id="so-id" value="SOD-H/26-27/3497" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold bg-slate-50">
           </div>
           <div>
-            <label class="block text-xs font-semibold text-slate-700 mb-1">Delivery Date</label>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">SO Date</label>
             <input type="date" id="so-date" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold">
           </div>
           <div>
@@ -1009,19 +1018,30 @@
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
-            <label class="block text-xs font-semibold text-slate-700 mb-1">Hospital / Client Name</label>
-            <input type="text" id="so-client" placeholder="e.g., Yashoda Hospitals Secunderabad" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs">
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Customer / Hospital Name</label>
+            <input type="text" id="so-client" placeholder="e.g., S T Traders Annexe Cheap Jack Musheerabad" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs">
           </div>
           <div>
             <label class="block text-xs font-semibold text-slate-700 mb-1">Buyer GSTIN (15-Digit)</label>
-            <input type="text" id="so-gstin" value="36AAACY4912K1Z2" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold uppercase">
+            <input type="text" id="so-gstin" value="36ACQPM0669R1ZM" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold uppercase">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Billing / Shipping Address</label>
+            <input type="text" id="so-address" value="1-5-24, Kubera Complex, Sri Krishna Colony, Musheerabad, Hyderabad 500020" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Order Ref / Party Tag & Phone</label>
+            <input type="text" id="so-order-ref" value="ORD-11018 | Ph: 9849022110" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold">
           </div>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div class="sm:col-span-2">
-            <label class="block text-xs font-semibold text-slate-700 mb-1">Garment Style Name</label>
-            <input type="text" id="so-style" placeholder="e.g., FEMALE NURSE PANT SHIRT (3 Tucks)" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold">
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Garment / Item Description</label>
+            <input type="text" id="so-style" placeholder="e.g., BED SHEETS ROYAL BLUE PLAIN" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold">
           </div>
           <div>
             <label class="block text-xs font-semibold text-slate-700 mb-1">Gender / Fit</label>
@@ -1088,7 +1108,7 @@
   </div>
 
   <!-- ===================================================================== -->
-  <!-- MODAL 2: PRINTABLE CUTTING SLIP / TAX INVOICE PREVIEW                 -->
+  <!-- MODAL 2: PRINTABLE CUTTING SLIP / SALE ORDER / TAX INVOICE PREVIEW    -->
   <!-- ===================================================================== -->
   <div id="print-preview-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/60 backdrop-blur-xs p-4 overflow-y-auto">
     <div class="bg-white rounded-2xl max-w-4xl w-full shadow-2xl border border-slate-200 overflow-hidden my-auto">
@@ -1146,16 +1166,48 @@
     const DEFAULT_FLOW_STATE = {
       saleOrders: [
         {
+          id: "SOD-H/26-27/3496",
+          orderRef: "ORD-11017 SRI KONDALMATHIWHITES",
+          nameCode: "1077",
+          date: "2026-11-17",
+          client: "S T Traders Annexe Cheap Jack Musheerabad",
+          address: "1-5-24, Kubera Complex, Sri Krishna Colony, Musheerabad, Hyderabad 500020",
+          phone: "",
+          gstin: "36ACQPM0669R1ZM",
+          gender: "UNISEX",
+          style: "BED SHEETS ROYAL BLUE PLAIN",
+          sizes: { "34": 0, "36": 0, "38": 100, "40": 0, "42": 0, "44": 0 },
+          totalQty: 100,
+          rate: 275,
+          gstPct: 5,
+          remarks: "",
+          cloth: "144 TC Polycotton",
+          colour: "Royal Blue",
+          collar: "Standard Hem",
+          pattern: "60x90 Inch Flat Bedsheet with 1-Inch Double Stitch",
+          bottomPattern: "Pillow Cover Included",
+          piping: "Self Piping",
+          embrDesign: "Standard Woven Label",
+          poCode: "STTNP-06",
+          hospt: "S T Traders Cheap Jack Musheerabad",
+          stage: "New Sale Order"
+        },
+        {
           id: "AM-H/26-27/2716",
+          orderRef: "ORD-11015 YASHODA NURSING",
           nameCode: "1077",
           date: "2026-11-11",
           client: "Yashoda & Apollo Nursing Wing (Hyd)",
+          address: "SP Road, Secunderabad, Hyderabad 500003, Telangana",
+          phone: "9849022110",
           gstin: "36AAACY4912K1Z2",
           gender: "FEMALE",
           style: "NURSE PANT SHIRT",
           sizes: { "34": 4, "36": 4, "38": 6, "40": 0, "42": 0, "44": 0 },
           totalQty: 14,
           rate: 720,
+          gstPct: 5,
+          remarks: "Urgent Nursing Batch",
           cloth: "Alaskar",
           colour: "White",
           collar: "Yashoda Collar",
@@ -1169,15 +1221,20 @@
         },
         {
           id: "AM-H/26-27/2718",
+          orderRef: "ORD-11016 KIMS SCRUBS",
           nameCode: "1082",
           date: "2026-11-19",
           client: "KIMS Hospitals Secunderabad",
+          address: "1-8-31/1, Minister Road, Secunderabad, Hyderabad 500003, Telangana",
+          phone: "9848033445",
           gstin: "36AAACK6219P1Z9",
           gender: "UNISEX",
           style: "CLASSIC FIT MAROON V-NECK SCRUB SET",
           sizes: { "34": 20, "36": 40, "38": 60, "40": 40, "42": 20, "44": 0 },
           totalQty: 180,
           rate: 685,
+          gstPct: 5,
+          remarks: "",
           cloth: "Maroon Poly-Viscose Twill",
           colour: "Maroon",
           collar: "V-Neck Scrub Collar",
@@ -1191,15 +1248,20 @@
         },
         {
           id: "AM-H/26-27/2719",
+          orderRef: "ORD-11014 CHERLAPALLY PHARMA",
           nameCode: "1085",
           date: "2026-11-18",
           client: "Cherlapally Industrial & Pharma Corp",
+          address: "Phase II, IDA Cherlapally, Hyderabad 500051, Telangana",
+          phone: "9000177889",
           gstin: "36AABCC8821M1Z4",
           gender: "MALE",
           style: "PACIFICA BLUE WORKWEAR SHIRT & TROUSER",
           sizes: { "34": 0, "36": 25, "38": 50, "40": 45, "42": 20, "44": 10 },
           totalQty: 150,
           rate: 890,
+          gstPct: 5,
+          remarks: "",
           cloth: "Pacifica Blue Cotton Drill",
           colour: "Pacifica Blue (#1E77B4)",
           collar: "Regular Shirt Collar",
@@ -1285,6 +1347,17 @@
       masterProducts: [
         {
           id: "PRD-01",
+          name: "BED SHEETS ROYAL BLUE PLAIN",
+          gender: "UNISEX",
+          cloth: "144 TC Polycotton",
+          colour: "Royal Blue",
+          collar: "Standard Hem",
+          pattern: "60x90 Inch Flat Bedsheet with 1-Inch Double Stitch",
+          bottomPattern: "Pillow Cover Included",
+          rate: 275
+        },
+        {
+          id: "PRD-02",
           name: "NURSE PANT SHIRT (3 TUCKS)",
           gender: "FEMALE",
           cloth: "Alaskar",
@@ -1295,7 +1368,7 @@
           rate: 720
         },
         {
-          id: "PRD-02",
+          id: "PRD-03",
           name: "CLASSIC FIT MAROON V-NECK SCRUB SET",
           gender: "UNISEX",
           cloth: "Maroon Poly-Viscose Twill",
@@ -1306,7 +1379,7 @@
           rate: 685
         },
         {
-          id: "PRD-03",
+          id: "PRD-04",
           name: "PACIFICA BLUE WORKWEAR SHIRT & TROUSER",
           gender: "MALE",
           cloth: "Pacifica Blue Cotton Drill",
@@ -1315,55 +1388,44 @@
           pattern: "Full Sleeve 2 Flap Pockets Front Button Placket",
           bottomPattern: "5-Pocket Industrial Work Trouser",
           rate: 890
-        },
-        {
-          id: "PRD-04",
-          name: "144 TC SOLID PURPLE BEDSHEET & PILLOW SET",
-          gender: "UNISEX",
-          cloth: "144 TC Polycotton",
-          colour: "Solid Purple",
-          collar: "N/A (Home Textile)",
-          pattern: "Double-Stitched 1-Inch Hem Bedsheet (60x90 in)",
-          bottomPattern: "Envelope Pillow Cover (18x27 in)",
-          rate: 440
         }
       ],
       masterClients: [
         {
           id: "CLI-01",
           code: "1077",
+          name: "S T Traders Annexe Cheap Jack Musheerabad",
+          gstin: "36ACQPM0669R1ZM",
+          category: "Retail / Wholesale Dealer",
+          contact: "Musheerabad Branch • +91 93472 03651",
+          city: "1-5-24, Kubera Complex, Sri Krishna Colony, Musheerabad, Hyderabad 500020"
+        },
+        {
+          id: "CLI-02",
+          code: "1080",
           name: "Yashoda & Apollo Nursing Wing (Hyd)",
           gstin: "36AAACY4912K1Z2",
           category: "Hospital & Healthcare",
           contact: "Nursing Admin • +91 98490 22110",
-          city: "Secunderabad, Telangana"
+          city: "SP Road, Secunderabad, Hyderabad 500003"
         },
         {
-          id: "CLI-02",
+          id: "CLI-03",
           code: "1082",
           name: "KIMS Hospitals Secunderabad",
           gstin: "36AAACK6219P1Z9",
           category: "Hospital & Healthcare",
           contact: "Central Stores • +91 98480 33445",
-          city: "Minister Road, Hyderabad"
+          city: "1-8-31/1, Minister Road, Secunderabad, Hyderabad 500003"
         },
         {
-          id: "CLI-03",
+          id: "CLI-04",
           code: "1085",
           name: "Cherlapally Industrial & Pharma Corp",
           gstin: "36AABCC8821M1Z4",
           category: "Industrial & Pharma",
           contact: "HR & Safety • +91 90001 77889",
-          city: "IDA Cherlapally, Hyderabad"
-        },
-        {
-          id: "CLI-04",
-          code: "1090",
-          name: "Care Hospitals Banjara Hills",
-          gstin: "36AAACC3910L1Z1",
-          category: "Hospital & Healthcare",
-          contact: "Procurement • +91 98491 55667",
-          city: "Banjara Hills, Hyderabad"
+          city: "Phase II, IDA Cherlapally, Hyderabad 500051"
         }
       ]
     };
@@ -1409,6 +1471,48 @@
 
     function formatINR2(n) {
       return "₹" + Number(n).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function formatPlain2(n) {
+      return Number(n).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    // Indian Rupees Number-to-Words Converter for Sale Order / Invoice
+    function numberToIndianWords(amount) {
+      const num = Math.round(Number(amount) || 0);
+      if (num === 0) return "Indian Rupees Zero Only";
+      const ones = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten",
+        "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"];
+      const tens = ["", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"];
+
+      const twoDigits = (n) => {
+        if (n === 0) return "";
+        if (n < 20) return ones[n];
+        return tens[Math.floor(n / 10)] + (n % 10 ? " " + ones[n % 10] : "");
+      };
+
+      const threeDigits = (n) => {
+        if (n === 0) return "";
+        const h = Math.floor(n / 100);
+        const rem = n % 100;
+        return (h ? ones[h] + " Hundred" + (rem ? " " : "") : "") + twoDigits(rem);
+      };
+
+      let n = num;
+      const parts = [];
+      const crore = Math.floor(n / 10000000);
+      n %= 10000000;
+      const lakh = Math.floor(n / 100000);
+      n %= 100000;
+      const thousand = Math.floor(n / 1000);
+      n %= 1000;
+
+      if (crore) parts.push(threeDigits(crore) + " Crore");
+      if (lakh) parts.push(twoDigits(lakh) + " Lakh");
+      if (thousand) parts.push(twoDigits(thousand) + " Thousand");
+      if (n) parts.push(threeDigits(n));
+
+      return "Indian Rupees " + parts.join(" ") + " Only";
     }
 
     function showToast(msg, type = "success") {
@@ -1890,6 +1994,8 @@
       if (!c) return;
       document.getElementById("so-client").value = c.name;
       document.getElementById("so-gstin").value = c.gstin;
+      const addrEl = document.getElementById("so-address");
+      if (addrEl && c.city) addrEl.value = c.city;
     }
 
     function applyProductPreset(idxStr) {
@@ -2074,7 +2180,7 @@
         grid.innerHTML = `
           <div class="bg-white rounded-2xl border border-slate-200 p-10 text-center space-y-2">
             <div class="text-base font-bold text-slate-800">No matching Sale Order, Cutting Slip, Invoice, or Company found</div>
-            <p class="text-xs text-slate-500">Try searching by Order ID (e.g. <code>2716</code>), Slip ID (<code>CS-2716</code>), Invoice (<code>0415</code>), or Hospital Name (<code>Yashoda</code>, <code>KIMS</code>, <code>Care</code>).</p>
+            <p class="text-xs text-slate-500">Try searching by Order ID (e.g. <code>3496</code> or <code>2716</code>), Slip ID (<code>CS-2716</code>), Invoice (<code>0415</code>), or Hospital Name (<code>Yashoda</code>, <code>KIMS</code>, <code>Care</code>).</p>
           </div>
         `;
         return;
@@ -2112,6 +2218,9 @@
               </div>
 
               <div class="flex flex-wrap gap-2">
+                <button onclick="openSaleOrderPrint('${r.soId}')" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold transition">
+                  Print SO
+                </button>
                 ${r.slip ? `
                   <button onclick="openCuttingSlipPreview('${r.slip.slipId}')" class="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-indigo-600 text-white text-xs font-bold transition">
                     Print Cutting Slip
@@ -2293,116 +2402,194 @@
       }).join("");
     }
 
+    // =========================================================================
+    // PRINT SALE ORDER / ESTIMATE IN EXACT ST TRADERS ANNEXE CHEAP JACK FORMAT
+    // =========================================================================
     function openSaleOrderPrint(soId) {
       const so = state.saleOrders.find(x => x.id === soId);
       if (!so) return;
-      const totalVal = so.totalQty * so.rate;
-      const sz = so.sizes || {};
+
+      const taxableAmt = so.totalQty * so.rate;
+      const gstPct = Number(so.gstPct) || 5;
+      const isIntra = (so.gstin || "36").startsWith("36");
+      const halfTax = (taxableAmt * (gstPct / 100)) / 2;
+      const totalTax = taxableAmt * (gstPct / 100);
+      const afterTaxTotal = taxableAmt + totalTax;
+
+      const dispDate = (so.date || "").split("-").reverse().join("/");
+      const ratio = formatSizeRatio(so.sizes);
+      const sizeSummary = ratio ? `SIZE: ${ratio}` : "Size";
+      const custAddress = so.address || "1-5-24, Kubera Complex, Sri Krishna Colony, Musheerabad, Hyderabad 500020";
+      const orderRef = so.orderRef || `ORD-${so.nameCode || "11017"}`;
+      const amountWords = numberToIndianWords(afterTaxTotal);
 
       document.getElementById("cutting-slip-toolbar").classList.add("hidden");
-      document.getElementById("print-modal-title").textContent = `Sale Order Confirmation — ${so.id}`;
+      document.getElementById("print-modal-title").textContent = `Sale Order / Estimate — ${so.id}`;
+
       document.getElementById("print-area").innerHTML = `
-        <div class="border-2 border-slate-900 p-6 space-y-5 text-slate-900 bg-white">
-          <div class="border-b-2 border-slate-900 pb-3 flex justify-between items-start">
-            <div>
-              <h2 class="text-xl font-extrabold tracking-tight">S T TRADERS ANNEXE CHEAPJACK</h2>
-              <p class="text-xs text-slate-600">Musheerabad & Cherlapally Units, Hyderabad, Telangana • GSTIN: 36AAJFS8492K1Z5</p>
+        <div class="so-a4-sheet border border-black bg-white text-black font-sans text-[11px] leading-snug select-text">
+          <div>
+            <!-- Top Right ORIGINAL + Main Company Header -->
+            <div class="px-3 pt-1.5 pb-2 border-b border-black relative">
+              <div class="text-right text-[10px] font-semibold tracking-wide">ORIGINAL</div>
+              <div class="text-center -mt-1">
+                <h1 class="text-[20px] font-extrabold tracking-wide uppercase">ST TRADERS ANNEXE CHEAP JACK</h1>
+                <p class="text-[10.5px] font-medium">10-5-348/A, Tukaram Gate, Buddha Nagar, Lalaguda gate,, Secundrabad, 500017, Ph</p>
+                <p class="text-[10.5px] font-medium">No:9347203651,, GST No: 36AAIPF1095L1ZJ</p>
+                <p class="text-[10.5px] font-medium">sttradersannexecheapjack@gmail.com</p>
+                <div class="text-[15px] font-extrabold uppercase tracking-wide mt-0.5">SALE ORDER/ESTIMATE</div>
+              </div>
             </div>
-            <div class="text-right">
-              <span class="px-3 py-1 bg-slate-900 text-white text-xs font-extrabold">SALE ORDER</span>
-              <div class="text-xs font-extrabold mt-1">${so.id}</div>
+
+            <!-- SO No. | Order Ref | SO Date Row -->
+            <div class="grid grid-cols-12 px-2.5 py-1 border-b border-black text-[11px] items-center">
+              <div class="col-span-4"><span class="font-bold">SO No. :</span> <span contenteditable="true" class="font-extrabold outline-none focus:bg-yellow-50">${so.id}</span></div>
+              <div class="col-span-4 text-center"><span contenteditable="true" class="font-extrabold uppercase outline-none focus:bg-yellow-50">${orderRef}</span></div>
+              <div class="col-span-4 text-right"><span class="font-bold">SO Date :</span> <span contenteditable="true" class="font-extrabold outline-none focus:bg-yellow-50">${dispDate}</span></div>
             </div>
-          </div>
 
-          <div class="grid grid-cols-2 gap-3 text-xs bg-slate-50 p-4 rounded-xl border border-slate-200">
-            <div><strong>Hospital / Client:</strong> ${so.client}</div>
-            <div><strong>Client Code (NAME):</strong> ${so.nameCode || '-'}</div>
-            <div><strong>Buyer GSTIN:</strong> <span class="font-mono font-bold">${so.gstin}</span></div>
-            <div><strong>Delivery / Order Date:</strong> ${so.date}</div>
-            <div><strong>PO Reference:</strong> ${so.poCode || 'STTNP-06'}</div>
-            <div><strong>Current Floor Stage:</strong> ${so.stage}</div>
-          </div>
+            <!-- Customer Details & Shipping Address Split Box -->
+            <div class="grid grid-cols-12 border-b border-black text-[11px]">
+              <div class="col-span-6 border-r border-black">
+                <div class="px-2.5 py-0.5 border-b border-black font-bold">Customer Details :</div>
+                <div class="p-2.5 space-y-1 min-h-[108px]">
+                  <div contenteditable="true" class="font-semibold outline-none focus:bg-yellow-50">${so.client}</div>
+                  <div contenteditable="true" class="whitespace-pre-line outline-none focus:bg-yellow-50">${custAddress}</div>
+                  <div class="pt-1"><span class="font-semibold">GST No :</span> <span contenteditable="true" class="font-bold uppercase outline-none focus:bg-yellow-50">${so.gstin}</span></div>
+                  <div><span class="font-semibold">Phone :</span> <span contenteditable="true" class="outline-none focus:bg-yellow-50">${so.phone || ""}</span></div>
+                </div>
+              </div>
+              <div class="col-span-6">
+                <div class="px-2.5 py-0.5 border-b border-black font-bold">Shipping Address</div>
+                <div class="p-2.5 space-y-1 min-h-[108px]">
+                  <div contenteditable="true" class="font-semibold outline-none focus:bg-yellow-50">${so.client}</div>
+                  <div contenteditable="true" class="whitespace-pre-line outline-none focus:bg-yellow-50">${custAddress}</div>
+                  <div class="pt-1"><span class="font-semibold">Phone :</span> <span contenteditable="true" class="outline-none focus:bg-yellow-50">${so.phone || ""}</span></div>
+                </div>
+              </div>
+            </div>
 
-          <div class="space-y-2">
-            <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-700">Garment & Stitching Specifications</h3>
-            <table class="w-full text-left border-collapse border border-slate-300 text-xs">
-              <tbody>
-                <tr class="border-b border-slate-300">
-                  <td class="p-2.5 font-bold bg-slate-50 w-1/4 border-r border-slate-300">Garment Style</td>
-                  <td class="p-2.5 font-extrabold" colspan="3">${so.style} (${so.gender})</td>
-                </tr>
-                <tr class="border-b border-slate-300">
-                  <td class="p-2.5 font-bold bg-slate-50 border-r border-slate-300">Cloth Quality</td>
-                  <td class="p-2.5 font-semibold border-r border-slate-300">${so.cloth}</td>
-                  <td class="p-2.5 font-bold bg-slate-50 border-r border-slate-300 w-1/5">Colour</td>
-                  <td class="p-2.5 font-semibold">${so.colour}</td>
-                </tr>
-                <tr class="border-b border-slate-300">
-                  <td class="p-2.5 font-bold bg-slate-50 border-r border-slate-300">Collar Style</td>
-                  <td class="p-2.5 font-semibold border-r border-slate-300">${so.collar}</td>
-                  <td class="p-2.5 font-bold bg-slate-50 border-r border-slate-300">Bottom Pattern</td>
-                  <td class="p-2.5 font-semibold">${so.bottomPattern || 'Nada Phyajam'}</td>
-                </tr>
-                <tr class="border-b border-slate-300">
-                  <td class="p-2.5 font-bold bg-slate-50 border-r border-slate-300">Top / Shirt Pattern</td>
-                  <td class="p-2.5" colspan="3">${so.pattern}</td>
-                </tr>
-                <tr>
-                  <td class="p-2.5 font-bold bg-slate-50 border-r border-slate-300">Embroidery / Logo</td>
-                  <td class="p-2.5 font-semibold" colspan="3">${so.embrDesign}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <div class="space-y-2">
-            <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-700">Size Ratio Breakdown & Commercial Valuation</h3>
-            <table class="w-full text-center border-collapse border border-slate-300 text-xs">
+            <!-- Item Line Grid: sno | Description | Name | Code | QTY | Rate | Taxable Amt -->
+            <table class="w-full border-collapse border-b border-black text-[11px]">
               <thead>
-                <tr class="bg-slate-100 border-b border-slate-300 font-extrabold">
-                  <th class="p-2 border-r border-slate-300">34 / XS</th>
-                  <th class="p-2 border-r border-slate-300">36 / S</th>
-                  <th class="p-2 border-r border-slate-300">38 / M</th>
-                  <th class="p-2 border-r border-slate-300">40 / L</th>
-                  <th class="p-2 border-r border-slate-300">42 / XL</th>
-                  <th class="p-2 border-r border-slate-300">44 / XXL</th>
-                  <th class="p-2 border-r border-slate-300 bg-indigo-50">Total Pairs</th>
-                  <th class="p-2 border-r border-slate-300">Rate (₹)</th>
-                  <th class="p-2 bg-emerald-50">Order Total (₹)</th>
+                <tr class="border-b border-black text-center font-bold">
+                  <th class="w-[34px] py-1 px-1 border-r border-black leading-tight">sn<br>o</th>
+                  <th class="py-1 px-2 border-r border-black">Description</th>
+                  <th class="w-[26%] py-1 px-2 border-r border-black">Name</th>
+                  <th class="w-[54px] py-1 px-1 border-r border-black">Code</th>
+                  <th class="w-[74px] py-1 px-2 border-r border-black">QTY</th>
+                  <th class="w-[74px] py-1 px-2 border-r border-black">Rate</th>
+                  <th class="w-[96px] py-1 px-2">Taxable Amt</th>
                 </tr>
               </thead>
               <tbody>
-                <tr class="font-bold">
-                  <td class="p-2.5 border-r border-slate-300">${sz["34"] || 0}</td>
-                  <td class="p-2.5 border-r border-slate-300">${sz["36"] || 0}</td>
-                  <td class="p-2.5 border-r border-slate-300">${sz["38"] || 0}</td>
-                  <td class="p-2.5 border-r border-slate-300">${sz["40"] || 0}</td>
-                  <td class="p-2.5 border-r border-slate-300">${sz["42"] || 0}</td>
-                  <td class="p-2.5 border-r border-slate-300">${sz["44"] || 0}</td>
-                  <td class="p-2.5 border-r border-slate-300 font-extrabold text-indigo-700 bg-indigo-50/40">${so.totalQty}</td>
-                  <td class="p-2.5 border-r border-slate-300">${formatINR2(so.rate)}</td>
-                  <td class="p-2.5 font-extrabold text-emerald-700 bg-emerald-50/40">${formatINR2(totalVal)}</td>
+                <tr class="align-top">
+                  <td class="py-2 px-1 text-center border-r border-black h-[300px]">1</td>
+                  <td class="py-2 px-2 border-r border-black">
+                    <div contenteditable="true" class="font-semibold uppercase outline-none focus:bg-yellow-50">${so.style}</div>
+                    <div contenteditable="true" class="text-[10px] text-slate-700 mt-0.5 outline-none focus:bg-yellow-50">${so.cloth} • Colour: ${so.colour} • Collar: ${so.collar}</div>
+                  </td>
+                  <td class="py-2 px-2 border-r border-black">
+                    <div contenteditable="true" class="outline-none focus:bg-yellow-50">${so.pattern || "-"}</div>
+                  </td>
+                  <td class="py-2 px-1.5 border-r border-black font-bold text-center">
+                    <div contenteditable="true" class="outline-none focus:bg-yellow-50">${sizeSummary}</div>
+                  </td>
+                  <td class="py-2 px-2 text-right border-r border-black font-extrabold">
+                    <span contenteditable="true" class="outline-none focus:bg-yellow-50">${formatPlain2(so.totalQty)}</span>
+                  </td>
+                  <td class="py-2 px-2 text-right border-r border-black">
+                    <span contenteditable="true" class="outline-none focus:bg-yellow-50">${formatPlain2(so.rate)}</span>
+                  </td>
+                  <td class="py-2 px-2 text-right font-semibold">
+                    <span contenteditable="true" class="outline-none focus:bg-yellow-50">${formatPlain2(taxableAmt)}</span>
+                  </td>
                 </tr>
               </tbody>
             </table>
-          </div>
 
-          <div class="pt-8 flex justify-between text-xs text-slate-600">
-            <span>Customer / Hospital Approval Sign</span>
-            <span>For S T Traders Annexe CheapJack (Authorised Signatory)</span>
+            <!-- Total Qty Bar -->
+            <div class="py-1 px-3 border-b border-black text-center font-bold text-[11.5px]">
+              Total Qty : <span class="ml-3 font-extrabold">${so.totalQty}</span>
+            </div>
+
+            <!-- Remarks, Words, Terms & Tax Totals Box -->
+            <div class="grid grid-cols-12 border-b border-black text-[10.5px]">
+              <!-- Left 8 Cols: Remarks, Value in Words, Terms & Conditions -->
+              <div class="col-span-8 border-r border-black flex flex-col justify-between">
+                <div class="px-2.5 py-1.5 border-b border-black">
+                  <span class="font-bold">Remarks :</span> <span contenteditable="true" class="outline-none focus:bg-yellow-50">${so.remarks || ""}</span>
+                </div>
+                <div class="px-2.5 py-1.5 border-b border-black">
+                  <div class="font-semibold">Invoice Value (In Words)</div>
+                  <div contenteditable="true" class="font-bold mt-0.5 outline-none focus:bg-yellow-50">${amountWords}</div>
+                </div>
+                <div class="px-2.5 py-1.5 space-y-0.5">
+                  <div class="font-bold">Terms and Conditions :</div>
+                  <div>1. 100 % Advance , Delivery Of Goods Within 8 days</div>
+                  <div>2. Goods once sold can not be returned back or exchanged.</div>
+                  <div>3. Our responsiblities ceases as soon as goods leave our premses.</div>
+                  <div>4. Subject to 36-Telangana Jurisdiction</div>
+                </div>
+              </div>
+
+              <!-- Right 4 Cols: Tax Summary -->
+              <div class="col-span-4 flex flex-col justify-between">
+                <div class="p-2.5 space-y-1.5">
+                  <div class="flex justify-between items-start gap-1">
+                    <span class="font-semibold leading-tight">Total Amount Before<br>Tax</span>
+                    <span class="font-extrabold">${formatPlain2(taxableAmt)}</span>
+                  </div>
+                  ${isIntra ? `
+                    <div class="flex justify-between items-center pt-1">
+                      <span class="font-semibold">Tax Amount : CGST</span>
+                      <span class="font-extrabold">${formatPlain2(halfTax)}</span>
+                    </div>
+                    <div class="flex justify-between items-center pt-1">
+                      <span class="font-semibold">Tax Amount : SGST</span>
+                      <span class="font-extrabold">${formatPlain2(halfTax)}</span>
+                    </div>
+                  ` : `
+                    <div class="flex justify-between items-center pt-1">
+                      <span class="font-semibold">Tax Amount : IGST</span>
+                      <span class="font-extrabold">${formatPlain2(totalTax)}</span>
+                    </div>
+                  `}
+                </div>
+                <div class="px-2.5 py-2 border-t border-black flex justify-between items-center bg-slate-50">
+                  <span class="font-bold">Total Amount After Tax</span>
+                  <span class="font-extrabold text-[12px]">${formatPlain2(afterTaxTotal)}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Bank Details & Authorised Signatory Footer -->
+            <div class="grid grid-cols-12 px-2.5 py-2 text-[10.5px] items-end">
+              <div class="col-span-6 space-y-0.5">
+                <div><span class="font-semibold">Our Bankers:</span> <span class="font-bold">BANK OF BARODA</span></div>
+                <div><span class="font-semibold">A/C No. :</span> <span class="font-bold">71700200000140</span></div>
+                <div><span class="font-semibold">IFSC CODE:</span> <span class="font-bold">BARBODBSECE</span></div>
+                <div><span class="font-semibold">Branch :</span> <span class="font-bold">East Marredpally</span></div>
+              </div>
+              <div class="col-span-6 text-right flex flex-col justify-between h-full space-y-8">
+                <div class="font-bold">For, ST TRADERS ANNEXE CHEAP JACK</div>
+                <div class="font-semibold">Authorised Signatory</div>
+              </div>
+            </div>
           </div>
+          <div class="text-center text-[10px] py-1 border-t border-black/20">Page 1 of 1</div>
         </div>
       `;
 
-      currentPrintableText = `SALE ORDER ${so.id} | Client: ${so.client} (${so.gstin}) | Date: ${so.date} | Style: ${so.style} (${so.gender}) | Cloth: ${so.cloth} (${so.colour}) | Size Ratio: ${formatSizeRatio(so.sizes)} | Total: ${so.totalQty} Pairs @ ₹${so.rate} = ${formatINR2(totalVal)}`;
+      currentPrintableText = `ST TRADERS ANNEXE CHEAP JACK — SALE ORDER/ESTIMATE | SO No.: ${so.id} | SO Date: ${dispDate} | Customer: ${so.client} (GST: ${so.gstin}) | Item: ${so.style} | QTY: ${formatPlain2(so.totalQty)} | Rate: ${formatPlain2(so.rate)} | Taxable Amt: ${formatPlain2(taxableAmt)} | Total After Tax: ${formatPlain2(afterTaxTotal)} (${amountWords})`;
 
       document.getElementById("print-preview-modal").classList.remove("hidden");
       document.getElementById("print-preview-modal").classList.add("flex");
     }
 
     function openNewSaleOrderModal() {
-      const num = 2716 + state.saleOrders.length + 1;
-      document.getElementById("so-id").value = `AM-H/26-27/${num}`;
+      const num = 3496 + state.saleOrders.length + 1;
+      document.getElementById("so-id").value = `SOD-H/26-27/${num}`;
       document.getElementById("so-date").value = new Date().toISOString().split("T")[0];
       populateSaleOrderPresets();
       updateSoTotal();
@@ -2437,9 +2624,12 @@
       }
       const so = {
         id: document.getElementById("so-id").value.trim(),
+        orderRef: (document.getElementById("so-order-ref") ? document.getElementById("so-order-ref").value.trim() : ""),
         nameCode: String(1077 + state.saleOrders.length),
         date: document.getElementById("so-date").value,
         client: document.getElementById("so-client").value.trim(),
+        address: (document.getElementById("so-address") ? document.getElementById("so-address").value.trim() : "Hyderabad, Telangana"),
+        phone: "",
         gstin: document.getElementById("so-gstin").value.trim().toUpperCase(),
         gender: document.getElementById("so-gender").value,
         style: document.getElementById("so-style").value.trim().toUpperCase(),
@@ -2453,6 +2643,8 @@
         },
         totalQty,
         rate: parseFloat(document.getElementById("so-rate").value) || 650,
+        gstPct: 5,
+        remarks: "",
         cloth: document.getElementById("so-cloth").value,
         colour: document.getElementById("so-colour").value.trim(),
         collar: document.getElementById("so-collar").value.trim(),
@@ -2570,14 +2762,14 @@
 
     function getGarmentIllustrationSvg(style) {
       const s = (style || "").toLowerCase();
-      if (s.includes("bedsheet") || s.includes("pillow")) {
+      if (s.includes("bedsheet") || s.includes("pillow") || s.includes("bed sheet")) {
         return `
           <svg viewBox="0 0 260 360" class="w-full max-h-[360px] mx-auto">
             <rect x="20" y="30" width="220" height="300" rx="14" fill="#f8fafc" stroke="#94a3b8" stroke-width="2"/>
             <rect x="38" y="48" width="184" height="58" rx="10" fill="#e2e8f0" stroke="#64748b" stroke-width="2"/>
-            <rect x="38" y="118" width="184" height="192" rx="8" fill="#ede9fe" stroke="#7c3aed" stroke-width="2"/>
+            <rect x="38" y="118" width="184" height="192" rx="8" fill="#dbeafe" stroke="#1d4ed8" stroke-width="2"/>
             <text x="130" y="82" text-anchor="middle" font-size="11" font-weight="700" fill="#334155">PILLOW COVER</text>
-            <text x="130" y="218" text-anchor="middle" font-size="13" font-weight="800" fill="#5b21b6">144 TC BEDSHEET</text>
+            <text x="130" y="218" text-anchor="middle" font-size="13" font-weight="800" fill="#1e3a8a">ROYAL BLUE BEDSHEET</text>
           </svg>`;
       }
       const isBlue = s.includes("pacifica") || s.includes("blue");
@@ -3177,9 +3369,12 @@
       // Sheet 1: SaleOrders (flattening size ratio columns for clean Excel editing)
       const soRows = state.saleOrders.map(so => ({
         id: so.id,
+        orderRef: so.orderRef || "",
         nameCode: so.nameCode || "",
         date: so.date,
         client: so.client,
+        address: so.address || "",
+        phone: so.phone || "",
         gstin: so.gstin,
         gender: so.gender,
         style: so.style,
@@ -3191,6 +3386,8 @@
         sz_44: (so.sizes && so.sizes["44"]) || 0,
         totalQty: so.totalQty,
         rate: so.rate,
+        gstPct: so.gstPct || 5,
+        remarks: so.remarks || "",
         cloth: so.cloth,
         colour: so.colour,
         collar: so.collar,
@@ -3245,15 +3442,20 @@
               const calcTotal = Object.values(sizes).reduce((a, b) => a + b, 0);
               return {
                 id: String(r.id || ""),
+                orderRef: String(r.orderRef || ""),
                 nameCode: String(r.nameCode || ""),
                 date: String(r.date || ""),
                 client: String(r.client || ""),
+                address: String(r.address || ""),
+                phone: String(r.phone || ""),
                 gstin: String(r.gstin || ""),
                 gender: String(r.gender || "UNISEX"),
                 style: String(r.style || ""),
                 sizes,
                 totalQty: Number(r.totalQty) || calcTotal,
                 rate: Number(r.rate) || 0,
+                gstPct: Number(r.gstPct) || 5,
+                remarks: String(r.remarks || ""),
                 cloth: String(r.cloth || ""),
                 colour: String(r.colour || ""),
                 collar: String(r.collar || ""),
