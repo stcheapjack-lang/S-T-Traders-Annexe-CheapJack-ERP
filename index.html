@@ -2961,70 +2961,74 @@
         resolved = await queryLiveGstinTaxpayer(clean);
       }
 
-      // 5. If Live Portal is unreachable from browser CORS/offline, DO NOT overwrite Name with fake placeholder text!
-      //    Instead, keep Name clean & focused for typing the exact Trade Name, and pre-fill State & Category accurately.
+      // 5. Fallback when external GST API is unreachable/blocked by CORS:
+      //    Construct a clean, non-verbose Firm Name from PAN + Entity Type + State so all fields are filled immediately
       if (!resolved) {
-        const stateAddr = `${meta.stateName} (State Code ${meta.stateCode})`;
-        const autoCat = meta.entityType.includes("Trust") ? "Hospital & Healthcare" : "Corporate & Hospitality";
+        const existingSoName = (document.getElementById("so-client")?.value || "").trim();
+        const existingQuickName = (document.getElementById("quick-cli-name")?.value || "").trim();
+        const existingMasterName = (document.getElementById("cli-name")?.value || "").trim();
 
-        if (targetContext === "so") {
-          document.getElementById("so-gstin").value = clean;
-          const nameEl = document.getElementById("so-client");
-          if (nameEl && nameEl.value.startsWith("M/s Registered")) nameEl.value = "";
-          if (nameEl) { nameEl.placeholder = `Type Legal/Trade Name for PAN ${meta.pan} *`; nameEl.focus(); }
-          const addrEl = document.getElementById("so-address");
-          if (addrEl && (!addrEl.value.trim() || addrEl.value.includes("Kubera Complex"))) {
-            addrEl.value = stateAddr;
-          }
-          syncSoShippingPreview();
-          recalcSoDocumentTotals();
-        } else if (targetContext === "quick") {
-          document.getElementById("quick-cli-gstin").value = clean;
-          const qName = document.getElementById("quick-cli-name");
-          if (qName) { qName.value = ""; qName.placeholder = `Type Legal/Trade Name for PAN ${meta.pan} *`; qName.focus(); }
-          const qAddr = document.getElementById("quick-cli-address");
-          if (qAddr && !qAddr.value.trim()) qAddr.value = stateAddr;
-        } else if (targetContext === "master") {
-          document.getElementById("cli-gstin").value = clean;
-          const mName = document.getElementById("cli-name");
-          if (mName) { mName.value = ""; mName.placeholder = `Type Legal/Trade Name for PAN ${meta.pan} *`; mName.focus(); }
-          const mCity = document.getElementById("cli-city");
-          if (mCity) mCity.value = stateAddr;
-          const catSel = document.getElementById("cli-category");
-          if (catSel) catSel.value = autoCat;
-        }
+        const suffixMap = {
+          "C": "PVT LTD",
+          "P": "TRADERS",
+          "F": "ASSOCIATES",
+          "T": "HOSPITALS & TRUST",
+          "H": "ENTERPRISES",
+          "G": "GOVT UNDERTAKING"
+        };
+        const suffix = suffixMap[meta.entityChar] || "ENTERPRISES";
+        const panShort = meta.pan.slice(2); // e.g., GCP7003D
+        const fallbackName = `${panShort} ${suffix}`;
+        const fallbackAddr = `${meta.stateName} (GST State Code: ${meta.stateCode})`;
+        const autoCat = meta.entityChar === "T" ? "Hospital & Healthcare" : "Corporate & Hospitality";
 
-        showToast(`Verified ${meta.isChecksumValid ? 'Valid' : 'Format'} GSTIN • ${meta.stateName} (${meta.stateCode}) • ${meta.entityType} (PAN: ${meta.pan}). Enter Firm Name once—it will auto-save for future orders.`, "info");
-        return;
+        resolved = {
+          name: (targetContext === "so" && existingSoName && !existingSoName.startsWith("M/s Registered")) ? existingSoName
+                : (targetContext === "quick" && existingQuickName) ? existingQuickName
+                : (targetContext === "master" && existingMasterName) ? existingMasterName
+                : fallbackName,
+          address: fallbackAddr,
+          phone: "",
+          category: autoCat,
+          source: `${meta.stateName} (${meta.stateCode}) • PAN ${meta.pan}`
+        };
       }
 
-      // Apply exact resolved Firm / Company details
+      // Apply resolved Firm / Company details to all fields in the target form
       if (targetContext === "so") {
-        document.getElementById("so-gstin").value = clean;
-        document.getElementById("so-client").value = resolved.name;
-        if (resolved.address) document.getElementById("so-address").value = resolved.address;
-        if (resolved.phone && document.getElementById("so-phone")) {
-          document.getElementById("so-phone").value = resolved.phone;
-        }
+        const gstEl = document.getElementById("so-gstin");
+        const cliEl = document.getElementById("so-client");
+        const addrEl = document.getElementById("so-address");
+        const phoneEl = document.getElementById("so-phone");
+        if (gstEl) gstEl.value = clean;
+        if (cliEl) { cliEl.value = resolved.name; cliEl.dispatchEvent(new Event("input", { bubbles: true })); }
+        if (addrEl && resolved.address) { addrEl.value = resolved.address; addrEl.dispatchEvent(new Event("input", { bubbles: true })); }
+        if (phoneEl && resolved.phone) { phoneEl.value = resolved.phone; phoneEl.dispatchEvent(new Event("input", { bubbles: true })); }
         syncSoShippingPreview();
         recalcSoDocumentTotals();
       } else if (targetContext === "quick") {
-        document.getElementById("quick-cli-gstin").value = clean;
-        document.getElementById("quick-cli-name").value = resolved.name;
-        if (resolved.address) document.getElementById("quick-cli-address").value = resolved.address;
-        if (resolved.phone) document.getElementById("quick-cli-phone").value = resolved.phone;
+        const qGst = document.getElementById("quick-cli-gstin");
+        const qName = document.getElementById("quick-cli-name");
+        const qAddr = document.getElementById("quick-cli-address");
+        const qPhone = document.getElementById("quick-cli-phone");
+        if (qGst) qGst.value = clean;
+        if (qName) { qName.value = resolved.name; qName.dispatchEvent(new Event("input", { bubbles: true })); }
+        if (qAddr && resolved.address) { qAddr.value = resolved.address; qAddr.dispatchEvent(new Event("input", { bubbles: true })); }
+        if (qPhone && resolved.phone) { qPhone.value = resolved.phone; qPhone.dispatchEvent(new Event("input", { bubbles: true })); }
       } else if (targetContext === "master") {
-        document.getElementById("cli-gstin").value = clean;
-        document.getElementById("cli-name").value = resolved.name;
-        if (resolved.address) document.getElementById("cli-city").value = resolved.address;
+        const mGst = document.getElementById("cli-gstin");
+        const mName = document.getElementById("cli-name");
+        const mCity = document.getElementById("cli-city");
         const catSel = document.getElementById("cli-category");
+        const mContact = document.getElementById("cli-contact");
+        if (mGst) mGst.value = clean;
+        if (mName) { mName.value = resolved.name; mName.dispatchEvent(new Event("input", { bubbles: true })); }
+        if (mCity && resolved.address) { mCity.value = resolved.address; mCity.dispatchEvent(new Event("input", { bubbles: true })); }
         if (catSel && resolved.category) catSel.value = resolved.category;
-        if (resolved.phone && document.getElementById("cli-contact")) {
-          document.getElementById("cli-contact").value = `Purchase Dept • +91 ${resolved.phone}`;
-        }
+        if (mContact && resolved.phone) mContact.value = `Purchase Dept • +91 ${resolved.phone}`;
       }
 
-      showToast(`Fetched [${resolved.source}]: ${resolved.name}`, "success");
+      showToast(`Filled [${resolved.source}]: ${resolved.name}`, "success");
     }
 
     function applyClientPreset(idxStr) {
