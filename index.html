@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>S T Traders Annexe CheapJack — Sale Order to Tax Invoice ERP</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -59,186 +60,229 @@
   <!-- Toast Container -->
   <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none px-4 sm:px-0"></div>
 
-  <div class="min-h-screen flex flex-col">
+  <div class="h-screen overflow-hidden flex bg-slate-50">
     
-    <!-- Top Brand & Facility Header -->
-    <header class="bg-slate-900 text-white px-4 sm:px-8 py-4 shadow-md sticky top-0 z-30">
-      <div class="max-w-[1560px] mx-auto flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+    <!-- =================================================================== -->
+    <!-- LEFT SIDEBAR NAVIGATION (ALWAYS VISIBLE & FULL-HEIGHT LOCKED)       -->
+    <!-- =================================================================== -->
+    <aside id="app-sidebar" class="w-64 sm:w-72 bg-slate-900 text-slate-200 flex flex-col border-r border-slate-800 h-full shrink-0 z-30">
+      
+      <!-- Sidebar Brand Header -->
+      <div class="px-5 py-5 border-b border-slate-800 flex items-center justify-between">
         <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-700 flex items-center justify-center font-extrabold text-white text-base shadow-lg">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-700 flex items-center justify-center font-extrabold text-white text-base shadow-lg shrink-0">
             ST
           </div>
           <div>
-            <div class="flex items-center gap-2">
-              <h1 class="text-base sm:text-lg font-extrabold tracking-tight">S T Traders Annexe CheapJack</h1>
-              <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 text-[11px] font-bold border border-emerald-500/30">GST 36 • Hyd</span>
+            <h1 class="text-sm font-extrabold text-white tracking-tight leading-snug">S T Traders Annexe CheapJack</h1>
+            <div class="flex items-center gap-1.5 mt-0.5">
+              <span class="px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 text-[10px] font-bold border border-emerald-500/30">GST 36</span>
+              <span class="text-[11px] text-slate-400">Hyd Units</span>
             </div>
-            <p class="text-xs text-slate-400">Dashboard Overview & End-to-End Flow: Sale Order → Cutting Slip → Tailor/Unit → Finished Goods → Tax Invoice</p>
           </div>
-        </div>
-
-        <!-- Global Quick Search Bar -->
-        <div class="flex-1 max-w-md w-full">
-          <div class="relative">
-            <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 103.5 10.5a7.5 7.5 0 0013.15 6.15z"/></svg>
-            <input type="text" id="global-search-input" oninput="handleGlobalSearch(this.value)" placeholder="Search Sale Order, Cutting Slip, Invoice, or Company..." class="w-full pl-10 pr-8 py-2 rounded-xl bg-slate-800 border border-slate-700 text-xs sm:text-sm text-white placeholder-slate-400 focus:outline-none focus:border-indigo-400">
-            <button id="global-search-clear" onclick="clearGlobalSearch()" class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white text-xs font-bold">✕</button>
-          </div>
-        </div>
-
-        <div class="flex flex-wrap items-center gap-2">
-          <button onclick="exportBackupJson()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-slate-700 transition">
-            Export JSON
-          </button>
-          <label class="cursor-pointer px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-slate-700 transition">
-            Import JSON
-            <input type="file" accept=".json" onchange="importBackupJson(event)" class="hidden">
-          </label>
-          <button onclick="resetDemoFlow()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-slate-700 transition">
-            Reset Demo
-          </button>
-          <button onclick="openNewSaleOrderModal()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs sm:text-sm font-bold shadow-sm inline-flex items-center gap-1.5 transition">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
-            <span>New Sale Order</span>
-          </button>
         </div>
       </div>
-    </header>
 
-    <!-- DASHBOARD + 5-STEP SEQUENTIAL PROCESS STEPPER BAR -->
-    <div class="bg-white border-b border-slate-200 shadow-2xs">
-      <div class="max-w-[1560px] mx-auto px-4 sm:px-8 py-4">
-        <div class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-9 gap-2">
+      <!-- Primary CTA in Sidebar -->
+      <div class="px-4 pt-4 pb-2">
+        <button onclick="openNewSaleOrderModal();" class="w-full py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow-md inline-flex items-center justify-center gap-2 transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+          <span>Book New Sale Order</span>
+        </button>
+      </div>
+
+      <!-- Scrollable Navigation Menu -->
+      <nav class="flex-1 overflow-y-auto px-3 py-3 space-y-5">
+        
+        <!-- Group 1: Command & Masters -->
+        <div>
+          <div class="px-3 mb-2 text-[10px] font-extrabold uppercase tracking-wider text-slate-500">Command & Catalog</div>
+          <div class="space-y-1">
+            <button onclick="switchStep('dashboard')" data-step="dashboard" class="step-card w-full text-left px-3 py-2.5 rounded-xl bg-indigo-600 text-white transition flex items-center justify-between">
+              <div class="flex items-center gap-2.5">
+                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                <div>
+                  <div class="text-xs font-bold">Dashboard Overview</div>
+                  <div id="step-sub-dash" class="text-[10px] opacity-80">Live Floor Summary</div>
+                </div>
+              </div>
+              <span id="badge-step-0" class="w-2 h-2 rounded-full bg-emerald-400 shrink-0"></span>
+            </button>
+
+            <button onclick="switchStep('tracking')" data-step="tracking" class="step-card w-full text-left px-3 py-2.5 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-white transition flex items-center justify-between">
+              <div class="flex items-center gap-2.5">
+                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 103.5 10.5a7.5 7.5 0 0013.15 6.15z"/></svg>
+                <div>
+                  <div class="text-xs font-bold">Order & Slip Tracker</div>
+                  <div id="step-sub-track" class="text-[10px] text-slate-400">Search SO / Slip / Inv</div>
+                </div>
+              </div>
+              <span id="badge-step-1" class="hidden"></span>
+            </button>
+
+            <button onclick="switchStep('masters')" data-step="masters" class="step-card w-full text-left px-3 py-2.5 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-white transition flex items-center justify-between">
+              <div class="flex items-center gap-2.5">
+                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+                <div>
+                  <div class="text-xs font-bold">Products & Clients</div>
+                  <div id="step-sub-masters" class="text-[10px] text-slate-400">0 items • 0 clients</div>
+                </div>
+              </div>
+              <span id="badge-step-2" class="hidden"></span>
+            </button>
+
+            <button onclick="switchStep('reports')" data-step="reports" class="step-card w-full text-left px-3 py-2.5 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-white transition flex items-center justify-between">
+              <div class="flex items-center gap-2.5">
+                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                <div>
+                  <div class="text-xs font-bold">MIS Reports & CSV</div>
+                  <div id="step-sub-reports" class="text-[10px] text-slate-400">Date & Unit Filters</div>
+                </div>
+              </div>
+              <span id="badge-step-3" class="hidden"></span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Group 2: 5-Stage Production Pipeline -->
+        <div>
+          <div class="px-3 mb-2 text-[10px] font-extrabold uppercase tracking-wider text-slate-500">5-Stage Factory Flow</div>
+          <div class="space-y-1">
+            <button onclick="switchStep('sale-orders')" data-step="sale-orders" class="step-card w-full text-left px-3 py-2.5 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-white transition flex items-center justify-between">
+              <div>
+                <div class="text-[10px] font-extrabold uppercase text-indigo-400">Step 1</div>
+                <div class="text-xs font-bold">Sale Orders</div>
+                <div id="step-sub-so" class="text-[10px] text-slate-400">0 active orders</div>
+              </div>
+              <span id="badge-step-4" class="px-2 py-0.5 rounded-full bg-slate-800 text-slate-200 text-xs font-extrabold">0</span>
+            </button>
+
+            <button onclick="switchStep('cutting-slips')" data-step="cutting-slips" class="step-card w-full text-left px-3 py-2.5 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-white transition flex items-center justify-between">
+              <div>
+                <div class="text-[10px] font-extrabold uppercase text-amber-400">Step 2</div>
+                <div class="text-xs font-bold">Cutting Slips</div>
+                <div id="step-sub-cut" class="text-[10px] text-slate-400">0 slips</div>
+              </div>
+              <span id="badge-step-5" class="px-2 py-0.5 rounded-full bg-slate-800 text-slate-200 text-xs font-extrabold">0</span>
+            </button>
+
+            <button onclick="switchStep('allocation')" data-step="allocation" class="step-card w-full text-left px-3 py-2.5 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-white transition flex items-center justify-between">
+              <div>
+                <div class="text-[10px] font-extrabold uppercase text-sky-400">Step 3</div>
+                <div class="text-xs font-bold">Tailor & Unit</div>
+                <div id="step-sub-alloc" class="text-[10px] text-slate-400">0 on floor</div>
+              </div>
+              <span id="badge-step-6" class="px-2 py-0.5 rounded-full bg-slate-800 text-slate-200 text-xs font-extrabold">0</span>
+            </button>
+
+            <button onclick="switchStep('receiving-fg')" data-step="receiving-fg" class="step-card w-full text-left px-3 py-2.5 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-white transition flex items-center justify-between">
+              <div>
+                <div class="text-[10px] font-extrabold uppercase text-emerald-400">Step 4</div>
+                <div class="text-xs font-bold">Receive FG</div>
+                <div id="step-sub-fg" class="text-[10px] text-slate-400">0 pcs in store</div>
+              </div>
+              <span id="badge-step-7" class="px-2 py-0.5 rounded-full bg-slate-800 text-slate-200 text-xs font-extrabold">0</span>
+            </button>
+
+            <button onclick="switchStep('tax-invoice')" data-step="tax-invoice" class="step-card w-full text-left px-3 py-2.5 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-white transition flex items-center justify-between">
+              <div>
+                <div class="text-[10px] font-extrabold uppercase text-purple-400">Step 5</div>
+                <div class="text-xs font-bold">Tax Invoice</div>
+                <div id="step-sub-inv" class="text-[10px] text-slate-400">0 invoices</div>
+              </div>
+              <span id="badge-step-8" class="px-2 py-0.5 rounded-full bg-slate-800 text-slate-200 text-xs font-extrabold">0</span>
+            </button>
+          </div>
+        </div>
+      </nav>
+
+      <!-- Sidebar Footer: Plant Status -->
+      <div class="p-4 border-t border-slate-800 bg-slate-950/50 text-[11px] text-slate-400 space-y-1">
+        <div class="flex items-center justify-between">
+          <span class="font-semibold text-slate-300">Cherlapally & Musheerabad</span>
+          <span class="inline-flex items-center gap-1 text-emerald-400 font-bold"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>Live</span>
+        </div>
+        <div>Sale Order → Cutting → Tailor → FG → GST</div>
+      </div>
+    </aside>
+
+    <!-- =================================================================== -->
+    <!-- RIGHT MAIN SHELL (COMPACT TOP UTILITY BAR + SCROLLABLE WORKSPACE)   -->
+    <!-- =================================================================== -->
+    <div class="flex-1 flex flex-col min-w-0 h-full overflow-y-auto">
+
+      <!-- Compact Top Utility Header -->
+      <header class="bg-white border-b border-slate-200 px-4 sm:px-8 py-3.5 sticky top-0 z-20 shadow-2xs">
+        <div class="max-w-[1440px] mx-auto flex flex-wrap items-center justify-between gap-3">
           
-          <button onclick="switchStep('dashboard')" data-step="dashboard" class="step-card text-left p-3 rounded-xl border-2 border-indigo-600 bg-indigo-50/70 transition flex items-center justify-between shadow-xs">
+          <!-- Active Page Title -->
+          <div class="flex items-center gap-3">
             <div>
-              <div class="text-[10px] font-extrabold uppercase tracking-wider text-indigo-600">Overview</div>
-              <div class="text-xs sm:text-sm font-bold text-slate-900">Dashboard</div>
-              <div id="step-sub-dash" class="text-[11px] text-slate-500 mt-0.5">Live Summary</div>
+              <div id="topbar-breadcrumb" class="text-[11px] font-bold uppercase tracking-wider text-indigo-600">Overview</div>
+              <h2 id="topbar-page-title" class="text-sm sm:text-base font-extrabold text-slate-900">Dashboard Overview</h2>
             </div>
-            <span id="badge-step-0" class="w-6 h-6 rounded-full bg-indigo-600 text-white text-xs font-extrabold flex items-center justify-center shrink-0">
-              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
-            </span>
-          </button>
+          </div>
 
-          <button onclick="switchStep('tracking')" data-step="tracking" class="step-card text-left p-3 rounded-xl border border-slate-200 bg-white hover:border-indigo-400 transition flex items-center justify-between">
-            <div>
-              <div class="text-[10px] font-extrabold uppercase tracking-wider text-emerald-600">Search & Track</div>
-              <div class="text-xs sm:text-sm font-bold text-slate-900">Order Tracker</div>
-              <div id="step-sub-track" class="text-[11px] text-slate-500 mt-0.5">SO / Slip / Inv</div>
+          <!-- Global Quick Search Bar -->
+          <div class="flex-1 max-w-md w-full order-3 sm:order-2">
+            <div class="relative">
+              <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 103.5 10.5a7.5 7.5 0 0013.15 6.15z"/></svg>
+              <input type="text" id="global-search-input" oninput="handleGlobalSearch(this.value)" placeholder="Search Sale Order, Cutting Slip, Invoice, or Company..." class="w-full pl-10 pr-8 py-2 rounded-xl bg-slate-100 border border-slate-200 text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:border-indigo-500 transition">
+              <button id="global-search-clear" onclick="clearGlobalSearch()" class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-800 text-xs font-bold">✕</button>
             </div>
-            <span id="badge-step-1" class="w-6 h-6 rounded-full bg-slate-100 text-slate-700 text-xs font-extrabold flex items-center justify-center shrink-0">
-              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 103.5 10.5a7.5 7.5 0 0013.15 6.15z"/></svg>
-            </span>
-          </button>
+          </div>
 
-          <button onclick="switchStep('masters')" data-step="masters" class="step-card text-left p-3 rounded-xl border border-slate-200 bg-white hover:border-indigo-400 transition flex items-center justify-between">
-            <div>
-              <div class="text-[10px] font-extrabold uppercase tracking-wider text-purple-600">Catalog</div>
-              <div class="text-xs sm:text-sm font-bold text-slate-900">Products & Clients</div>
-              <div id="step-sub-masters" class="text-[11px] text-slate-500 mt-0.5">0 items • 0 clients</div>
-            </div>
-            <span id="badge-step-2" class="w-6 h-6 rounded-full bg-slate-100 text-slate-700 text-xs font-extrabold flex items-center justify-center shrink-0">
-              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
-            </span>
-          </button>
-
-          <button onclick="switchStep('reports')" data-step="reports" class="step-card text-left p-3 rounded-xl border border-slate-200 bg-white hover:border-indigo-400 transition flex items-center justify-between">
-            <div>
-              <div class="text-[10px] font-extrabold uppercase tracking-wider text-amber-600">Analytics</div>
-              <div class="text-xs sm:text-sm font-bold text-slate-900">MIS Reports</div>
-              <div id="step-sub-reports" class="text-[11px] text-slate-500 mt-0.5">Filters & CSV</div>
-            </div>
-            <span id="badge-step-3" class="w-6 h-6 rounded-full bg-slate-100 text-slate-700 text-xs font-extrabold flex items-center justify-center shrink-0">
-              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-            </span>
-          </button>
-
-          <button onclick="switchStep('sale-orders')" data-step="sale-orders" class="step-card text-left p-3 rounded-xl border border-slate-200 bg-white hover:border-indigo-400 transition flex items-center justify-between">
-            <div>
-              <div class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Step 1</div>
-              <div class="text-xs sm:text-sm font-bold text-slate-900">Sale Orders</div>
-              <div id="step-sub-so" class="text-[11px] text-slate-500 mt-0.5">0 active orders</div>
-            </div>
-            <span id="badge-step-4" class="w-6 h-6 rounded-full bg-slate-100 text-slate-700 text-xs font-extrabold flex items-center justify-center shrink-0">0</span>
-          </button>
-
-          <button onclick="switchStep('cutting-slips')" data-step="cutting-slips" class="step-card text-left p-3 rounded-xl border border-slate-200 bg-white hover:border-indigo-400 transition flex items-center justify-between">
-            <div>
-              <div class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Step 2</div>
-              <div class="text-xs sm:text-sm font-bold text-slate-900">Cutting Slips</div>
-              <div id="step-sub-cut" class="text-[11px] text-slate-500 mt-0.5">0 slips</div>
-            </div>
-            <span id="badge-step-5" class="w-6 h-6 rounded-full bg-slate-100 text-slate-700 text-xs font-extrabold flex items-center justify-center shrink-0">0</span>
-          </button>
-
-          <button onclick="switchStep('allocation')" data-step="allocation" class="step-card text-left p-3 rounded-xl border border-slate-200 bg-white hover:border-indigo-400 transition flex items-center justify-between">
-            <div>
-              <div class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Step 3</div>
-              <div class="text-xs sm:text-sm font-bold text-slate-900">Tailor & Unit</div>
-              <div id="step-sub-alloc" class="text-[11px] text-slate-500 mt-0.5">0 on floor</div>
-            </div>
-            <span id="badge-step-6" class="w-6 h-6 rounded-full bg-slate-100 text-slate-700 text-xs font-extrabold flex items-center justify-center shrink-0">0</span>
-          </button>
-
-          <button onclick="switchStep('receiving-fg')" data-step="receiving-fg" class="step-card text-left p-3 rounded-xl border border-slate-200 bg-white hover:border-indigo-400 transition flex items-center justify-between">
-            <div>
-              <div class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Step 4</div>
-              <div class="text-xs sm:text-sm font-bold text-slate-900">Receive FG</div>
-              <div id="step-sub-fg" class="text-[11px] text-slate-500 mt-0.5">0 pcs in store</div>
-            </div>
-            <span id="badge-step-7" class="w-6 h-6 rounded-full bg-slate-100 text-slate-700 text-xs font-extrabold flex items-center justify-center shrink-0">0</span>
-          </button>
-
-          <button onclick="switchStep('tax-invoice')" data-step="tax-invoice" class="step-card text-left p-3 rounded-xl border border-slate-200 bg-white hover:border-indigo-400 transition flex items-center justify-between">
-            <div>
-              <div class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Step 5</div>
-              <div class="text-xs sm:text-sm font-bold text-slate-900">Tax Invoice</div>
-              <div id="step-sub-inv" class="text-[11px] text-slate-500 mt-0.5">0 invoices</div>
-            </div>
-            <span id="badge-step-8" class="w-6 h-6 rounded-full bg-slate-100 text-slate-700 text-xs font-extrabold flex items-center justify-center shrink-0">0</span>
-          </button>
-
+          <!-- Backup & Demo Utilities -->
+          <div class="flex items-center gap-2 order-2 sm:order-3">
+            <button onclick="exportBackupExcel()" class="px-3 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-bold border border-emerald-200 transition">
+              Export Excel (.xlsx)
+            </button>
+            <label class="cursor-pointer px-3 py-1.5 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-800 text-xs font-bold border border-indigo-200 transition">
+              Import Excel (.xlsx)
+              <input type="file" accept=".xlsx,.xls,.csv" onchange="importBackupExcel(event)" class="hidden">
+            </label>
+            <button onclick="resetDemoFlow()" class="hidden sm:inline-flex px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold border border-slate-200 transition">
+              Reset Demo
+            </button>
+          </div>
         </div>
-      </div>
-    </div>
+      </header>
 
-    <!-- MAIN CONTENT WORKSPACE -->
-    <main class="flex-1 max-w-[1560px] w-full mx-auto px-4 sm:px-8 py-6 space-y-6">
+      <!-- MAIN CONTENT WORKSPACE -->
+      <main class="flex-1 max-w-[1440px] w-full mx-auto px-4 sm:px-8 py-6 space-y-6">
 
       <!-- =============================================================== -->
-      <!-- VIEW: MIS REPORTS & MULTI-CRITERIA ANALYTICS FILTERS            -->
+      <!-- VIEW: MIS REPORTS & ANALYTICS WITH FILTERS                      -->
       <!-- =============================================================== -->
       <section id="view-reports" class="step-view hidden tab-fade space-y-6">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <h2 class="text-xl font-extrabold text-slate-900">MIS Reports & Operational Analytics</h2>
-            <p class="text-xs sm:text-sm text-slate-500">Filter by <strong>Date Range</strong>, <strong>Hospital/Client</strong>, <strong>Production Unit</strong>, <strong>Tailor</strong>, or <strong>Stage</strong> and export CSV / Print reports</p>
+            <p class="text-xs sm:text-sm text-slate-500">Filter production, tailor piece-rate wages, fabric valuation & GST sales registers by date, client, unit, or tailor</p>
           </div>
           <div class="flex flex-wrap gap-2">
-            <button onclick="exportCurrentReportCsv()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-xs transition">
-              Export Filtered CSV (Excel)
+            <button onclick="resetReportFilters()" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition">
+              Reset Filters
             </button>
-            <button onclick="printCurrentReport()" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold shadow-xs transition">
-              Print MIS Report
+            <button onclick="exportCurrentReportCsv()" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-xs transition">
+              Export CSV (Excel)
+            </button>
+            <button onclick="printCurrentReport()" class="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold shadow-xs transition">
+              Print Report
             </button>
           </div>
         </div>
 
         <!-- Multi-Criteria Report Filter Bar -->
-        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs space-y-4">
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-extrabold uppercase tracking-wider text-indigo-600">Report Filters & Date Range</span>
-            <button onclick="resetReportFilters()" class="text-xs font-bold text-slate-500 hover:text-slate-900">Reset All Filters ↺</button>
-          </div>
+        <div class="bg-white rounded-2xl border border-slate-200 p-4 sm:p-5 shadow-xs space-y-4">
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3">
             <div>
               <label class="block text-[11px] font-bold text-slate-600 mb-1">From Date</label>
-              <input type="date" id="rep-date-from" onchange="renderReportsPage()" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold bg-slate-50">
+              <input type="date" id="rep-date-from" onchange="renderReportsPage()" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold bg-white">
             </div>
             <div>
               <label class="block text-[11px] font-bold text-slate-600 mb-1">To Date</label>
-              <input type="date" id="rep-date-to" onchange="renderReportsPage()" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold bg-slate-50">
+              <input type="date" id="rep-date-to" onchange="renderReportsPage()" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold bg-white">
             </div>
             <div>
               <label class="block text-[11px] font-bold text-slate-600 mb-1">Client / Hospital</label>
@@ -249,9 +293,9 @@
             <div>
               <label class="block text-[11px] font-bold text-slate-600 mb-1">Production Unit</label>
               <select id="rep-filter-unit" onchange="renderReportsPage()" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold bg-white">
-                <option value="ALL">All Units (Cherlapally & Musheerabad)</option>
-                <option value="Cherlapally">Cherlapally Units</option>
-                <option value="Musheerabad">Musheerabad Units</option>
+                <option value="ALL">All Units</option>
+                <option value="Cherlapally">Cherlapally Unit</option>
+                <option value="Musheerabad">Musheerabad Unit</option>
               </select>
             </div>
             <div>
@@ -1378,6 +1422,22 @@
     }
 
     // Switch Active Step View
+    const STEP_META = {
+      "dashboard": { crumb: "Command Center", title: "Dashboard Overview" },
+      "tracking": { crumb: "Search & Lifecycle", title: "Order, Cutting Slip & Invoice Tracker" },
+      "masters": { crumb: "Catalog Directory", title: "Products & Clients Master" },
+      "reports": { crumb: "Analytics & Export", title: "MIS Reports & Operational Filters" },
+      "sale-orders": { crumb: "Step 1 of 5", title: "Customer & Hospital Sale Orders" },
+      "cutting-slips": { crumb: "Step 2 of 5", title: "Cutting Master Slips & Garment Preview" },
+      "allocation": { crumb: "Step 3 of 5", title: "Allocation to Tailor & Production Unit" },
+      "receiving-fg": { crumb: "Step 4 of 5", title: "Receiving Finished Goods (QC & Packing)" },
+      "tax-invoice": { crumb: "Step 5 of 5", title: "GST Tax Invoice & E-Way Bill Dispatch" }
+    };
+
+    function toggleMobileSidebar(open) {
+      // Sidebar is permanently pinned open across all viewports
+    }
+
     function switchStep(stepId) {
       document.querySelectorAll(".step-view").forEach(v => v.classList.add("hidden"));
       const activeView = document.getElementById(`view-${stepId}`);
@@ -1387,14 +1447,23 @@
         const isCurrent = card.dataset.step === stepId;
         const badge = document.getElementById(`badge-step-${idx}`);
         if (isCurrent) {
-          card.className = "step-card text-left p-3 rounded-xl border-2 border-indigo-600 bg-indigo-50/70 transition flex items-center justify-between shadow-xs";
-          if (badge) badge.className = "w-6 h-6 rounded-full bg-indigo-600 text-white text-xs font-extrabold flex items-center justify-center shrink-0";
+          card.className = "step-card w-full text-left px-3 py-2.5 rounded-xl bg-indigo-600 text-white shadow-sm transition flex items-center justify-between";
+          if (badge && idx >= 4) badge.className = "px-2 py-0.5 rounded-full bg-white text-indigo-700 text-xs font-extrabold";
         } else {
-          card.className = "step-card text-left p-3 rounded-xl border border-slate-200 bg-white hover:border-indigo-400 transition flex items-center justify-between";
-          if (badge) badge.className = "w-6 h-6 rounded-full bg-slate-100 text-slate-700 text-xs font-extrabold flex items-center justify-center shrink-0";
+          card.className = "step-card w-full text-left px-3 py-2.5 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-white transition flex items-center justify-between";
+          if (badge && idx >= 4) badge.className = "px-2 py-0.5 rounded-full bg-slate-800 text-slate-200 text-xs font-extrabold";
         }
       });
 
+      const meta = STEP_META[stepId];
+      if (meta) {
+        const crumbEl = document.getElementById("topbar-breadcrumb");
+        const titleEl = document.getElementById("topbar-page-title");
+        if (crumbEl) crumbEl.textContent = meta.crumb;
+        if (titleEl) titleEl.textContent = meta.title;
+      }
+
+      toggleMobileSidebar(false);
       history.replaceState(null, "", `#${stepId}`);
       if (stepId === "tracking") renderTrackingPage();
       if (stepId === "masters") renderMastersPage();
@@ -1456,12 +1525,19 @@
       const tbody = document.getElementById("rep-table-body");
       if (!thead || !tbody) return;
 
-      const dateFrom = document.getElementById("rep-date-from").value;
-      const dateTo = document.getElementById("rep-date-to").value;
-      const clientFilter = document.getElementById("rep-filter-client").value;
-      const unitFilter = document.getElementById("rep-filter-unit").value;
-      const tailorFilter = document.getElementById("rep-filter-tailor").value;
-      const stageFilter = document.getElementById("rep-filter-stage").value;
+      const dateFromEl = document.getElementById("rep-date-from");
+      const dateToEl = document.getElementById("rep-date-to");
+      const clientEl = document.getElementById("rep-filter-client");
+      const unitEl = document.getElementById("rep-filter-unit");
+      const tailorEl = document.getElementById("rep-filter-tailor");
+      const stageEl = document.getElementById("rep-filter-stage");
+
+      const dateFrom = dateFromEl ? dateFromEl.value : "";
+      const dateTo = dateToEl ? dateToEl.value : "";
+      const clientFilter = clientEl ? clientEl.value : "ALL";
+      const unitFilter = unitEl ? unitEl.value : "ALL";
+      const tailorFilter = tailorEl ? tailorEl.value : "ALL";
+      const stageFilter = stageEl ? stageEl.value : "ALL";
 
       const inDateRange = (d) => {
         if (!d) return true;
@@ -3091,34 +3167,136 @@
       showToast("Copied document text to clipboard.", "success");
     }
 
-    function exportBackupJson() {
-      const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `ST_Traders_5Stage_Backup_${new Date().toISOString().split("T")[0]}.json`;
-      a.click();
-      URL.revokeObjectURL(url);
-      showToast("Exported JSON backup.", "success");
+    function exportBackupExcel() {
+      if (typeof XLSX === "undefined") {
+        showToast("Excel engine loading—please try again in a moment.", "warning");
+        return;
+      }
+      const wb = XLSX.utils.book_new();
+
+      // Sheet 1: SaleOrders (flattening size ratio columns for clean Excel editing)
+      const soRows = state.saleOrders.map(so => ({
+        id: so.id,
+        nameCode: so.nameCode || "",
+        date: so.date,
+        client: so.client,
+        gstin: so.gstin,
+        gender: so.gender,
+        style: so.style,
+        sz_34: (so.sizes && so.sizes["34"]) || 0,
+        sz_36: (so.sizes && so.sizes["36"]) || 0,
+        sz_38: (so.sizes && so.sizes["38"]) || 0,
+        sz_40: (so.sizes && so.sizes["40"]) || 0,
+        sz_42: (so.sizes && so.sizes["42"]) || 0,
+        sz_44: (so.sizes && so.sizes["44"]) || 0,
+        totalQty: so.totalQty,
+        rate: so.rate,
+        cloth: so.cloth,
+        colour: so.colour,
+        collar: so.collar,
+        pattern: so.pattern,
+        bottomPattern: so.bottomPattern || "",
+        piping: so.piping || "",
+        embrDesign: so.embrDesign || "",
+        poCode: so.poCode || "",
+        hospt: so.hospt || "",
+        stage: so.stage
+      }));
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(soRows), "SaleOrders");
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(state.cuttingSlips), "CuttingSlips");
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(state.allocations), "Allocations");
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(state.finishedGoods), "FinishedGoods");
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(state.invoices), "TaxInvoices");
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(state.fabrics), "Fabrics");
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(state.masterProducts), "Products");
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(state.masterClients), "Clients");
+
+      const fileName = `ST_Traders_ERP_Backup_${new Date().toISOString().split("T")[0]}.xlsx`;
+      XLSX.writeFile(wb, fileName);
+      showToast(`Exported multi-sheet Excel workbook (${fileName}).`, "success");
     }
 
-    function importBackupJson(e) {
+    function importBackupExcel(e) {
       const file = e.target.files[0];
       if (!file) return;
+      if (typeof XLSX === "undefined") {
+        showToast("Excel library not loaded yet.", "warning");
+        return;
+      }
       const reader = new FileReader();
       reader.onload = function(evt) {
         try {
-          const parsed = JSON.parse(evt.target.result);
-          if (parsed && Array.isArray(parsed.saleOrders)) {
-            state = parsed;
-            saveFlowState();
-            showToast("Backup restored successfully.", "success");
+          const data = new Uint8Array(evt.target.result);
+          const wb = XLSX.read(data, { type: "array" });
+
+          const readSheet = (name) => wb.Sheets[name] ? XLSX.utils.sheet_to_json(wb.Sheets[name]) : null;
+
+          const rawSo = readSheet("SaleOrders");
+          if (rawSo && rawSo.length > 0) {
+            state.saleOrders = rawSo.map(r => {
+              const sizes = {
+                "34": Number(r.sz_34) || 0,
+                "36": Number(r.sz_36) || 0,
+                "38": Number(r.sz_38) || 0,
+                "40": Number(r.sz_40) || 0,
+                "42": Number(r.sz_42) || 0,
+                "44": Number(r.sz_44) || 0
+              };
+              const calcTotal = Object.values(sizes).reduce((a, b) => a + b, 0);
+              return {
+                id: String(r.id || ""),
+                nameCode: String(r.nameCode || ""),
+                date: String(r.date || ""),
+                client: String(r.client || ""),
+                gstin: String(r.gstin || ""),
+                gender: String(r.gender || "UNISEX"),
+                style: String(r.style || ""),
+                sizes,
+                totalQty: Number(r.totalQty) || calcTotal,
+                rate: Number(r.rate) || 0,
+                cloth: String(r.cloth || ""),
+                colour: String(r.colour || ""),
+                collar: String(r.collar || ""),
+                pattern: String(r.pattern || ""),
+                bottomPattern: String(r.bottomPattern || "Nada Phyajam"),
+                piping: String(r.piping || ""),
+                embrDesign: String(r.embrDesign || ""),
+                poCode: String(r.poCode || "STTNP-06"),
+                hospt: String(r.hospt || "S T Traders Cheap Jack Musheerabad"),
+                stage: String(r.stage || "New Sale Order")
+              };
+            });
           }
+
+          const rawCut = readSheet("CuttingSlips");
+          if (rawCut) state.cuttingSlips = rawCut.map(r => ({ ...r, metersIssued: Number(r.metersIssued) || 0, fabricReleased: Boolean(r.fabricReleased) }));
+
+          const rawAlloc = readSheet("Allocations");
+          if (rawAlloc) state.allocations = rawAlloc.map(r => ({ ...r, totalQty: Number(r.totalQty) || 0, stitchedQty: Number(r.stitchedQty) || 0, pieceRate: Number(r.pieceRate) || 0 }));
+
+          const rawFg = readSheet("FinishedGoods");
+          if (rawFg) state.finishedGoods = rawFg.map(r => ({ ...r, passedQty: Number(r.passedQty) || 0, reworkQty: Number(r.reworkQty) || 0, cartons: Number(r.cartons) || 1, rate: Number(r.rate) || 0, invoiced: Boolean(r.invoiced) }));
+
+          const rawInv = readSheet("TaxInvoices");
+          if (rawInv) state.invoices = rawInv.map(r => ({ ...r, qty: Number(r.qty) || 0, rate: Number(r.rate) || 0, taxable: Number(r.taxable) || 0, gstPct: Number(r.gstPct) || 5, taxAmt: Number(r.taxAmt) || 0, grandTotal: Number(r.grandTotal) || 0 }));
+
+          const rawFab = readSheet("Fabrics");
+          if (rawFab && rawFab.length > 0) state.fabrics = rawFab.map(r => ({ name: String(r.name || ""), stock: Number(r.stock) || 0, rate: Number(r.rate) || 0 }));
+
+          const rawProd = readSheet("Products");
+          if (rawProd && rawProd.length > 0) state.masterProducts = rawProd.map(r => ({ ...r, rate: Number(r.rate) || 0 }));
+
+          const rawCli = readSheet("Clients");
+          if (rawCli && rawCli.length > 0) state.masterClients = rawCli;
+
+          saveFlowState();
+          showToast("Excel (.xlsx) workbook imported & synced across all modules!", "success");
         } catch (err) {
-          showToast("Invalid JSON backup file.", "warning");
+          showToast("Could not read Excel file. Please use an exported .xlsx template.", "warning");
         }
+        e.target.value = "";
       };
-      reader.readAsText(file);
+      reader.readAsArrayBuffer(file);
     }
 
     function updateStepperBadges() {
