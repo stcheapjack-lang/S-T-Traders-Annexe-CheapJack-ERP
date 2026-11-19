@@ -542,8 +542,13 @@
           <!-- LEFT COLUMN: ADD & MANAGE PRODUCTS (GARMENT TEMPLATES) -->
           <div class="lg:col-span-6 space-y-4">
             <div class="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-xs">
-              <h3 class="text-base font-bold text-slate-900 mb-1">Add New Garment / Uniform Product</h3>
-              <p class="text-xs text-slate-500 mb-4">Define standard cutting specs, cloth, collar & wholesale rate</p>
+              <div class="flex items-center justify-between mb-1">
+                <h3 id="prod-form-title" class="text-base font-bold text-slate-900">Add New Garment / Uniform Product</h3>
+                <button type="button" id="prod-cancel-edit-btn" onclick="cancelEditMasterProduct()" class="hidden px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold">
+                  Cancel Edit
+                </button>
+              </div>
+              <p class="text-xs text-slate-500 mb-4">Define or update standard cutting specs, cloth, collar, wholesale rate & garment photo</p>
               
               <form onsubmit="addMasterProduct(event)" class="space-y-3">
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -592,7 +597,28 @@
                   <input type="text" id="prod-pattern" value="3 Tucks Shirt Pattern Down 2 Pocket Front Open Buttons" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs">
                 </div>
 
-                <button type="submit" class="w-full py-2.5 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-xs transition">
+                <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between gap-3">
+                  <div class="flex items-center gap-3 min-w-0">
+                    <div id="prod-img-preview-box" class="w-14 h-14 rounded-lg border border-slate-300 bg-white flex items-center justify-center overflow-hidden shrink-0 text-[10px] font-bold text-slate-400">
+                      NO PHOTO
+                    </div>
+                    <div class="min-w-0">
+                      <div class="text-xs font-bold text-slate-800">Garment / Uniform Photo</div>
+                      <div id="prod-img-filename" class="text-[11px] text-slate-500 truncate">Optional — auto-fills Cutting Slip preview</div>
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-1.5 shrink-0">
+                    <label class="cursor-pointer px-3 py-1.5 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 text-xs font-bold transition">
+                      Upload Image
+                      <input type="file" id="prod-image-file" accept="image/*" onchange="handleMasterProductImageUpload(event)" class="hidden">
+                    </label>
+                    <button type="button" id="prod-img-clear-btn" onclick="clearMasterProductDraftImage()" class="hidden px-2 py-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 text-xs font-bold">
+                      ✕
+                    </button>
+                  </div>
+                </div>
+
+                <button type="submit" id="prod-submit-btn" class="w-full py-2.5 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-xs transition">
                   + Save Product to Catalog
                 </button>
               </form>
@@ -2313,8 +2339,13 @@
       prodTbody.innerHTML = state.masterProducts.map((p, idx) => `
         <tr class="hover:bg-slate-50">
           <td class="py-3 px-4">
-            <div class="font-bold text-slate-900">${p.name}</div>
-            <div class="text-[11px] text-slate-500">${p.gender} • ${p.colour}</div>
+            <div class="flex items-center gap-2.5">
+              ${p.image ? `<img src="${p.image}" alt="${p.name}" class="w-10 h-10 rounded-lg object-cover border border-slate-200 shrink-0">` : `<div class="w-10 h-10 rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center text-[9px] font-bold text-slate-400 shrink-0">IMG</div>`}
+              <div>
+                <div class="font-bold text-slate-900">${p.name}</div>
+                <div class="text-[11px] text-slate-500">${p.gender} • ${p.colour}</div>
+              </div>
+            </div>
           </td>
           <td class="py-3 px-4">
             <div class="font-semibold text-slate-800">${p.cloth}</div>
@@ -2323,6 +2354,9 @@
           <td class="py-3 px-4 font-extrabold text-emerald-700">${formatINR(p.rate)}</td>
           <td class="py-3 px-4 text-right">
             <div class="inline-flex gap-1.5">
+              <button onclick="editMasterProduct(${idx})" class="px-2.5 py-1 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 font-bold">
+                Edit
+              </button>
               <button onclick="bookOrderWithProduct(${idx})" class="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold">
                 + Order
               </button>
@@ -2359,10 +2393,89 @@
       `).join("");
     }
 
+    let draftMasterProductImage = "";
+    let draftMasterProductImageName = "";
+
+    function handleMasterProductImageUpload(e) {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        draftMasterProductImage = evt.target.result;
+        draftMasterProductImageName = file.name;
+        const box = document.getElementById("prod-img-preview-box");
+        const fn = document.getElementById("prod-img-filename");
+        const clr = document.getElementById("prod-img-clear-btn");
+        if (box) box.innerHTML = `<img src="${draftMasterProductImage}" alt="Preview" class="w-full h-full object-cover">`;
+        if (fn) fn.textContent = file.name;
+        if (clr) clr.classList.remove("hidden");
+        showToast(`Attached garment image "${file.name}".`, "success");
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function clearMasterProductDraftImage() {
+      draftMasterProductImage = "";
+      draftMasterProductImageName = "";
+      const inp = document.getElementById("prod-image-file");
+      const box = document.getElementById("prod-img-preview-box");
+      const fn = document.getElementById("prod-img-filename");
+      const clr = document.getElementById("prod-img-clear-btn");
+      if (inp) inp.value = "";
+      if (box) box.innerHTML = "NO PHOTO";
+      if (fn) fn.textContent = "Optional — auto-fills Cutting Slip preview";
+      if (clr) clr.classList.add("hidden");
+    }
+
+    let editingMasterProductIndex = -1;
+
+    function editMasterProduct(idx) {
+      const p = state.masterProducts[idx];
+      if (!p) return;
+      editingMasterProductIndex = idx;
+      document.getElementById("prod-name").value = p.name || "";
+      document.getElementById("prod-rate").value = p.rate || 650;
+      document.getElementById("prod-gender").value = p.gender || "UNISEX";
+      document.getElementById("prod-cloth").value = p.cloth || "";
+      document.getElementById("prod-colour").value = p.colour || "";
+      document.getElementById("prod-collar").value = p.collar || "";
+      document.getElementById("prod-bottom").value = p.bottomPattern || "";
+      document.getElementById("prod-pattern").value = p.pattern || "";
+
+      if (p.image) {
+        draftMasterProductImage = p.image;
+        document.getElementById("prod-img-preview-box").innerHTML = `<img src="${p.image}" alt="Preview" class="w-full h-full object-cover">`;
+        document.getElementById("prod-img-filename").textContent = "Saved garment photo attached";
+        document.getElementById("prod-img-clear-btn").classList.remove("hidden");
+      } else {
+        clearMasterProductDraftImage();
+      }
+
+      document.getElementById("prod-form-title").textContent = `Edit Product: ${p.name}`;
+      document.getElementById("prod-submit-btn").textContent = "Update Product in Catalog ✓";
+      document.getElementById("prod-cancel-edit-btn").classList.remove("hidden");
+      document.getElementById("prod-name").scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+
+    function cancelEditMasterProduct() {
+      editingMasterProductIndex = -1;
+      document.getElementById("prod-name").value = "";
+      document.getElementById("prod-rate").value = "720";
+      document.getElementById("prod-gender").value = "FEMALE";
+      document.getElementById("prod-cloth").value = "Alaskar";
+      document.getElementById("prod-colour").value = "White";
+      document.getElementById("prod-collar").value = "Yashoda Collar";
+      document.getElementById("prod-bottom").value = "Nada Phyajam";
+      document.getElementById("prod-pattern").value = "3 Tucks Shirt Pattern Down 2 Pocket Front Open Buttons";
+      clearMasterProductDraftImage();
+      document.getElementById("prod-form-title").textContent = "Add New Garment / Uniform Product";
+      document.getElementById("prod-submit-btn").textContent = "+ Save Product to Catalog";
+      document.getElementById("prod-cancel-edit-btn").classList.add("hidden");
+    }
+
     function addMasterProduct(e) {
       e.preventDefault();
-      const prod = {
-        id: `PRD-${String(state.masterProducts.length + 1).padStart(2, "0")}`,
+      const updatedFields = {
         name: document.getElementById("prod-name").value.trim().toUpperCase(),
         gender: document.getElementById("prod-gender").value,
         cloth: document.getElementById("prod-cloth").value.trim(),
@@ -2370,11 +2483,26 @@
         collar: document.getElementById("prod-collar").value.trim(),
         bottomPattern: document.getElementById("prod-bottom").value.trim(),
         pattern: document.getElementById("prod-pattern").value.trim(),
-        rate: parseFloat(document.getElementById("prod-rate").value) || 650
+        rate: parseFloat(document.getElementById("prod-rate").value) || 650,
+        image: draftMasterProductImage || ""
+      };
+
+      if (editingMasterProductIndex >= 0 && state.masterProducts[editingMasterProductIndex]) {
+        const existing = state.masterProducts[editingMasterProductIndex];
+        state.masterProducts[editingMasterProductIndex] = { ...existing, ...updatedFields };
+        saveFlowState();
+        cancelEditMasterProduct();
+        showToast(`Updated product "${updatedFields.name}".`, "success");
+        return;
+      }
+
+      const prod = {
+        id: `PRD-${String(state.masterProducts.length + 1).padStart(2, "0")}`,
+        ...updatedFields
       };
       state.masterProducts.unshift(prod);
       saveFlowState();
-      document.getElementById("prod-name").value = "";
+      cancelEditMasterProduct();
       showToast(`Added product "${prod.name}" to catalog.`, "success");
     }
 
@@ -2652,6 +2780,7 @@
       soDraftItems[rowIdx].pattern = p.pattern || "";
       soDraftItems[rowIdx].bottomPattern = p.bottomPattern || "Standard Bottom";
       soDraftItems[rowIdx].rate = Number(p.rate) || 650;
+      if (p.image) soDraftItems[rowIdx].image = p.image;
       activeSoItemIndex = rowIdx;
       renderSoDraftItemsTable();
     }
@@ -4043,7 +4172,9 @@
             </div>
             <div class="cutting-slip-right md:col-span-5 border-2 border-black p-2 flex flex-col items-center justify-center bg-white min-h-[260px]">
               <div class="cutting-slip-image-box w-full flex items-center justify-center">
-                ${getGarmentIllustrationSvg(so.style)}
+                ${((so.items && so.items[0] && so.items[0].image) || (state.masterProducts.find(mp => (so.style || "").toUpperCase().includes(mp.name))?.image))
+                  ? `<img src="${(so.items && so.items[0] && so.items[0].image) || state.masterProducts.find(mp => (so.style || "").toUpperCase().includes(mp.name)).image}" alt="${so.style || 'Garment'}" class="max-h-[240px] w-auto mx-auto object-contain">`
+                  : getGarmentIllustrationSvg(so.style)}
               </div>
             </div>
           </div>
