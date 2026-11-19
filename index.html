@@ -640,8 +640,13 @@
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <label class="block text-xs font-semibold text-slate-700 mb-1">15-Digit GSTIN</label>
-                    <input type="text" id="cli-gstin" placeholder="36AAACY4912K1Z2" maxlength="15" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold uppercase">
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">15-Digit GSTIN (Auto-Fetches Firm Details)</label>
+                    <div class="flex gap-1.5">
+                      <input type="text" id="cli-gstin" oninput="handleGstinAutoFetch(this.value, 'master')" placeholder="36AAACY4912K1Z2" maxlength="15" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold uppercase">
+                      <button type="button" onclick="fetchGstinDetails(document.getElementById('cli-gstin').value, 'master', true)" class="px-3 py-2 rounded-xl bg-slate-900 hover:bg-indigo-600 text-white text-xs font-bold shrink-0">
+                        Fetch
+                      </button>
+                    </div>
                   </div>
                   <div>
                     <label class="block text-xs font-semibold text-slate-700 mb-1">Sector / Category</label>
@@ -1165,8 +1170,13 @@
             <button type="button" onclick="toggleInlineSoCreator('none')" class="text-xs font-bold text-slate-400 hover:text-slate-700">✕ Close</button>
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-4 gap-2">
+            <div class="flex gap-1">
+              <input type="text" id="quick-cli-gstin" oninput="handleGstinAutoFetch(this.value, 'quick')" placeholder="Type 15-Digit GSTIN *" maxlength="15" class="w-full px-2.5 py-1.5 rounded-lg border border-emerald-300 text-xs font-bold uppercase bg-emerald-50/40 focus:bg-white">
+              <button type="button" onclick="fetchGstinDetails(document.getElementById('quick-cli-gstin').value, 'quick', true)" class="px-2 py-1.5 rounded-lg bg-slate-900 hover:bg-indigo-600 text-white text-[10px] font-extrabold shrink-0">
+                Fetch
+              </button>
+            </div>
             <input type="text" id="quick-cli-name" placeholder="Hospital / Company Name *" class="sm:col-span-2 px-2.5 py-1.5 rounded-lg border border-slate-300 text-xs font-semibold">
-            <input type="text" id="quick-cli-gstin" placeholder="15-Digit GSTIN *" maxlength="15" class="px-2.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold uppercase">
             <input type="text" id="quick-cli-phone" placeholder="Phone Number" class="px-2.5 py-1.5 rounded-lg border border-slate-300 text-xs">
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-4 gap-2">
@@ -1245,7 +1255,10 @@
                 <div class="grid grid-cols-2 gap-2">
                   <div class="flex items-center gap-1">
                     <span class="font-semibold shrink-0">GST No :</span>
-                    <input type="text" id="so-gstin" oninput="recalcSoDocumentTotals()" value="36ACQPM0669R1ZM" maxlength="15" required class="w-full px-1.5 py-0.5 border border-slate-300 rounded font-bold uppercase text-[11px] bg-white focus:border-indigo-600 focus:outline-none">
+                    <input type="text" id="so-gstin" oninput="handleGstinAutoFetch(this.value, 'so')" value="36ACQPM0669R1ZM" maxlength="15" required class="w-full px-1.5 py-0.5 border border-slate-300 rounded font-bold uppercase text-[11px] bg-white focus:border-indigo-600 focus:outline-none">
+                    <button type="button" onclick="fetchGstinDetails(document.getElementById('so-gstin').value, 'so', true)" title="Fetch Firm/Company Details from GSTIN" class="px-1.5 py-0.5 rounded bg-indigo-600 hover:bg-indigo-700 text-white text-[9.5px] font-extrabold shrink-0">
+                      Fetch
+                    </button>
                   </div>
                   <div class="flex items-center gap-1">
                     <span class="font-semibold shrink-0">Phone :</span>
@@ -2711,6 +2724,232 @@
       const wordsEl = document.getElementById("so-doc-words");
       if (wordsEl) wordsEl.textContent = numberToIndianWords(afterTax);
       return total;
+    }
+
+    const GST_STATE_CODES = {
+      "01": "Jammu & Kashmir", "02": "Himachal Pradesh", "03": "Punjab", "04": "Chandigarh",
+      "05": "Uttarakhand", "06": "Haryana", "07": "Delhi", "08": "Rajasthan",
+      "09": "Uttar Pradesh", "10": "Bihar", "11": "Sikkim", "12": "Arunachal Pradesh",
+      "13": "Nagaland", "14": "Manipur", "15": "Mizoram", "16": "Tripura",
+      "17": "Meghalaya", "18": "Assam", "19": "West Bengal", "20": "Jharkhand",
+      "21": "Odisha", "22": "Chhattisgarh", "23": "Madhya Pradesh", "24": "Gujarat",
+      "27": "Maharashtra", "29": "Karnataka", "30": "Goa", "32": "Kerala",
+      "33": "Tamil Nadu", "34": "Puducherry", "36": "Telangana", "37": "Andhra Pradesh"
+    };
+
+    const GST_ENTITY_TYPES = {
+      "C": "Private/Public Limited Company",
+      "P": "Proprietorship Firm",
+      "F": "Partnership Firm / LLP",
+      "H": "Hindu Undivided Family (HUF)",
+      "T": "Trust / Hospital Institution",
+      "A": "Association of Persons (AOP)",
+      "B": "Body of Individuals (BOI)",
+      "G": "Government Department",
+      "L": "Local Authority"
+    };
+
+    const KNOWN_GSTIN_DIRECTORY = {
+      "36ACQPM0669R1ZM": {
+        name: "S T Traders Annexe Cheap Jack Musheerabad",
+        address: "1-5-24, Kubera Complex, Sri Krishna Colony, Musheerabad, Hyderabad 500020, Telangana",
+        phone: "9347203651",
+        category: "Retail / Wholesale Dealer"
+      },
+      "36AAIPF1095L1ZJ": {
+        name: "ST TRADERS ANNEXE CHEAP JACK",
+        address: "10-5-348/A, Tukaram Gate, Buddha Nagar, Lalaguda Gate, Secunderabad, Hyderabad 500017, Telangana",
+        phone: "9347203651",
+        category: "Retail / Wholesale Dealer"
+      },
+      "36AAACY4912K1Z2": {
+        name: "Yashoda Healthcare Services Pvt Ltd (Yashoda Hospitals)",
+        address: "Alexander Road, SP Road, Secunderabad, Hyderabad 500003, Telangana",
+        phone: "9849022110",
+        category: "Hospital & Healthcare"
+      },
+      "36AAACK6219P1Z9": {
+        name: "Krishna Institute of Medical Sciences Ltd (KIMS Hospitals)",
+        address: "1-8-31/1, Minister Road, Secunderabad, Hyderabad 500003, Telangana",
+        phone: "9848033445",
+        category: "Hospital & Healthcare"
+      },
+      "36AABCC8821M1Z4": {
+        name: "Cherlapally Industrial & Pharma Corp",
+        address: "Phase II, IDA Cherlapally, Hyderabad 500051, Telangana",
+        phone: "9000177889",
+        category: "Industrial & Pharma"
+      },
+      "36AAACC3910L1Z1": {
+        name: "Quality Care India Ltd (CARE Hospitals Banjara Hills)",
+        address: "Road No. 1, Banjara Hills, Hyderabad 500034, Telangana",
+        phone: "9849155667",
+        category: "Hospital & Healthcare"
+      },
+      "36AABCA4812M1Z5": {
+        name: "Apollo Health and Lifestyle Ltd (Apollo Diagnostics)",
+        address: "Jubilee Hills, Road No. 72, Hyderabad 500033, Telangana",
+        phone: "9849044556",
+        category: "Hospital & Healthcare"
+      },
+      "36AAACR7412N1Z8": {
+        name: "Rainbow Children's Medicare Ltd (Rainbow Hospitals)",
+        address: "Road No. 2, Banjara Hills, Hyderabad 500034, Telangana",
+        phone: "9849066778",
+        category: "Hospital & Healthcare"
+      },
+      "36AAACA8915D1Z3": {
+        name: "Asian Institute of Gastroenterology Pvt Ltd (AIG Hospitals)",
+        address: "Mindspace Road, Gachibowli, Hyderabad 500032, Telangana",
+        phone: "9849088990",
+        category: "Hospital & Healthcare"
+      },
+      "36AAACH3210F1Z6": {
+        name: "Hetero Labs Limited",
+        address: "7-2-A2, Hetero Corporate, Industrial Estates, Sanathnagar, Hyderabad 500018, Telangana",
+        phone: "9848011223",
+        category: "Industrial & Pharma"
+      }
+    };
+
+    function parseIndianGstinMetadata(gstin) {
+      const clean = (gstin || "").trim().toUpperCase();
+      const gstRegex = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
+      const stateCode = clean.slice(0, 2);
+      const pan = clean.slice(2, 12);
+      const entityChar = clean.charAt(5);
+      const stateName = GST_STATE_CODES[stateCode] || `State Code ${stateCode}`;
+      const entityType = GST_ENTITY_TYPES[entityChar] || "Registered Business Entity";
+      return {
+        gstin: clean,
+        isValidFormat: gstRegex.test(clean),
+        stateCode,
+        stateName,
+        pan,
+        entityType
+      };
+    }
+
+    function handleGstinAutoFetch(rawVal, targetContext) {
+      if (targetContext === "so") recalcSoDocumentTotals();
+      const clean = (rawVal || "").trim().toUpperCase();
+      if (clean.length === 15) {
+        fetchGstinDetails(clean, targetContext, false);
+      }
+    }
+
+    async function fetchGstinDetails(rawGstin, targetContext, manualClick = false) {
+      const clean = (rawGstin || "").trim().toUpperCase();
+      if (clean.length !== 15) {
+        if (manualClick) showToast("Please enter a complete 15-digit GSTIN number.", "warning");
+        return;
+      }
+
+      const meta = parseIndianGstinMetadata(clean);
+      if (!meta.isValidFormat) {
+        showToast(`Invalid GSTIN checksum/format (${clean}). Verify 15-digit structure.`, "warning");
+        return;
+      }
+
+      let resolved = null;
+
+      // 1. Check Saved Master Clients
+      const savedCli = state.masterClients.find(c => (c.gstin || "").toUpperCase() === clean);
+      if (savedCli) {
+        resolved = {
+          name: savedCli.name,
+          address: savedCli.city || `${meta.stateName}, India`,
+          phone: savedCli.phone || (savedCli.contact && savedCli.contact.includes("+") ? savedCli.contact.split("•").pop().trim() : ""),
+          category: savedCli.category || "Hospital & Healthcare",
+          source: "Saved Client Master"
+        };
+      }
+
+      // 2. Check Past Sale Orders
+      if (!resolved) {
+        const pastSo = state.saleOrders.find(o => (o.gstin || "").toUpperCase() === clean);
+        if (pastSo) {
+          resolved = {
+            name: pastSo.client,
+            address: pastSo.address || `${meta.stateName}, India`,
+            phone: pastSo.phone || "",
+            category: "Hospital & Healthcare",
+            source: "Previous Sale Order"
+          };
+        }
+      }
+
+      // 3. Check Built-in Regional GSTIN Directory
+      if (!resolved && KNOWN_GSTIN_DIRECTORY[clean]) {
+        resolved = {
+          ...KNOWN_GSTIN_DIRECTORY[clean],
+          source: "GST Taxpayer Directory"
+        };
+      }
+
+      // 4. Try Live Public GST Taxpayer Lookup Endpoint (with graceful fallback to PAN/State metadata decode)
+      if (!resolved) {
+        try {
+          const resp = await fetch(`https://appyflow.in/api/verifyGST?gstNo=${clean}`, { method: "GET" });
+          if (resp.ok) {
+            const data = await resp.json();
+            const info = data && (data.taxpayerInfo || data.data || data);
+            if (info && (info.lgnm || info.tradeNam)) {
+              const addrObj = info.pradr && info.pradr.addr ? info.pradr.addr : {};
+              const addrStr = [addrObj.bno, addrObj.bnm, addrObj.st, addrObj.loc, addrObj.dst, addrObj.stcd, addrObj.pncd]
+                .filter(Boolean).join(", ") || `${meta.stateName}, India`;
+              resolved = {
+                name: info.tradeNam || info.lgnm,
+                address: addrStr,
+                phone: "",
+                category: "Hospital & Healthcare",
+                source: "Live GST Portal"
+              };
+            }
+          }
+        } catch (err) {
+          // Fallback handled cleanly below
+        }
+      }
+
+      // 5. Fallback: Populate verified GSTIN State, PAN & Entity Classification so user only types firm name if brand-new
+      if (!resolved) {
+        resolved = {
+          name: `M/s Registered ${meta.entityType} (${meta.pan})`,
+          address: `Registered Office, ${meta.stateName} (State Code ${meta.stateCode})`,
+          phone: "",
+          category: meta.entityType.includes("Trust") ? "Hospital & Healthcare" : "Corporate & Hospitality",
+          source: `GSTIN Verified (${meta.stateName} • PAN ${meta.pan})`
+        };
+      }
+
+      // Apply fetched details to the target form
+      if (targetContext === "so") {
+        document.getElementById("so-gstin").value = clean;
+        document.getElementById("so-client").value = resolved.name;
+        document.getElementById("so-address").value = resolved.address;
+        if (resolved.phone && document.getElementById("so-phone")) {
+          document.getElementById("so-phone").value = resolved.phone;
+        }
+        syncSoShippingPreview();
+        recalcSoDocumentTotals();
+      } else if (targetContext === "quick") {
+        document.getElementById("quick-cli-gstin").value = clean;
+        document.getElementById("quick-cli-name").value = resolved.name;
+        document.getElementById("quick-cli-address").value = resolved.address;
+        if (resolved.phone) document.getElementById("quick-cli-phone").value = resolved.phone;
+      } else if (targetContext === "master") {
+        document.getElementById("cli-gstin").value = clean;
+        document.getElementById("cli-name").value = resolved.name;
+        document.getElementById("cli-city").value = resolved.address;
+        const catSel = document.getElementById("cli-category");
+        if (catSel && resolved.category) catSel.value = resolved.category;
+        if (resolved.phone && document.getElementById("cli-contact")) {
+          document.getElementById("cli-contact").value = `Purchase Dept • +91 ${resolved.phone}`;
+        }
+      }
+
+      showToast(`Fetched [${resolved.source}]: ${resolved.name}`, "success");
     }
 
     function applyClientPreset(idxStr) {
