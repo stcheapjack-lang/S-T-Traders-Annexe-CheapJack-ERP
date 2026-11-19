@@ -88,7 +88,7 @@
     <!-- DASHBOARD + 5-STEP SEQUENTIAL PROCESS STEPPER BAR -->
     <div class="bg-white border-b border-slate-200 shadow-2xs">
       <div class="max-w-[1560px] mx-auto px-4 sm:px-8 py-4">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-8 gap-2">
+        <div class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-9 gap-2">
           
           <button onclick="switchStep('dashboard')" data-step="dashboard" class="step-card text-left p-3 rounded-xl border-2 border-indigo-600 bg-indigo-50/70 transition flex items-center justify-between shadow-xs">
             <div>
@@ -123,13 +123,24 @@
             </span>
           </button>
 
+          <button onclick="switchStep('reports')" data-step="reports" class="step-card text-left p-3 rounded-xl border border-slate-200 bg-white hover:border-indigo-400 transition flex items-center justify-between">
+            <div>
+              <div class="text-[10px] font-extrabold uppercase tracking-wider text-amber-600">Analytics</div>
+              <div class="text-xs sm:text-sm font-bold text-slate-900">MIS Reports</div>
+              <div id="step-sub-reports" class="text-[11px] text-slate-500 mt-0.5">Filters & CSV</div>
+            </div>
+            <span id="badge-step-3" class="w-6 h-6 rounded-full bg-slate-100 text-slate-700 text-xs font-extrabold flex items-center justify-center shrink-0">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+            </span>
+          </button>
+
           <button onclick="switchStep('sale-orders')" data-step="sale-orders" class="step-card text-left p-3 rounded-xl border border-slate-200 bg-white hover:border-indigo-400 transition flex items-center justify-between">
             <div>
               <div class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Step 1</div>
               <div class="text-xs sm:text-sm font-bold text-slate-900">Sale Orders</div>
               <div id="step-sub-so" class="text-[11px] text-slate-500 mt-0.5">0 active orders</div>
             </div>
-            <span id="badge-step-3" class="w-6 h-6 rounded-full bg-slate-100 text-slate-700 text-xs font-extrabold flex items-center justify-center shrink-0">0</span>
+            <span id="badge-step-4" class="w-6 h-6 rounded-full bg-slate-100 text-slate-700 text-xs font-extrabold flex items-center justify-center shrink-0">0</span>
           </button>
 
           <button onclick="switchStep('cutting-slips')" data-step="cutting-slips" class="step-card text-left p-3 rounded-xl border border-slate-200 bg-white hover:border-indigo-400 transition flex items-center justify-between">
@@ -138,7 +149,7 @@
               <div class="text-xs sm:text-sm font-bold text-slate-900">Cutting Slips</div>
               <div id="step-sub-cut" class="text-[11px] text-slate-500 mt-0.5">0 slips</div>
             </div>
-            <span id="badge-step-4" class="w-6 h-6 rounded-full bg-slate-100 text-slate-700 text-xs font-extrabold flex items-center justify-center shrink-0">0</span>
+            <span id="badge-step-5" class="w-6 h-6 rounded-full bg-slate-100 text-slate-700 text-xs font-extrabold flex items-center justify-center shrink-0">0</span>
           </button>
 
           <button onclick="switchStep('allocation')" data-step="allocation" class="step-card text-left p-3 rounded-xl border border-slate-200 bg-white hover:border-indigo-400 transition flex items-center justify-between">
@@ -147,7 +158,7 @@
               <div class="text-xs sm:text-sm font-bold text-slate-900">Tailor & Unit</div>
               <div id="step-sub-alloc" class="text-[11px] text-slate-500 mt-0.5">0 on floor</div>
             </div>
-            <span id="badge-step-5" class="w-6 h-6 rounded-full bg-slate-100 text-slate-700 text-xs font-extrabold flex items-center justify-center shrink-0">0</span>
+            <span id="badge-step-6" class="w-6 h-6 rounded-full bg-slate-100 text-slate-700 text-xs font-extrabold flex items-center justify-center shrink-0">0</span>
           </button>
 
           <button onclick="switchStep('receiving-fg')" data-step="receiving-fg" class="step-card text-left p-3 rounded-xl border border-slate-200 bg-white hover:border-indigo-400 transition flex items-center justify-between">
@@ -156,7 +167,7 @@
               <div class="text-xs sm:text-sm font-bold text-slate-900">Receive FG</div>
               <div id="step-sub-fg" class="text-[11px] text-slate-500 mt-0.5">0 pcs in store</div>
             </div>
-            <span id="badge-step-6" class="w-6 h-6 rounded-full bg-slate-100 text-slate-700 text-xs font-extrabold flex items-center justify-center shrink-0">0</span>
+            <span id="badge-step-7" class="w-6 h-6 rounded-full bg-slate-100 text-slate-700 text-xs font-extrabold flex items-center justify-center shrink-0">0</span>
           </button>
 
           <button onclick="switchStep('tax-invoice')" data-step="tax-invoice" class="step-card text-left p-3 rounded-xl border border-slate-200 bg-white hover:border-indigo-400 transition flex items-center justify-between">
@@ -165,7 +176,7 @@
               <div class="text-xs sm:text-sm font-bold text-slate-900">Tax Invoice</div>
               <div id="step-sub-inv" class="text-[11px] text-slate-500 mt-0.5">0 invoices</div>
             </div>
-            <span id="badge-step-7" class="w-6 h-6 rounded-full bg-slate-100 text-slate-700 text-xs font-extrabold flex items-center justify-center shrink-0">0</span>
+            <span id="badge-step-8" class="w-6 h-6 rounded-full bg-slate-100 text-slate-700 text-xs font-extrabold flex items-center justify-center shrink-0">0</span>
           </button>
 
         </div>
@@ -174,6 +185,129 @@
 
     <!-- MAIN CONTENT WORKSPACE -->
     <main class="flex-1 max-w-[1560px] w-full mx-auto px-4 sm:px-8 py-6 space-y-6">
+
+      <!-- =============================================================== -->
+      <!-- VIEW: MIS REPORTS & MULTI-CRITERIA ANALYTICS FILTERS            -->
+      <!-- =============================================================== -->
+      <section id="view-reports" class="step-view hidden tab-fade space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h2 class="text-xl font-extrabold text-slate-900">MIS Reports & Operational Analytics</h2>
+            <p class="text-xs sm:text-sm text-slate-500">Filter by <strong>Date Range</strong>, <strong>Hospital/Client</strong>, <strong>Production Unit</strong>, <strong>Tailor</strong>, or <strong>Stage</strong> and export CSV / Print reports</p>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <button onclick="exportCurrentReportCsv()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-xs transition">
+              Export Filtered CSV (Excel)
+            </button>
+            <button onclick="printCurrentReport()" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold shadow-xs transition">
+              Print MIS Report
+            </button>
+          </div>
+        </div>
+
+        <!-- Multi-Criteria Report Filter Bar -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs space-y-4">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-extrabold uppercase tracking-wider text-indigo-600">Report Filters & Date Range</span>
+            <button onclick="resetReportFilters()" class="text-xs font-bold text-slate-500 hover:text-slate-900">Reset All Filters ↺</button>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3">
+            <div>
+              <label class="block text-[11px] font-bold text-slate-600 mb-1">From Date</label>
+              <input type="date" id="rep-date-from" onchange="renderReportsPage()" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold bg-slate-50">
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-slate-600 mb-1">To Date</label>
+              <input type="date" id="rep-date-to" onchange="renderReportsPage()" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold bg-slate-50">
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-slate-600 mb-1">Client / Hospital</label>
+              <select id="rep-filter-client" onchange="renderReportsPage()" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold bg-white">
+                <option value="ALL">All Clients & Hospitals</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-slate-600 mb-1">Production Unit</label>
+              <select id="rep-filter-unit" onchange="renderReportsPage()" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold bg-white">
+                <option value="ALL">All Units (Cherlapally & Musheerabad)</option>
+                <option value="Cherlapally">Cherlapally Units</option>
+                <option value="Musheerabad">Musheerabad Units</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-slate-600 mb-1">Tailor / Master</label>
+              <select id="rep-filter-tailor" onchange="renderReportsPage()" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold bg-white">
+                <option value="ALL">All Tailors & Masters</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-slate-600 mb-1">Order Stage</label>
+              <select id="rep-filter-stage" onchange="renderReportsPage()" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold bg-white">
+                <option value="ALL">All Stages</option>
+                <option value="New Sale Order">New Sale Order</option>
+                <option value="Cutting Slip Generated">Cutting Slip Generated</option>
+                <option value="Allocated to Tailor">Allocated to Tailor</option>
+                <option value="Finished Goods Received">Finished Goods Received</option>
+                <option value="Tax Invoice Raised">Tax Invoice Raised</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Report Section Switcher Tabs -->
+          <div class="flex flex-wrap gap-2 pt-2 border-t border-slate-100">
+            <button onclick="switchReportTab('ORDERS')" id="rep-tab-ORDERS" class="rep-tab-btn px-3.5 py-2 rounded-xl bg-indigo-600 text-white text-xs font-bold">
+              1. Sale Orders & Stage Register
+            </button>
+            <button onclick="switchReportTab('TAILOR')" id="rep-tab-TAILOR" class="rep-tab-btn px-3.5 py-2 rounded-xl bg-slate-100 text-slate-700 text-xs font-bold">
+              2. Tailor Piece-Rate Wages & Unit Output
+            </button>
+            <button onclick="switchReportTab('FABRIC')" id="rep-tab-FABRIC" class="rep-tab-btn px-3.5 py-2 rounded-xl bg-slate-100 text-slate-700 text-xs font-bold">
+              3. Fabric Consumption & Stock Valuation
+            </button>
+            <button onclick="switchReportTab('GST')" id="rep-tab-GST" class="rep-tab-btn px-3.5 py-2 rounded-xl bg-slate-100 text-slate-700 text-xs font-bold">
+              4. GST Tax & Sales Register (GSTR-1 Ready)
+            </button>
+          </div>
+        </div>
+
+        <!-- Report Summary KPI Strip -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs">
+            <div class="text-[11px] font-bold uppercase text-slate-400">Filtered Order Value</div>
+            <div id="rep-kpi-1" class="text-xl font-extrabold text-slate-900 mt-1">₹0</div>
+            <div id="rep-kpi-1-sub" class="text-xs text-slate-500 mt-0.5">0 orders • 0 pcs</div>
+          </div>
+          <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs">
+            <div class="text-[11px] font-bold uppercase text-slate-400">Tailor Piece-Rate Wages</div>
+            <div id="rep-kpi-2" class="text-xl font-extrabold text-indigo-700 mt-1">₹0</div>
+            <div id="rep-kpi-2-sub" class="text-xs text-slate-500 mt-0.5">0 stitched pcs logged</div>
+          </div>
+          <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs">
+            <div class="text-[11px] font-bold uppercase text-slate-400">Cloth Stock Valuation</div>
+            <div id="rep-kpi-3" class="text-xl font-extrabold text-amber-700 mt-1">₹0</div>
+            <div id="rep-kpi-3-sub" class="text-xs text-slate-500 mt-0.5">0 meters in warehouse</div>
+          </div>
+          <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs">
+            <div class="text-[11px] font-bold uppercase text-slate-400">Filtered GST Sales Total</div>
+            <div id="rep-kpi-4" class="text-xl font-extrabold text-emerald-700 mt-1">₹0</div>
+            <div id="rep-kpi-4-sub" class="text-xs text-slate-500 mt-0.5">Includes ₹0 GST tax</div>
+          </div>
+        </div>
+
+        <!-- Report Data Table Container -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+          <div class="p-4 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <h3 id="rep-table-title" class="text-sm font-bold text-slate-900">Sale Orders & Stage Register</h3>
+            <span id="rep-row-count" class="text-xs font-semibold text-indigo-600">0 records</span>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead id="rep-table-head"></thead>
+              <tbody id="rep-table-body" class="divide-y divide-slate-100 text-xs"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
 
       <!-- =============================================================== -->
       <!-- VIEW: PRODUCTS & CLIENTS MASTER CATALOG                         -->
@@ -1155,6 +1289,9 @@
     let currentPrintableText = "";
     let trackingQuery = "";
     let trackingFilterType = "ALL";
+    let activeReportTab = "ORDERS";
+    let lastReportExportRows = [];
+    let lastReportTitle = "MIS_Report";
 
     function loadFlowState() {
       try {
@@ -1221,6 +1358,292 @@
       history.replaceState(null, "", `#${stepId}`);
       if (stepId === "tracking") renderTrackingPage();
       if (stepId === "masters") renderMastersPage();
+      if (stepId === "reports") renderReportsPage();
+    }
+
+    // =========================================================================
+    // RENDER & EXPORT MIS REPORTS WITH MULTI-CRITERIA FILTERS
+    // =========================================================================
+    function populateReportFilterOptions() {
+      const cliSel = document.getElementById("rep-filter-client");
+      const tailorSel = document.getElementById("rep-filter-tailor");
+      if (!cliSel || !tailorSel) return;
+
+      const curCli = cliSel.value;
+      const curTailor = tailorSel.value;
+
+      const clients = Array.from(new Set([
+        ...state.masterClients.map(c => c.name),
+        ...state.saleOrders.map(o => o.client),
+        ...state.invoices.map(i => i.client)
+      ]));
+
+      const tailors = Array.from(new Set(state.allocations.map(a => a.tailor)));
+
+      cliSel.innerHTML = `<option value="ALL">All Clients & Hospitals</option>` +
+        clients.map(c => `<option value="${c}">${c}</option>`).join("");
+      if (clients.includes(curCli)) cliSel.value = curCli;
+
+      tailorSel.innerHTML = `<option value="ALL">All Tailors & Masters</option>` +
+        tailors.map(t => `<option value="${t}">${t}</option>`).join("");
+      if (tailors.includes(curTailor)) tailorSel.value = curTailor;
+    }
+
+    function resetReportFilters() {
+      document.getElementById("rep-date-from").value = "";
+      document.getElementById("rep-date-to").value = "";
+      document.getElementById("rep-filter-client").value = "ALL";
+      document.getElementById("rep-filter-unit").value = "ALL";
+      document.getElementById("rep-filter-tailor").value = "ALL";
+      document.getElementById("rep-filter-stage").value = "ALL";
+      renderReportsPage();
+      showToast("Reset all report filters.", "info");
+    }
+
+    function switchReportTab(tabName) {
+      activeReportTab = tabName;
+      document.querySelectorAll(".rep-tab-btn").forEach(btn => {
+        btn.className = "rep-tab-btn px-3.5 py-2 rounded-xl bg-slate-100 text-slate-700 text-xs font-bold";
+      });
+      const activeBtn = document.getElementById(`rep-tab-${tabName}`);
+      if (activeBtn) activeBtn.className = "rep-tab-btn px-3.5 py-2 rounded-xl bg-indigo-600 text-white text-xs font-bold";
+      renderReportsPage();
+    }
+
+    function renderReportsPage() {
+      populateReportFilterOptions();
+      const thead = document.getElementById("rep-table-head");
+      const tbody = document.getElementById("rep-table-body");
+      if (!thead || !tbody) return;
+
+      const dateFrom = document.getElementById("rep-date-from").value;
+      const dateTo = document.getElementById("rep-date-to").value;
+      const clientFilter = document.getElementById("rep-filter-client").value;
+      const unitFilter = document.getElementById("rep-filter-unit").value;
+      const tailorFilter = document.getElementById("rep-filter-tailor").value;
+      const stageFilter = document.getElementById("rep-filter-stage").value;
+
+      const inDateRange = (d) => {
+        if (!d) return true;
+        if (dateFrom && d < dateFrom) return false;
+        if (dateTo && d > dateTo) return false;
+        return true;
+      };
+
+      // Filtered datasets
+      const filteredOrders = state.saleOrders.filter(so => {
+        if (!inDateRange(so.date)) return false;
+        if (clientFilter !== "ALL" && so.client !== clientFilter) return false;
+        if (stageFilter !== "ALL" && so.stage !== stageFilter) return false;
+        const alloc = state.allocations.find(a => a.soId === so.id);
+        if (unitFilter !== "ALL" && (!alloc || !alloc.unit.includes(unitFilter))) return false;
+        if (tailorFilter !== "ALL" && (!alloc || alloc.tailor !== tailorFilter)) return false;
+        return true;
+      });
+
+      const filteredAllocs = state.allocations.filter(al => {
+        const so = state.saleOrders.find(x => x.id === al.soId);
+        if (so && !inDateRange(so.date)) return false;
+        if (clientFilter !== "ALL" && (!so || so.client !== clientFilter)) return false;
+        if (unitFilter !== "ALL" && !al.unit.includes(unitFilter)) return false;
+        if (tailorFilter !== "ALL" && al.tailor !== tailorFilter) return false;
+        return true;
+      });
+
+      const filteredInvoices = state.invoices.filter(inv => {
+        if (!inDateRange(inv.date)) return false;
+        if (clientFilter !== "ALL" && inv.client !== clientFilter) return false;
+        return true;
+      });
+
+      // Update Summary KPIs
+      const ordVal = filteredOrders.reduce((s, o) => s + (o.totalQty * o.rate), 0);
+      const ordPcs = filteredOrders.reduce((s, o) => s + o.totalQty, 0);
+      document.getElementById("rep-kpi-1").textContent = formatINR(ordVal);
+      document.getElementById("rep-kpi-1-sub").textContent = `${filteredOrders.length} orders • ${ordPcs.toLocaleString("en-IN")} pcs`;
+
+      const wageTotal = filteredAllocs.reduce((s, a) => s + (a.stitchedQty * a.pieceRate), 0);
+      const stitchedTotal = filteredAllocs.reduce((s, a) => s + a.stitchedQty, 0);
+      document.getElementById("rep-kpi-2").textContent = formatINR(wageTotal);
+      document.getElementById("rep-kpi-2-sub").textContent = `${stitchedTotal.toLocaleString("en-IN")} stitched pcs logged`;
+
+      const fabVal = state.fabrics.reduce((s, f) => s + (f.stock * f.rate), 0);
+      const fabMeters = state.fabrics.reduce((s, f) => s + f.stock, 0);
+      document.getElementById("rep-kpi-3").textContent = formatINR(fabVal);
+      document.getElementById("rep-kpi-3-sub").textContent = `${fabMeters.toLocaleString("en-IN")} meters in warehouse`;
+
+      const invGrand = filteredInvoices.reduce((s, i) => s + i.grandTotal, 0);
+      const invTax = filteredInvoices.reduce((s, i) => s + i.taxAmt, 0);
+      document.getElementById("rep-kpi-4").textContent = formatINR(invGrand);
+      document.getElementById("rep-kpi-4-sub").textContent = `Includes ${formatINR(invTax)} GST tax`;
+
+      // Render Selected Report Table
+      if (activeReportTab === "ORDERS") {
+        lastReportTitle = "Sale_Orders_Stage_Report";
+        document.getElementById("rep-table-title").textContent = "1. Sale Orders & Stage Register";
+        document.getElementById("rep-row-count").textContent = `${filteredOrders.length} orders`;
+        thead.innerHTML = `
+          <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+            <th class="py-3 px-4">Order ID & Date</th>
+            <th class="py-3 px-4">Client / Hospital</th>
+            <th class="py-3 px-4">Style & Cloth</th>
+            <th class="py-3 px-4">Tailor & Unit</th>
+            <th class="py-3 px-4 text-right">Qty</th>
+            <th class="py-3 px-4 text-right">Amount (₹)</th>
+            <th class="py-3 px-4">Stage</th>
+          </tr>`;
+        lastReportExportRows = [
+          ["Order ID", "Date", "Client", "GSTIN", "Style", "Cloth", "Qty", "Rate", "Total Amount", "Stage"]
+        ];
+        tbody.innerHTML = filteredOrders.map(so => {
+          const al = state.allocations.find(a => a.soId === so.id);
+          const total = so.totalQty * so.rate;
+          lastReportExportRows.push([so.id, so.date, `"${so.client}"`, so.gstin, `"${so.style}"`, `"${so.cloth}"`, so.totalQty, so.rate, total, so.stage]);
+          return `
+            <tr class="hover:bg-slate-50">
+              <td class="py-3 px-4 font-bold text-slate-900">${so.id}<div class="text-[11px] font-normal text-slate-500">${so.date}</div></td>
+              <td class="py-3 px-4 font-semibold text-slate-800">${so.client}</td>
+              <td class="py-3 px-4">${so.style}<div class="text-[11px] text-slate-500">${so.cloth} • ${so.colour}</div></td>
+              <td class="py-3 px-4 text-slate-600">${al ? `${al.tailor.split(' (')[0]} (${al.unit.split(' — ')[0]})` : 'Unassigned'}</td>
+              <td class="py-3 px-4 text-right font-bold">${so.totalQty}</td>
+              <td class="py-3 px-4 text-right font-extrabold text-slate-900">${formatINR(total)}</td>
+              <td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 font-bold text-[11px]">${so.stage}</span></td>
+            </tr>`;
+        }).join("") || `<tr><td colspan="7" class="py-8 text-center text-slate-400">No sale orders match the selected filters.</td></tr>`;
+
+      } else if (activeReportTab === "TAILOR") {
+        lastReportTitle = "Tailor_Piece_Rate_Wages_Report";
+        document.getElementById("rep-table-title").textContent = "2. Tailor Piece-Rate Wages & Production Unit Output";
+        document.getElementById("rep-row-count").textContent = `${filteredAllocs.length} allocations`;
+        thead.innerHTML = `
+          <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+            <th class="py-3 px-4">Tailor / Master</th>
+            <th class="py-3 px-4">Production Unit</th>
+            <th class="py-3 px-4">Slip & Order Ref</th>
+            <th class="py-3 px-4 text-right">Target Pcs</th>
+            <th class="py-3 px-4 text-right">Stitched Pcs</th>
+            <th class="py-3 px-4 text-right">Piece Rate (₹)</th>
+            <th class="py-3 px-4 text-right">Earned Wages (₹)</th>
+          </tr>`;
+        lastReportExportRows = [
+          ["Tailor", "Unit", "Slip ID", "Order ID", "Target Qty", "Stitched Qty", "Piece Rate", "Earned Wages"]
+        ];
+        tbody.innerHTML = filteredAllocs.map(al => {
+          const wages = al.stitchedQty * al.pieceRate;
+          lastReportExportRows.push([`"${al.tailor}"`, `"${al.unit}"`, al.slipId, al.soId, al.totalQty, al.stitchedQty, al.pieceRate, wages]);
+          return `
+            <tr class="hover:bg-slate-50">
+              <td class="py-3 px-4 font-bold text-slate-900">${al.tailor}</td>
+              <td class="py-3 px-4 text-slate-700">${al.unit}</td>
+              <td class="py-3 px-4 font-semibold text-indigo-700">${al.slipId} • ${al.soId}</td>
+              <td class="py-3 px-4 text-right font-semibold">${al.totalQty}</td>
+              <td class="py-3 px-4 text-right font-bold text-slate-900">${al.stitchedQty}</td>
+              <td class="py-3 px-4 text-right">₹${al.pieceRate}</td>
+              <td class="py-3 px-4 text-right font-extrabold text-emerald-700">${formatINR(wages)}</td>
+            </tr>`;
+        }).join("") || `<tr><td colspan="7" class="py-8 text-center text-slate-400">No tailor records match the selected filters.</td></tr>`;
+
+      } else if (activeReportTab === "FABRIC") {
+        lastReportTitle = "Fabric_Stock_Consumption_Report";
+        document.getElementById("rep-table-title").textContent = "3. Warehouse Fabric Stock & Cutting Consumption";
+        document.getElementById("rep-row-count").textContent = `${state.fabrics.length} cloth varieties`;
+        thead.innerHTML = `
+          <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+            <th class="py-3 px-4">Cloth Quality</th>
+            <th class="py-3 px-4 text-right">Available Stock (m)</th>
+            <th class="py-3 px-4 text-right">Rate / Meter (₹)</th>
+            <th class="py-3 px-4 text-right">Stock Valuation (₹)</th>
+            <th class="py-3 px-4">Reorder Status</th>
+          </tr>`;
+        lastReportExportRows = [
+          ["Cloth Quality", "Available Meters", "Rate per Meter", "Stock Valuation", "Status"]
+        ];
+        tbody.innerHTML = state.fabrics.map(f => {
+          const val = f.stock * f.rate;
+          const status = f.stock < 400 ? "Low Stock — Reorder" : "Healthy Stock";
+          lastReportExportRows.push([`"${f.name}"`, f.stock, f.rate, val, status]);
+          return `
+            <tr class="hover:bg-slate-50">
+              <td class="py-3 px-4 font-bold text-slate-900">${f.name}</td>
+              <td class="py-3 px-4 text-right font-extrabold text-slate-900">${f.stock} m</td>
+              <td class="py-3 px-4 text-right">₹${f.rate}</td>
+              <td class="py-3 px-4 text-right font-extrabold text-indigo-700">${formatINR(val)}</td>
+              <td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-[11px] font-bold ${f.stock < 400 ? 'bg-rose-50 text-rose-700' : 'bg-emerald-50 text-emerald-700'}">${status}</span></td>
+            </tr>`;
+        }).join("");
+
+      } else if (activeReportTab === "GST") {
+        lastReportTitle = "GSTR1_Sales_Tax_Register";
+        document.getElementById("rep-table-title").textContent = "4. GST Sales & Tax Register (GSTR-1 Ready)";
+        document.getElementById("rep-row-count").textContent = `${filteredInvoices.length} tax invoices`;
+        thead.innerHTML = `
+          <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+            <th class="py-3 px-4">Invoice No. & Date</th>
+            <th class="py-3 px-4">Client & GSTIN</th>
+            <th class="py-3 px-4">HSN & Qty</th>
+            <th class="py-3 px-4 text-right">Taxable Value (₹)</th>
+            <th class="py-3 px-4 text-right">GST Amount (₹)</th>
+            <th class="py-3 px-4 text-right">Grand Total (₹)</th>
+          </tr>`;
+        lastReportExportRows = [
+          ["Invoice No", "Date", "Client", "Buyer GSTIN", "HSN", "Qty", "Taxable Value", "GST %", "GST Amount", "Grand Total"]
+        ];
+        tbody.innerHTML = filteredInvoices.map(inv => {
+          lastReportExportRows.push([inv.invNo, inv.date, `"${inv.client}"`, inv.gstin, inv.hsn, inv.qty, inv.taxable.toFixed(2), inv.gstPct, inv.taxAmt.toFixed(2), inv.grandTotal.toFixed(2)]);
+          return `
+            <tr class="hover:bg-slate-50">
+              <td class="py-3 px-4 font-bold text-slate-900">${inv.invNo}<div class="text-[11px] font-normal text-slate-500">${inv.date}</div></td>
+              <td class="py-3 px-4 font-semibold text-slate-800">${inv.client}<div class="text-[11px] font-mono text-slate-500">${inv.gstin}</div></td>
+              <td class="py-3 px-4">HSN ${inv.hsn} • ${inv.qty} pcs</td>
+              <td class="py-3 px-4 text-right font-semibold">${formatINR2(inv.taxable)}</td>
+              <td class="py-3 px-4 text-right text-amber-700 font-semibold">${formatINR2(inv.taxAmt)} (${inv.gstPct}%)</td>
+              <td class="py-3 px-4 text-right font-extrabold text-emerald-700">${formatINR2(inv.grandTotal)}</td>
+            </tr>`;
+        }).join("") || `<tr><td colspan="6" class="py-8 text-center text-slate-400">No tax invoices match the selected filters.</td></tr>`;
+      }
+    }
+
+    function exportCurrentReportCsv() {
+      if (!lastReportExportRows || lastReportExportRows.length <= 1) {
+        showToast("No rows available to export for current filters.", "warning");
+        return;
+      }
+      const csv = lastReportExportRows.map(r => r.join(",")).join("\n");
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `ST_Traders_${lastReportTitle}_${new Date().toISOString().split("T")[0]}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast(`Exported ${lastReportTitle}.csv for Excel.`, "success");
+    }
+
+    function printCurrentReport() {
+      const title = document.getElementById("rep-table-title").textContent;
+      const headHtml = document.getElementById("rep-table-head").innerHTML;
+      const bodyHtml = document.getElementById("rep-table-body").innerHTML;
+
+      document.getElementById("cutting-slip-toolbar").classList.add("hidden");
+      document.getElementById("print-modal-title").textContent = `MIS Management Report — ${title}`;
+      document.getElementById("print-area").innerHTML = `
+        <div class="border-2 border-slate-900 p-5 space-y-4 bg-white text-slate-900">
+          <div class="border-b-2 border-slate-900 pb-3 flex justify-between items-center">
+            <div>
+              <h2 class="text-lg font-extrabold">S T TRADERS ANNEXE CHEAPJACK</h2>
+              <p class="text-xs text-slate-600">${title} • Generated on ${new Date().toLocaleDateString("en-IN")}</p>
+            </div>
+            <span class="px-3 py-1 bg-slate-900 text-white text-xs font-bold">MIS REPORT</span>
+          </div>
+          <table class="w-full text-left border-collapse border border-slate-300 text-xs">
+            <thead>${headHtml}</thead>
+            <tbody class="divide-y divide-slate-200">${bodyHtml}</tbody>
+          </table>
+        </div>
+      `;
+      currentPrintableText = `${title} — S T Traders Annexe CheapJack`;
+      document.getElementById("print-preview-modal").classList.remove("hidden");
+      document.getElementById("print-preview-modal").classList.add("flex");
     }
 
     // =========================================================================
@@ -2456,19 +2879,19 @@
       const fgTotalPcs = state.finishedGoods.reduce((s, f) => s + f.passedQty, 0);
       document.getElementById("step-sub-masters").textContent = `${state.masterProducts.length} items • ${state.masterClients.length} clients`;
 
-      document.getElementById("badge-step-3").textContent = state.saleOrders.length;
+      document.getElementById("badge-step-4").textContent = state.saleOrders.length;
       document.getElementById("step-sub-so").textContent = `${state.saleOrders.length} active orders`;
 
-      document.getElementById("badge-step-4").textContent = state.cuttingSlips.length;
+      document.getElementById("badge-step-5").textContent = state.cuttingSlips.length;
       document.getElementById("step-sub-cut").textContent = `${state.cuttingSlips.length} slips`;
 
-      document.getElementById("badge-step-5").textContent = state.allocations.length;
+      document.getElementById("badge-step-6").textContent = state.allocations.length;
       document.getElementById("step-sub-alloc").textContent = `${state.allocations.length} tailor runs`;
 
-      document.getElementById("badge-step-6").textContent = state.finishedGoods.length;
+      document.getElementById("badge-step-7").textContent = state.finishedGoods.length;
       document.getElementById("step-sub-fg").textContent = `${fgTotalPcs} pcs in store`;
 
-      document.getElementById("badge-step-7").textContent = state.invoices.length;
+      document.getElementById("badge-step-8").textContent = state.invoices.length;
       document.getElementById("step-sub-inv").textContent = `${state.invoices.length} invoices`;
     }
 
@@ -2477,6 +2900,7 @@
       renderDashboardOverview();
       renderTrackingPage();
       renderMastersPage();
+      renderReportsPage();
       renderSaleOrders();
       renderCuttingSlips();
       renderAllocations();
@@ -2487,7 +2911,7 @@
     window.addEventListener("DOMContentLoaded", () => {
       renderAllSteps();
       const hash = window.location.hash.replace("#", "").trim();
-      if (["dashboard", "tracking", "masters", "sale-orders", "cutting-slips", "allocation", "receiving-fg", "tax-invoice"].includes(hash)) {
+      if (["dashboard", "tracking", "masters", "reports", "sale-orders", "cutting-slips", "allocation", "receiving-fg", "tax-invoice"].includes(hash)) {
         switchStep(hash);
       } else {
         switchStep("dashboard");
