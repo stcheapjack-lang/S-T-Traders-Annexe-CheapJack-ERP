@@ -161,6 +161,17 @@
               </div>
               <span id="badge-step-users" class="px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 text-[10px] font-bold">RBAC</span>
             </button>
+
+            <button onclick="switchStep('settings')" data-step="settings" class="step-card w-full text-left px-3 py-2.5 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-white transition flex items-center justify-between">
+              <div class="flex items-center gap-2.5">
+                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                <div>
+                  <div class="text-xs font-bold">Company Settings</div>
+                  <div id="step-sub-settings" class="text-[10px] text-slate-400">Firm, GST, Bank & Prefixes</div>
+                </div>
+              </div>
+              <span class="px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-300 text-[10px] font-bold">CFG</span>
+            </button>
           </div>
         </div>
 
@@ -280,6 +291,128 @@
 
       <!-- MAIN CONTENT WORKSPACE -->
       <main class="flex-1 max-w-[1440px] w-full mx-auto px-4 sm:px-8 py-6 space-y-6">
+
+      <!-- =============================================================== -->
+      <!-- VIEW: COMPANY CONFIGURATION & SETTINGS                          -->
+      <!-- =============================================================== -->
+      <section id="view-settings" class="step-view hidden tab-fade space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h2 class="text-xl font-extrabold text-slate-900">Company Configuration & ERP Settings</h2>
+            <p class="text-xs sm:text-sm text-slate-500">Configure firm header, GSTIN, Bank of Baroda details, document prefixes & terms printed across Sale Orders, Cutting Slips & Tax Invoices</p>
+          </div>
+          <div class="flex gap-2">
+            <button type="button" onclick="resetCompanyConfigDefaults()" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition">
+              Restore Defaults
+            </button>
+            <button type="button" onclick="document.getElementById('company-settings-form').requestSubmit()" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-extrabold shadow-xs transition">
+              Save Company Configuration ✓
+            </button>
+          </div>
+        </div>
+
+        <form id="company-settings-form" onsubmit="saveCompanySettings(event)" class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <!-- Left 6 Cols: Firm Identity, Address & GST -->
+          <div class="lg:col-span-6 bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-xs space-y-4">
+            <div>
+              <h3 class="text-base font-bold text-slate-900">1. Firm Profile, Tax & Unit Locations</h3>
+              <p class="text-xs text-slate-500">Appears on the top banner of Sale Order / Estimate & GST Tax Invoices</p>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div class="sm:col-span-2">
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Registered Firm Name</label>
+                <input type="text" id="cfg-firm-name" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-extrabold uppercase">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Sidebar Short Tag</label>
+                <input type="text" id="cfg-short-tag" maxlength="4" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-extrabold uppercase text-center">
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Registered Head Office / Billing Address</label>
+              <textarea id="cfg-address" rows="2" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs"></textarea>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Company GSTIN</label>
+                <input type="text" id="cfg-gstin" maxlength="15" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold uppercase">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Contact Phone(s)</label>
+                <input type="text" id="cfg-phone" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Official Email</label>
+                <input type="email" id="cfg-email" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs">
+              </div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Home State Code & Jurisdiction</label>
+                <input type="text" id="cfg-jurisdiction" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Factory / Plant Units Label</label>
+                <input type="text" id="cfg-units-label" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold">
+              </div>
+            </div>
+          </div>
+
+          <!-- Right 6 Cols: Bank Details, Document Series & Terms -->
+          <div class="lg:col-span-6 bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-xs space-y-4">
+            <div>
+              <h3 class="text-base font-bold text-slate-900">2. Banker Details, Series Prefixes & Print Terms</h3>
+              <p class="text-xs text-slate-500">Printed in the footer of Sale Orders and Tax Invoices</p>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Bank Name</label>
+                <input type="text" id="cfg-bank-name" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold uppercase">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Bank Account No.</label>
+                <input type="text" id="cfg-bank-ac" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold">
+              </div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">IFSC Code</label>
+                <input type="text" id="cfg-bank-ifsc" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold uppercase">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Branch Name</label>
+                <input type="text" id="cfg-bank-branch" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold">
+              </div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Sale Order Prefix</label>
+                <input type="text" id="cfg-so-prefix" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Tax Invoice Prefix</label>
+                <input type="text" id="cfg-inv-prefix" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Default GST Slab (%)</label>
+                <select id="cfg-default-gst" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold bg-white">
+                  <option value="5">5% GST</option>
+                  <option value="12">12% GST</option>
+                  <option value="18">18% GST</option>
+                  <option value="0">0% Exempt</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Terms & Conditions (One line per point)</label>
+              <textarea id="cfg-terms" rows="4" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs"></textarea>
+            </div>
+            <button type="submit" class="w-full py-2.5 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-extrabold shadow-xs transition">
+              Save All Company Settings ✓
+            </button>
+          </div>
+        </form>
+      </section>
 
       <!-- =============================================================== -->
       <!-- VIEW: USERS & ROLE-BASED ACCESS RIGHTS (RBAC)                   -->
@@ -529,8 +662,8 @@
       <section id="view-masters" class="step-view hidden tab-fade space-y-6">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <h2 class="text-xl font-extrabold text-slate-900">Products & Clients Master Directory</h2>
-            <p class="text-xs sm:text-sm text-slate-500">Save reusable <strong>Uniform/Garment Styles</strong> and <strong>Hospital/Corporate Companies</strong> for 1-click auto-fill when booking Sale Orders</p>
+            <h2 class="text-xl font-extrabold text-slate-900">Products, Clients & Client-Wise SKU Catalog</h2>
+            <p class="text-xs sm:text-sm text-slate-500">Define base garments & assign <strong>Client-Wise SKUs</strong> (different SKU code, rate, cloth/colour & photo per Client + Product) for instant auto-fill in Sale Orders</p>
           </div>
           <button onclick="openNewSaleOrderModal()" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-xs self-start sm:self-auto transition">
             + Book Sale Order Using Masters →
@@ -551,10 +684,14 @@
               <p class="text-xs text-slate-500 mb-4">Define or update standard cutting specs, cloth, collar, wholesale rate & garment photo</p>
               
               <form onsubmit="addMasterProduct(event)" class="space-y-3">
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
                   <div class="sm:col-span-2">
                     <label class="block text-xs font-semibold text-slate-700 mb-1">Garment / Product Name</label>
                     <input type="text" id="prod-name" placeholder="e.g., FEMALE NURSE PANT SHIRT" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold">
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Base SKU Code</label>
+                    <input type="text" id="prod-sku" placeholder="e.g., SKU-NPS-01" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-extrabold uppercase">
                   </div>
                   <div>
                     <label class="block text-xs font-semibold text-slate-700 mb-1">Default Rate (₹)</label>
@@ -724,6 +861,65 @@
             </div>
           </div>
 
+        </div>
+
+        <!-- CLIENT-WISE PRODUCT SKU MAPPING (EACH PRODUCT & CLIENT DIFFERENT SKUs) -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-xs space-y-5">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+            <div>
+              <h3 class="text-base font-extrabold text-slate-900">Client-Wise Product SKU Matrix (Each Client & Product Different SKU)</h3>
+              <p class="text-xs text-slate-500">Assign unique hospital/client-specific SKU codes, contract rates, custom cloth/colour specs, and optional photo overrides per Client + Product</p>
+            </div>
+            <span id="master-csku-count" class="px-3 py-1 rounded-full bg-indigo-50 text-indigo-700 text-xs font-extrabold self-start sm:self-auto">0 client SKUs</span>
+          </div>
+
+          <form onsubmit="addClientProductSku(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-3 items-end bg-slate-50 p-4 rounded-xl border border-slate-200">
+            <div class="lg:col-span-3">
+              <label class="block text-[11px] font-bold text-slate-700 mb-1">Select Client / Hospital *</label>
+              <select id="csku-client-select" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold bg-white"></select>
+            </div>
+            <div class="lg:col-span-3">
+              <label class="block text-[11px] font-bold text-slate-700 mb-1">Select Base Product *</label>
+              <select id="csku-product-select" onchange="prefillClientSkuFromProduct(this.value)" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold bg-white"></select>
+            </div>
+            <div class="lg:col-span-2">
+              <label class="block text-[11px] font-bold text-slate-700 mb-1">Client SKU Code *</label>
+              <input type="text" id="csku-code" placeholder="e.g., YSH-NUR-WHT" required class="w-full px-3 py-2 rounded-xl border border-indigo-300 text-xs font-extrabold uppercase bg-white">
+            </div>
+            <div class="lg:col-span-2">
+              <label class="block text-[11px] font-bold text-slate-700 mb-1">Client Contract Rate (₹) *</label>
+              <input type="number" id="csku-rate" value="720" min="1" step="0.01" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-extrabold bg-white">
+            </div>
+            <div class="lg:col-span-2">
+              <label class="block text-[11px] font-bold text-slate-700 mb-1">Client Shade / Spec</label>
+              <input type="text" id="csku-spec" placeholder="e.g., Rama Green Piping" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs bg-white">
+            </div>
+            <div class="lg:col-span-9">
+              <label class="block text-[11px] font-bold text-slate-700 mb-1">Client-Specific Item Description / Embroidery Override</label>
+              <input type="text" id="csku-desc" placeholder="e.g., YASHODA NURSE PANT SHIRT WITH HOSPITAL CHEST LOGO" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold bg-white">
+            </div>
+            <div class="lg:col-span-3">
+              <button type="submit" class="w-full py-2 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-extrabold shadow-xs transition">
+                + Save Client SKU Mapping
+              </button>
+            </div>
+          </form>
+
+          <div class="overflow-x-auto border border-slate-200 rounded-xl">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                  <th class="py-3 px-4">Client / Hospital</th>
+                  <th class="py-3 px-4">Base Product</th>
+                  <th class="py-3 px-4">Client SKU Code</th>
+                  <th class="py-3 px-4">Client Custom Spec / Description</th>
+                  <th class="py-3 px-4 text-right">Client Rate (₹)</th>
+                  <th class="py-3 px-4 text-right">Action</th>
+                </tr>
+              </thead>
+              <tbody id="master-csku-tbody" class="divide-y divide-slate-100 text-xs"></tbody>
+            </table>
+          </div>
         </div>
       </section>
 
@@ -952,9 +1148,50 @@
       <!-- STEP 3: ALLOCATION OF SLIPS TO TAILOR AND UNIT                  -->
       <!-- =============================================================== -->
       <section id="view-allocation" class="step-view hidden tab-fade space-y-6">
-        <div>
-          <h2 class="text-xl font-extrabold text-slate-900">Step 3: Allocation of Cutting Slips to Tailor & Production Unit</h2>
-          <p class="text-xs sm:text-sm text-slate-500">Assign cutting bundles to <strong>Cherlapally</strong> or <strong>Musheerabad</strong> units and individual Tailors/Masters with piece-rate wages in ₹</p>
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h2 class="text-xl font-extrabold text-slate-900">Step 3: Allocation of Cutting Slips to Tailor & Production Unit</h2>
+            <p class="text-xs sm:text-sm text-slate-500">Add or manage Production Units & Tailors/Masters, then assign cutting bundles with piece-rate wages in ₹</p>
+          </div>
+          <button type="button" onclick="toggleManageTailorUnitDrawer()" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-indigo-600 text-white text-xs font-extrabold shadow-xs self-start sm:self-auto transition">
+            + Add / Manage Tailors & Units
+          </button>
+        </div>
+
+        <!-- Collapsible Drawer: Add & Manage Tailors and Production Units -->
+        <div id="manage-tailor-unit-drawer" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-5 bg-indigo-50/60 border-2 border-indigo-200 rounded-2xl p-5">
+          <!-- Add Production Unit -->
+          <div class="lg:col-span-6 bg-white rounded-xl border border-slate-200 p-4 space-y-3">
+            <div class="flex items-center justify-between">
+              <h3 class="text-sm font-extrabold text-slate-900">+ Add Production Unit / Line</h3>
+              <span id="units-master-count" class="text-[11px] font-bold text-indigo-600">0 units</span>
+            </div>
+            <form onsubmit="addMasterUnit(event)" class="grid grid-cols-1 sm:grid-cols-12 gap-2">
+              <input type="text" id="new-unit-name" placeholder="Unit / Line Name (e.g., Cherlapally Unit — Line C)" required class="sm:col-span-6 px-3 py-2 rounded-lg border border-slate-200 text-xs font-semibold">
+              <input type="text" id="new-unit-loc" placeholder="Location / Supervisor" required class="sm:col-span-4 px-3 py-2 rounded-lg border border-slate-200 text-xs">
+              <button type="submit" class="sm:col-span-2 py-2 px-3 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold">
+                Add
+              </button>
+            </form>
+            <div id="master-units-list" class="divide-y divide-slate-100 max-h-40 overflow-y-auto text-xs"></div>
+          </div>
+
+          <!-- Add Tailor / Master -->
+          <div class="lg:col-span-6 bg-white rounded-xl border border-slate-200 p-4 space-y-3">
+            <div class="flex items-center justify-between">
+              <h3 class="text-sm font-extrabold text-slate-900">+ Add Tailor / Cutting Master</h3>
+              <span id="tailors-master-count" class="text-[11px] font-bold text-emerald-700">0 tailors</span>
+            </div>
+            <form onsubmit="addMasterTailor(event)" class="grid grid-cols-1 sm:grid-cols-12 gap-2">
+              <input type="text" id="new-tailor-name" placeholder="Tailor Name & Role (e.g., Abdul Kareem — Scrubs)" required class="sm:col-span-5 px-3 py-2 rounded-lg border border-slate-200 text-xs font-semibold">
+              <input type="text" id="new-tailor-phone" placeholder="Phone / Unit" class="sm:col-span-3 px-3 py-2 rounded-lg border border-slate-200 text-xs">
+              <input type="number" id="new-tailor-rate" value="95" min="1" title="Default Piece Rate ₹" class="sm:col-span-2 px-2.5 py-2 rounded-lg border border-slate-200 text-xs font-bold text-center">
+              <button type="submit" class="sm:col-span-2 py-2 px-3 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold">
+                Add
+              </button>
+            </form>
+            <div id="master-tailors-list" class="divide-y divide-slate-100 max-h-40 overflow-y-auto text-xs"></div>
+          </div>
         </div>
 
         <!-- Allocate Cutting Slip Form Card -->
@@ -967,21 +1204,11 @@
             </div>
             <div>
               <label class="block text-xs font-semibold text-slate-700 mb-1">Production Unit</label>
-              <select id="alloc-unit-select" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-semibold bg-white">
-                <option value="Cherlapally Unit — Line A (Scrubs)">Cherlapally Unit — Line A (Scrubs)</option>
-                <option value="Cherlapally Unit — Line B (Workwear)">Cherlapally Unit — Line B (Workwear)</option>
-                <option value="Musheerabad Unit — Line C (Textiles)">Musheerabad Unit — Line C (Textiles)</option>
-                <option value="Musheerabad Job-Work Tailor Group">Musheerabad Job-Work Tailor Group</option>
-              </select>
+              <select id="alloc-unit-select" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-semibold bg-white"></select>
             </div>
             <div>
               <label class="block text-xs font-semibold text-slate-700 mb-1">Assign Tailor / Master</label>
-              <select id="alloc-tailor-select" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-semibold bg-white">
-                <option value="Mohammed Riyaz (Master Tailor)">Mohammed Riyaz (Master Tailor)</option>
-                <option value="Lakshmi Narayana (Senior Tailor)">Lakshmi Narayana (Senior Tailor)</option>
-                <option value="Kavitha Rani (Uniform Specialist)">Kavitha Rani (Uniform Specialist)</option>
-                <option value="Srinivas Rao (Bedsheet & Hemming)">Srinivas Rao (Bedsheet & Hemming)</option>
-              </select>
+              <select id="alloc-tailor-select" onchange="onAllocTailorChange(this.value)" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-semibold bg-white"></select>
             </div>
             <div>
               <label class="block text-xs font-semibold text-slate-700 mb-1">Stitching Piece Rate (₹/pc)</label>
@@ -1693,9 +1920,78 @@
         { name: "Pacifica Blue Cotton Drill", stock: 690, rate: 168 },
         { name: "144 TC Polycotton", stock: 2150, rate: 98 }
       ],
+      companyConfig: {
+        firmName: "ST TRADERS ANNEXE CHEAP JACK",
+        shortTag: "ST",
+        address: "10-5-348/A, Tukaram Gate, Buddha Nagar, Lalaguda gate,, Secundrabad, 500017",
+        gstin: "36AAIPF1095L1ZJ",
+        phone: "9347203651",
+        email: "sttradersannexecheapjack@gmail.com",
+        jurisdiction: "Subject to 36-Telangana Jurisdiction",
+        unitsLabel: "Cherlapally & Musheerabad",
+        bankName: "BANK OF BARODA",
+        bankAc: "71700200000140",
+        bankIfsc: "BARBODBSECE",
+        bankBranch: "East Marredpally",
+        soPrefix: "SOD-H/26-27/",
+        invPrefix: "STC/26-27/0",
+        defaultGst: 5,
+        terms: "1. 100 % Advance , Delivery Of Goods Within 8 days\n2. Goods once sold can not be returned back or exchanged.\n3. Our responsiblities ceases as soon as goods leave our premses.\n4. Subject to 36-Telangana Jurisdiction"
+      },
+      masterUnits: [
+        { id: "UNT-01", name: "Cherlapally Unit — Line A (Scrubs)", location: "IDA Cherlapally, Hyd" },
+        { id: "UNT-02", name: "Cherlapally Unit — Line B (Workwear)", location: "IDA Cherlapally, Hyd" },
+        { id: "UNT-03", name: "Musheerabad Unit — Line C (Textiles)", location: "Musheerabad, Hyd" },
+        { id: "UNT-04", name: "Musheerabad Job-Work Tailor Group", location: "Musheerabad, Hyd" }
+      ],
+      masterTailors: [
+        { id: "TLR-01", name: "Mohammed Riyaz (Master Tailor)", phone: "+91 98490 44110", defaultRate: 95 },
+        { id: "TLR-02", name: "Lakshmi Narayana (Senior Tailor)", phone: "+91 98490 55220", defaultRate: 90 },
+        { id: "TLR-03", name: "Kavitha Rani (Uniform Specialist)", phone: "+91 98490 66330", defaultRate: 115 },
+        { id: "TLR-04", name: "Srinivas Rao (Bedsheet & Hemming)", phone: "+91 98490 77440", defaultRate: 45 }
+      ],
+      clientProductSkus: [
+        {
+          id: "CSKU-01",
+          clientId: "CLI-02",
+          clientName: "Yashoda & Apollo Nursing Wing (Hyd)",
+          clientGstin: "36AAACY4912K1Z2",
+          productId: "PRD-02",
+          productName: "NURSE PANT SHIRT (3 TUCKS)",
+          skuCode: "YSH-NPS-WHT-01",
+          customDescription: "NURSE PANT SHIRT (3 TUCKS) — YASHODA NURSING WING",
+          customSpec: "Yashoda Collar • Rama Chest Logo",
+          rate: 720
+        },
+        {
+          id: "CSKU-02",
+          clientId: "CLI-03",
+          clientName: "KIMS Hospitals Secunderabad",
+          clientGstin: "36AAACK6219P1Z9",
+          productId: "PRD-03",
+          productName: "CLASSIC FIT MAROON V-NECK SCRUB SET",
+          skuCode: "KIMS-SCR-MRN-02",
+          customDescription: "CLASSIC FIT MAROON V-NECK SCRUB SET — KIMS",
+          customSpec: "Contrast Navy Piping • KIMS Left Chest Logo",
+          rate: 685
+        },
+        {
+          id: "CSKU-03",
+          clientId: "CLI-01",
+          clientName: "S T Traders Annexe Cheap Jack Musheerabad",
+          clientGstin: "36ACQPM0669R1ZM",
+          productId: "PRD-01",
+          productName: "BED SHEETS ROYAL BLUE PLAIN",
+          skuCode: "STC-BED-RBL-01",
+          customDescription: "BED SHEETS ROYAL BLUE PLAIN 60x90",
+          customSpec: "144 TC Polycotton • Royal Blue",
+          rate: 275
+        }
+      ],
       masterProducts: [
         {
           id: "PRD-01",
+          sku: "SKU-BED-01",
           name: "BED SHEETS ROYAL BLUE PLAIN",
           gender: "UNISEX",
           cloth: "144 TC Polycotton",
@@ -1707,6 +2003,7 @@
         },
         {
           id: "PRD-02",
+          sku: "SKU-NPS-02",
           name: "NURSE PANT SHIRT (3 TUCKS)",
           gender: "FEMALE",
           cloth: "Alaskar",
@@ -1718,6 +2015,7 @@
         },
         {
           id: "PRD-03",
+          sku: "SKU-SCR-03",
           name: "CLASSIC FIT MAROON V-NECK SCRUB SET",
           gender: "UNISEX",
           cloth: "Maroon Poly-Viscose Twill",
@@ -1729,6 +2027,7 @@
         },
         {
           id: "PRD-04",
+          sku: "SKU-WRK-04",
           name: "PACIFICA BLUE WORKWEAR SHIRT & TROUSER",
           gender: "MALE",
           cloth: "Pacifica Blue Cotton Drill",
@@ -1874,6 +2173,10 @@
           const parsed = JSON.parse(raw);
           if (!Array.isArray(parsed.masterProducts)) parsed.masterProducts = JSON.parse(JSON.stringify(DEFAULT_FLOW_STATE.masterProducts));
           if (!Array.isArray(parsed.masterClients)) parsed.masterClients = JSON.parse(JSON.stringify(DEFAULT_FLOW_STATE.masterClients));
+          if (!Array.isArray(parsed.clientProductSkus)) parsed.clientProductSkus = JSON.parse(JSON.stringify(DEFAULT_FLOW_STATE.clientProductSkus));
+          if (!Array.isArray(parsed.masterUnits)) parsed.masterUnits = JSON.parse(JSON.stringify(DEFAULT_FLOW_STATE.masterUnits));
+          if (!Array.isArray(parsed.masterTailors)) parsed.masterTailors = JSON.parse(JSON.stringify(DEFAULT_FLOW_STATE.masterTailors));
+          if (!parsed.companyConfig || typeof parsed.companyConfig !== "object") parsed.companyConfig = JSON.parse(JSON.stringify(DEFAULT_FLOW_STATE.companyConfig));
           if (!Array.isArray(parsed.users) || parsed.users.length === 0) parsed.users = JSON.parse(JSON.stringify(DEFAULT_FLOW_STATE.users));
           if (!parsed.activeUserId) parsed.activeUserId = parsed.users[0].id;
           return parsed;
@@ -1962,6 +2265,7 @@
       "masters": { crumb: "Catalog Directory", title: "Products & Clients Master" },
       "reports": { crumb: "Analytics & Export", title: "MIS Reports & Operational Filters" },
       "users": { crumb: "Security & Access", title: "Users & Role-Based Access Rights" },
+      "settings": { crumb: "System & Firm Profile", title: "Company Configuration & Settings" },
       "sale-orders": { crumb: "Step 1 of 5", title: "Customer & Hospital Sale Orders" },
       "cutting-slips": { crumb: "Step 2 of 5", title: "Cutting Master Slips & Garment Preview" },
       "allocation": { crumb: "Step 3 of 5", title: "Allocation to Tailor & Production Unit" },
@@ -1991,7 +2295,8 @@
       "tax-invoice": "taxInvoice",
       "masters": "mastersReports",
       "reports": "mastersReports",
-      "users": "manageUsers"
+      "users": "manageUsers",
+      "settings": "manageUsers"
     };
 
     function switchStep(stepId) {
@@ -2031,6 +2336,7 @@
       if (stepId === "masters") renderMastersPage();
       if (stepId === "reports") renderReportsPage();
       if (stepId === "users") renderUsersAndRights();
+      if (stepId === "settings") renderCompanySettingsPage();
     }
 
     // =========================================================================
@@ -2326,7 +2632,7 @@
     }
 
     // =========================================================================
-    // RENDER & MANAGE PRODUCTS & CLIENTS MASTER CATALOG
+    // RENDER & MANAGE PRODUCTS, CLIENTS & CLIENT-WISE SKUs
     // =========================================================================
     function renderMastersPage() {
       const prodTbody = document.getElementById("master-products-tbody");
@@ -2343,7 +2649,7 @@
               ${p.image ? `<img src="${p.image}" alt="${p.name}" class="w-10 h-10 rounded-lg object-cover border border-slate-200 shrink-0">` : `<div class="w-10 h-10 rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center text-[9px] font-bold text-slate-400 shrink-0">IMG</div>`}
               <div>
                 <div class="font-bold text-slate-900">${p.name}</div>
-                <div class="text-[11px] text-slate-500">${p.gender} • ${p.colour}</div>
+                <div class="text-[11px] text-slate-500"><span class="font-mono font-bold text-indigo-700">${p.sku || p.id}</span> • ${p.gender} • ${p.colour}</div>
               </div>
             </div>
           </td>
@@ -2368,11 +2674,13 @@
         </tr>
       `).join("");
 
-      cliTbody.innerHTML = state.masterClients.map((c, idx) => `
+      cliTbody.innerHTML = state.masterClients.map((c, idx) => {
+        const skuCnt = (state.clientProductSkus || []).filter(s => s.clientId === c.id || s.clientName === c.name).length;
+        return `
         <tr class="hover:bg-slate-50">
           <td class="py-3 px-4">
             <div class="font-bold text-slate-900">${c.name}</div>
-            <div class="text-[11px] text-slate-500">Code: ${c.code} • ${c.city}</div>
+            <div class="text-[11px] text-slate-500">Code: ${c.code} • ${skuCnt} Custom SKU(s)</div>
           </td>
           <td class="py-3 px-4">
             <div class="font-mono font-bold text-slate-800">${c.gstin}</div>
@@ -2390,7 +2698,117 @@
             </div>
           </td>
         </tr>
-      `).join("");
+      `;
+      }).join("");
+
+      renderClientProductSkusSection();
+    }
+
+    function renderClientProductSkusSection() {
+      const cliSel = document.getElementById("csku-client-select");
+      const prodSel = document.getElementById("csku-product-select");
+      const tbody = document.getElementById("master-csku-tbody");
+      const countEl = document.getElementById("master-csku-count");
+      if (!cliSel || !prodSel || !tbody) return;
+
+      const prevCli = cliSel.value;
+      const prevProd = prodSel.value;
+
+      cliSel.innerHTML = state.masterClients.map((c, i) =>
+        `<option value="${i}">${c.name} (${c.gstin})</option>`
+      ).join("");
+      if (prevCli && Number(prevCli) < state.masterClients.length) cliSel.value = prevCli;
+
+      prodSel.innerHTML = state.masterProducts.map((p, i) =>
+        `<option value="${i}">${p.name} [${p.sku || p.id}] — ₹${p.rate}</option>`
+      ).join("");
+      if (prevProd && Number(prevProd) < state.masterProducts.length) prodSel.value = prevProd;
+
+      const list = state.clientProductSkus || [];
+      if (countEl) countEl.textContent = `${list.length} client SKUs`;
+
+      tbody.innerHTML = list.map((item, idx) => `
+        <tr class="hover:bg-slate-50">
+          <td class="py-3 px-4">
+            <div class="font-bold text-slate-900">${item.clientName}</div>
+            <div class="text-[11px] font-mono text-slate-500">${item.clientGstin || ''}</div>
+          </td>
+          <td class="py-3 px-4 font-semibold text-slate-800">${item.productName}</td>
+          <td class="py-3 px-4">
+            <span class="px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-800 border border-indigo-200 font-mono font-extrabold">${item.skuCode}</span>
+          </td>
+          <td class="py-3 px-4">
+            <div class="font-semibold text-slate-800">${item.customDescription || item.productName}</div>
+            <div class="text-[11px] text-slate-500">${item.customSpec || '-'}</div>
+          </td>
+          <td class="py-3 px-4 text-right font-extrabold text-emerald-700">${formatINR(item.rate)}</td>
+          <td class="py-3 px-4 text-right">
+            <button onclick="deleteClientProductSku(${idx})" class="px-2 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold">
+              ✕
+            </button>
+          </td>
+        </tr>
+      `).join("") || `<tr><td colspan="6" class="py-6 text-center text-slate-400">No client-specific SKUs mapped yet. Add one above to assign custom SKU codes & rates per client.</td></tr>`;
+    }
+
+    function prefillClientSkuFromProduct(prodIdxStr) {
+      const p = state.masterProducts[parseInt(prodIdxStr)];
+      if (!p) return;
+      const rateEl = document.getElementById("csku-rate");
+      const descEl = document.getElementById("csku-desc");
+      if (rateEl) rateEl.value = p.rate || 650;
+      if (descEl && !descEl.value.trim()) descEl.value = p.name;
+    }
+
+    function addClientProductSku(e) {
+      e.preventDefault();
+      const cliIdx = parseInt(document.getElementById("csku-client-select").value);
+      const prodIdx = parseInt(document.getElementById("csku-product-select").value);
+      const cli = state.masterClients[cliIdx];
+      const prod = state.masterProducts[prodIdx];
+      if (!cli || !prod) {
+        showToast("Please select a valid Client and Base Product.", "warning");
+        return;
+      }
+      const skuCode = document.getElementById("csku-code").value.trim().toUpperCase();
+      const rate = parseFloat(document.getElementById("csku-rate").value) || prod.rate;
+      const customSpec = document.getElementById("csku-spec").value.trim();
+      const customDescription = document.getElementById("csku-desc").value.trim().toUpperCase() || prod.name;
+
+      if (!Array.isArray(state.clientProductSkus)) state.clientProductSkus = [];
+
+      // Replace if same client + product mapping already exists, otherwise unshift
+      const existingIdx = state.clientProductSkus.findIndex(
+        x => (x.clientId === cli.id || x.clientName === cli.name) && (x.productId === prod.id || x.productName === prod.name)
+      );
+      const record = {
+        id: existingIdx >= 0 ? state.clientProductSkus[existingIdx].id : `CSKU-${String(state.clientProductSkus.length + 1).padStart(2, "0")}`,
+        clientId: cli.id,
+        clientName: cli.name,
+        clientGstin: cli.gstin,
+        productId: prod.id,
+        productName: prod.name,
+        skuCode,
+        customDescription,
+        customSpec,
+        rate
+      };
+      if (existingIdx >= 0) {
+        state.clientProductSkus[existingIdx] = record;
+      } else {
+        state.clientProductSkus.unshift(record);
+      }
+      saveFlowState();
+      document.getElementById("csku-code").value = "";
+      document.getElementById("csku-spec").value = "";
+      document.getElementById("csku-desc").value = "";
+      showToast(`Saved Client SKU "${skuCode}" for ${cli.name} → ${prod.name}.`, "success");
+    }
+
+    function deleteClientProductSku(idx) {
+      state.clientProductSkus.splice(idx, 1);
+      saveFlowState();
+      showToast("Removed Client SKU mapping.", "info");
     }
 
     let draftMasterProductImage = "";
@@ -2434,6 +2852,7 @@
       if (!p) return;
       editingMasterProductIndex = idx;
       document.getElementById("prod-name").value = p.name || "";
+      if (document.getElementById("prod-sku")) document.getElementById("prod-sku").value = p.sku || p.id || "";
       document.getElementById("prod-rate").value = p.rate || 650;
       document.getElementById("prod-gender").value = p.gender || "UNISEX";
       document.getElementById("prod-cloth").value = p.cloth || "";
@@ -2460,6 +2879,7 @@
     function cancelEditMasterProduct() {
       editingMasterProductIndex = -1;
       document.getElementById("prod-name").value = "";
+      if (document.getElementById("prod-sku")) document.getElementById("prod-sku").value = "";
       document.getElementById("prod-rate").value = "720";
       document.getElementById("prod-gender").value = "FEMALE";
       document.getElementById("prod-cloth").value = "Alaskar";
@@ -2475,7 +2895,9 @@
 
     function addMasterProduct(e) {
       e.preventDefault();
+      const skuVal = (document.getElementById("prod-sku")?.value || "").trim().toUpperCase();
       const updatedFields = {
+        sku: skuVal || `SKU-${String(state.masterProducts.length + 1).padStart(3, "0")}`,
         name: document.getElementById("prod-name").value.trim().toUpperCase(),
         gender: document.getElementById("prod-gender").value,
         cloth: document.getElementById("prod-cloth").value.trim(),
@@ -2503,7 +2925,7 @@
       state.masterProducts.unshift(prod);
       saveFlowState();
       cancelEditMasterProduct();
-      showToast(`Added product "${prod.name}" to catalog.`, "success");
+      showToast(`Added product "${prod.name}" (${prod.sku}) to catalog.`, "success");
     }
 
     function deleteMasterProduct(idx) {
@@ -2671,7 +3093,10 @@
                   ${state.masterProducts.map((p, pIdx) => `<option value="${pIdx}">${p.name} (₹${p.rate})</option>`).join("")}
                 </select>
               </div>
-              <input type="text" value="${(item.style || '').replace(/"/g, '&quot;')}" oninput="updateSoItemField(${idx}, 'style', this.value)" placeholder="Item / Garment Description *" required class="w-full px-2 py-1 border border-slate-300 rounded font-extrabold uppercase text-[11px] bg-yellow-50/40 focus:bg-white focus:border-indigo-600 focus:outline-none">
+              <div class="flex gap-1">
+                <input type="text" value="${(item.skuCode || '').replace(/"/g, '&quot;')}" oninput="updateSoItemField(${idx}, 'skuCode', this.value)" placeholder="Client SKU" class="w-28 px-1.5 py-1 border border-indigo-300 rounded font-mono font-extrabold uppercase text-[10px] bg-indigo-50/50 text-indigo-900">
+                <input type="text" value="${(item.style || '').replace(/"/g, '&quot;')}" oninput="updateSoItemField(${idx}, 'style', this.value)" placeholder="Item / Garment Description *" required class="w-full px-2 py-1 border border-slate-300 rounded font-extrabold uppercase text-[11px] bg-yellow-50/40 focus:bg-white focus:border-indigo-600 focus:outline-none">
+              </div>
               <div class="grid grid-cols-3 gap-1">
                 <select onchange="updateSoItemField(${idx}, 'gender', this.value)" class="px-1.5 py-0.5 border border-slate-300 rounded text-[10px] font-bold bg-white">
                   <option value="UNISEX" ${item.gender === 'UNISEX' ? 'selected' : ''}>UNISEX</option>
@@ -2768,21 +3193,43 @@
       recalcSoDocumentTotals();
     }
 
+    function findClientSkuMapping(clientName, clientGstin, product) {
+      if (!product || !Array.isArray(state.clientProductSkus)) return null;
+      const cName = (clientName || "").trim().toLowerCase();
+      const cGst = (clientGstin || "").trim().toUpperCase();
+      return state.clientProductSkus.find(m => {
+        const clientMatches = (cGst && (m.clientGstin || "").toUpperCase() === cGst) ||
+                              (cName && (m.clientName || "").toLowerCase() === cName);
+        const prodMatches = (m.productId && m.productId === product.id) ||
+                            ((m.productName || "").toUpperCase() === (product.name || "").toUpperCase());
+        return clientMatches && prodMatches;
+      }) || null;
+    }
+
     function applyProductToRow(rowIdx, prodIdxStr) {
       if (prodIdxStr === "") return;
       const p = state.masterProducts[parseInt(prodIdxStr)];
       if (!p || !soDraftItems[rowIdx]) return;
-      soDraftItems[rowIdx].style = p.name;
+      const curClient = document.getElementById("so-client")?.value || "";
+      const curGstin = document.getElementById("so-gstin")?.value || "";
+      const clientSku = findClientSkuMapping(curClient, curGstin, p);
+
+      soDraftItems[rowIdx].productId = p.id;
+      soDraftItems[rowIdx].skuCode = clientSku ? clientSku.skuCode : (p.sku || p.id || "");
+      soDraftItems[rowIdx].style = clientSku ? (clientSku.customDescription || p.name) : p.name;
       soDraftItems[rowIdx].gender = p.gender || "UNISEX";
       soDraftItems[rowIdx].cloth = p.cloth || "Alaskar";
       soDraftItems[rowIdx].colour = p.colour || "White";
       soDraftItems[rowIdx].collar = p.collar || "Standard Collar";
-      soDraftItems[rowIdx].pattern = p.pattern || "";
+      soDraftItems[rowIdx].pattern = clientSku && clientSku.customSpec ? `${clientSku.customSpec} • ${p.pattern || ""}` : (p.pattern || "");
       soDraftItems[rowIdx].bottomPattern = p.bottomPattern || "Standard Bottom";
-      soDraftItems[rowIdx].rate = Number(p.rate) || 650;
+      soDraftItems[rowIdx].rate = clientSku ? (Number(clientSku.rate) || Number(p.rate) || 650) : (Number(p.rate) || 650);
       if (p.image) soDraftItems[rowIdx].image = p.image;
       activeSoItemIndex = rowIdx;
       renderSoDraftItemsTable();
+      if (clientSku) {
+        showToast(`Applied Client SKU [${clientSku.skuCode}] @ ₹${clientSku.rate} for ${curClient}.`, "info");
+      }
     }
 
     function saveQuickProductFromSo() {
@@ -3171,7 +3618,19 @@
       const phoneEl = document.getElementById("so-phone");
       if (phoneEl) phoneEl.value = c.phone || "";
       syncSoShippingPreview();
-      recalcSoDocumentTotals();
+      // Re-apply Client-Wise SKU pricing/codes to any mapped rows
+      soDraftItems.forEach((row, rIdx) => {
+        const baseProd = state.masterProducts.find(p => p.id === row.productId || p.name === row.style);
+        if (baseProd) {
+          const map = findClientSkuMapping(c.name, c.gstin, baseProd);
+          if (map) {
+            row.skuCode = map.skuCode;
+            row.style = map.customDescription || baseProd.name;
+            row.rate = Number(map.rate) || row.rate;
+          }
+        }
+      });
+      renderSoDraftItemsTable();
     }
 
     function applyProductPreset(idxStr) {
@@ -3640,10 +4099,10 @@
             <div class="px-3 pt-1.5 pb-2 border-b border-black relative">
               <div class="text-right text-[10px] font-semibold tracking-wide">ORIGINAL</div>
               <div class="text-center -mt-1">
-                <h1 class="text-[20px] font-extrabold tracking-wide uppercase">ST TRADERS ANNEXE CHEAP JACK</h1>
-                <p class="text-[10.5px] font-medium">10-5-348/A, Tukaram Gate, Buddha Nagar, Lalaguda gate,, Secundrabad, 500017, Ph</p>
-                <p class="text-[10.5px] font-medium">No:9347203651,, GST No: 36AAIPF1095L1ZJ</p>
-                <p class="text-[10.5px] font-medium">sttradersannexecheapjack@gmail.com</p>
+                <h1 class="text-[20px] font-extrabold tracking-wide uppercase">${(state.companyConfig || DEFAULT_FLOW_STATE.companyConfig).firmName}</h1>
+                <p class="text-[10.5px] font-medium">${(state.companyConfig || DEFAULT_FLOW_STATE.companyConfig).address}</p>
+                <p class="text-[10.5px] font-medium">Ph No:${(state.companyConfig || DEFAULT_FLOW_STATE.companyConfig).phone}, GST No: ${(state.companyConfig || DEFAULT_FLOW_STATE.companyConfig).gstin}</p>
+                <p class="text-[10.5px] font-medium">${(state.companyConfig || DEFAULT_FLOW_STATE.companyConfig).email}</p>
                 <div class="text-[15px] font-extrabold uppercase tracking-wide mt-0.5">SALE ORDER/ESTIMATE</div>
               </div>
             </div>
@@ -3750,13 +4209,13 @@
             <!-- Bank Details & Authorised Signatory Footer -->
             <div class="grid grid-cols-12 px-2.5 py-2 text-[10.5px] items-end">
               <div class="col-span-6 space-y-0.5">
-                <div><span class="font-semibold">Our Bankers:</span> <span class="font-bold">BANK OF BARODA</span></div>
-                <div><span class="font-semibold">A/C No. :</span> <span class="font-bold">71700200000140</span></div>
-                <div><span class="font-semibold">IFSC CODE:</span> <span class="font-bold">BARBODBSECE</span></div>
-                <div><span class="font-semibold">Branch :</span> <span class="font-bold">East Marredpally</span></div>
+                <div><span class="font-semibold">Our Bankers:</span> <span class="font-bold">${(state.companyConfig || DEFAULT_FLOW_STATE.companyConfig).bankName}</span></div>
+                <div><span class="font-semibold">A/C No. :</span> <span class="font-bold">${(state.companyConfig || DEFAULT_FLOW_STATE.companyConfig).bankAc}</span></div>
+                <div><span class="font-semibold">IFSC CODE:</span> <span class="font-bold">${(state.companyConfig || DEFAULT_FLOW_STATE.companyConfig).bankIfsc}</span></div>
+                <div><span class="font-semibold">Branch :</span> <span class="font-bold">${(state.companyConfig || DEFAULT_FLOW_STATE.companyConfig).bankBranch}</span></div>
               </div>
               <div class="col-span-6 text-right flex flex-col justify-between h-full space-y-8">
-                <div class="font-bold">For, ST TRADERS ANNEXE CHEAP JACK</div>
+                <div class="font-bold">For, ${(state.companyConfig || DEFAULT_FLOW_STATE.companyConfig).firmName}</div>
                 <div class="font-semibold">Authorised Signatory</div>
               </div>
             </div>
@@ -4239,7 +4698,184 @@
     // =========================================================================
     // RENDER STEP 3: ALLOCATION OF SLIPS TO TAILOR & UNIT
     // =========================================================================
+    function toggleManageTailorUnitDrawer() {
+      const drawer = document.getElementById("manage-tailor-unit-drawer");
+      if (drawer) drawer.classList.toggle("hidden");
+      renderMasterTailorsAndUnits();
+    }
+
+    function renderMasterTailorsAndUnits() {
+      const units = state.masterUnits || [];
+      const tailors = state.masterTailors || [];
+
+      const uSel = document.getElementById("alloc-unit-select");
+      const tSel = document.getElementById("alloc-tailor-select");
+      const slipUnitSel = document.getElementById("slip-unit-quick");
+      const slipMasterSel = document.getElementById("slip-master-quick");
+
+      const uOptions = units.map(u => `<option value="${u.name}">${u.name}</option>`).join("");
+      const tOptions = tailors.map(t => `<option value="${t.name}">${t.name}</option>`).join("");
+
+      if (uSel) { const cur = uSel.value; uSel.innerHTML = uOptions; if (cur && units.some(u => u.name === cur)) uSel.value = cur; }
+      if (tSel) { const cur = tSel.value; tSel.innerHTML = tOptions; if (cur && tailors.some(t => t.name === cur)) tSel.value = cur; }
+      if (slipUnitSel) { const cur = slipUnitSel.value; slipUnitSel.innerHTML = uOptions; if (cur && units.some(u => u.name === cur)) slipUnitSel.value = cur; }
+      if (slipMasterSel) { const cur = slipMasterSel.value; slipMasterSel.innerHTML = tOptions; if (cur && tailors.some(t => t.name === cur)) slipMasterSel.value = cur; }
+
+      const uCount = document.getElementById("units-master-count");
+      const tCount = document.getElementById("tailors-master-count");
+      const uList = document.getElementById("master-units-list");
+      const tList = document.getElementById("master-tailors-list");
+
+      if (uCount) uCount.textContent = `${units.length} units`;
+      if (tCount) tCount.textContent = `${tailors.length} tailors`;
+
+      if (uList) {
+        uList.innerHTML = units.map((u, idx) => `
+          <div class="py-2 flex items-center justify-between gap-2">
+            <div>
+              <div class="font-bold text-slate-900">${u.name}</div>
+              <div class="text-[11px] text-slate-500">${u.location || ''}</div>
+            </div>
+            <button type="button" onclick="deleteMasterUnit(${idx})" class="px-2 py-0.5 rounded bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold">✕</button>
+          </div>
+        `).join("");
+      }
+
+      if (tList) {
+        tList.innerHTML = tailors.map((t, idx) => `
+          <div class="py-2 flex items-center justify-between gap-2">
+            <div>
+              <div class="font-bold text-slate-900">${t.name}</div>
+              <div class="text-[11px] text-slate-500">${t.phone || ''} • Default Rate: ₹${t.defaultRate || 95}/pc</div>
+            </div>
+            <button type="button" onclick="deleteMasterTailor(${idx})" class="px-2 py-0.5 rounded bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold">✕</button>
+          </div>
+        `).join("");
+      }
+    }
+
+    function addMasterUnit(e) {
+      e.preventDefault();
+      const name = document.getElementById("new-unit-name").value.trim();
+      const location = document.getElementById("new-unit-loc").value.trim();
+      if (!name) return;
+      if (!Array.isArray(state.masterUnits)) state.masterUnits = [];
+      state.masterUnits.push({ id: `UNT-${String(state.masterUnits.length + 1).padStart(2, "0")}`, name, location });
+      saveFlowState();
+      document.getElementById("new-unit-name").value = "";
+      document.getElementById("new-unit-loc").value = "";
+      showToast(`Added production unit "${name}".`, "success");
+    }
+
+    function deleteMasterUnit(idx) {
+      if (state.masterUnits.length <= 1) {
+        showToast("At least 1 production unit is required.", "warning");
+        return;
+      }
+      state.masterUnits.splice(idx, 1);
+      saveFlowState();
+      showToast("Removed production unit.", "info");
+    }
+
+    function addMasterTailor(e) {
+      e.preventDefault();
+      const name = document.getElementById("new-tailor-name").value.trim();
+      const phone = document.getElementById("new-tailor-phone").value.trim();
+      const defaultRate = parseFloat(document.getElementById("new-tailor-rate").value) || 95;
+      if (!name) return;
+      if (!Array.isArray(state.masterTailors)) state.masterTailors = [];
+      state.masterTailors.push({ id: `TLR-${String(state.masterTailors.length + 1).padStart(2, "0")}`, name, phone, defaultRate });
+      saveFlowState();
+      document.getElementById("new-tailor-name").value = "";
+      document.getElementById("new-tailor-phone").value = "";
+      showToast(`Added tailor "${name}" (₹${defaultRate}/pc).`, "success");
+    }
+
+    function deleteMasterTailor(idx) {
+      if (state.masterTailors.length <= 1) {
+        showToast("At least 1 tailor is required.", "warning");
+        return;
+      }
+      state.masterTailors.splice(idx, 1);
+      saveFlowState();
+      showToast("Removed tailor from master list.", "info");
+    }
+
+    function onAllocTailorChange(tailorName) {
+      const t = (state.masterTailors || []).find(x => x.name === tailorName);
+      if (t && t.defaultRate && document.getElementById("alloc-piece-rate")) {
+        document.getElementById("alloc-piece-rate").value = t.defaultRate;
+      }
+    }
+
+    function renderCompanySettingsPage() {
+      const cfg = state.companyConfig || DEFAULT_FLOW_STATE.companyConfig;
+      const setVal = (id, val) => { const el = document.getElementById(id); if (el) el.value = val || ""; };
+      setVal("cfg-firm-name", cfg.firmName);
+      setVal("cfg-short-tag", cfg.shortTag);
+      setVal("cfg-address", cfg.address);
+      setVal("cfg-gstin", cfg.gstin);
+      setVal("cfg-phone", cfg.phone);
+      setVal("cfg-email", cfg.email);
+      setVal("cfg-jurisdiction", cfg.jurisdiction);
+      setVal("cfg-units-label", cfg.unitsLabel);
+      setVal("cfg-bank-name", cfg.bankName);
+      setVal("cfg-bank-ac", cfg.bankAc);
+      setVal("cfg-bank-ifsc", cfg.bankIfsc);
+      setVal("cfg-bank-branch", cfg.bankBranch);
+      setVal("cfg-so-prefix", cfg.soPrefix);
+      setVal("cfg-inv-prefix", cfg.invPrefix);
+      setVal("cfg-default-gst", String(cfg.defaultGst ?? 5));
+      setVal("cfg-terms", cfg.terms);
+    }
+
+    function saveCompanySettings(e) {
+      e.preventDefault();
+      if (!hasRight("manageUsers")) {
+        showToast("Only Admin can update Company Configuration.", "warning");
+        return;
+      }
+      state.companyConfig = {
+        firmName: document.getElementById("cfg-firm-name").value.trim().toUpperCase(),
+        shortTag: document.getElementById("cfg-short-tag").value.trim().toUpperCase() || "ST",
+        address: document.getElementById("cfg-address").value.trim(),
+        gstin: document.getElementById("cfg-gstin").value.trim().toUpperCase(),
+        phone: document.getElementById("cfg-phone").value.trim(),
+        email: document.getElementById("cfg-email").value.trim(),
+        jurisdiction: document.getElementById("cfg-jurisdiction").value.trim(),
+        unitsLabel: document.getElementById("cfg-units-label").value.trim(),
+        bankName: document.getElementById("cfg-bank-name").value.trim().toUpperCase(),
+        bankAc: document.getElementById("cfg-bank-ac").value.trim(),
+        bankIfsc: document.getElementById("cfg-bank-ifsc").value.trim().toUpperCase(),
+        bankBranch: document.getElementById("cfg-bank-branch").value.trim(),
+        soPrefix: document.getElementById("cfg-so-prefix").value.trim(),
+        invPrefix: document.getElementById("cfg-inv-prefix").value.trim(),
+        defaultGst: parseFloat(document.getElementById("cfg-default-gst").value) || 5,
+        terms: document.getElementById("cfg-terms").value.trim()
+      };
+      saveFlowState();
+      showToast("Company configuration saved & applied across documents.", "success");
+    }
+
+    function resetCompanyConfigDefaults() {
+      state.companyConfig = JSON.parse(JSON.stringify(DEFAULT_FLOW_STATE.companyConfig));
+      saveFlowState();
+      renderCompanySettingsPage();
+      showToast("Restored default S T Traders Annexe CheapJack configuration.", "info");
+    }
+
+    function applyCompanyConfigToShell() {
+      const cfg = state.companyConfig || DEFAULT_FLOW_STATE.companyConfig;
+      const sideTitle = document.querySelector("#app-sidebar h1");
+      if (sideTitle) sideTitle.textContent = cfg.firmName;
+      const sideIcon = document.querySelector("#app-sidebar .w-10.h-10");
+      if (sideIcon) sideIcon.textContent = cfg.shortTag || "ST";
+      const subCfg = document.getElementById("step-sub-settings");
+      if (subCfg) subCfg.textContent = `GST ${cfg.gstin.slice(0, 2)} • ${cfg.bankName}`;
+    }
+
     function renderAllocations() {
+      renderMasterTailorsAndUnits();
       const slipSel = document.getElementById("alloc-slip-select");
       slipSel.innerHTML = state.cuttingSlips.map(cs => {
         const so = state.saleOrders.find(x => x.id === cs.soId) || {};
@@ -4657,6 +5293,10 @@
       XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(state.fabrics), "Fabrics");
       XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(state.masterProducts), "Products");
       XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(state.masterClients), "Clients");
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(state.clientProductSkus || []), "ClientProductSKUs");
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(state.masterUnits || []), "ProductionUnits");
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(state.masterTailors || []), "Tailors");
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet([state.companyConfig || DEFAULT_FLOW_STATE.companyConfig]), "CompanySettings");
       const usrRows = state.users.map(u => ({
         id: u.id, name: u.name, login: u.login, pin: u.pin, role: u.role, unit: u.unit, active: u.active,
         ...u.rights
@@ -4969,6 +5609,7 @@
     }
 
     function renderAllSteps() {
+      applyCompanyConfigToShell();
       applyRbacUiRestrictions();
       updateStepperBadges();
       renderUsersAndRights();
@@ -4986,7 +5627,7 @@
     window.addEventListener("DOMContentLoaded", () => {
       renderAllSteps();
       const hash = window.location.hash.replace("#", "").trim();
-      if (["dashboard", "tracking", "masters", "reports", "users", "sale-orders", "cutting-slips", "allocation", "receiving-fg", "tax-invoice"].includes(hash)) {
+      if (["dashboard", "tracking", "masters", "reports", "users", "settings", "sale-orders", "cutting-slips", "allocation", "receiving-fg", "tax-invoice"].includes(hash)) {
         switchStep(hash);
       } else {
         switchStep("dashboard");
