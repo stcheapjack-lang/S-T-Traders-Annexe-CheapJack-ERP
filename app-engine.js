@@ -1,6 +1,51 @@
 const FLOW_STORAGE_KEY = "st_traders_5stage_erp_v1";
 
     const DEFAULT_FLOW_STATE = {
+      quotations: [
+        {
+          id: "QTN-H/26-27/1041",
+          orderRef: "TENDER-YASHODA-2026",
+          nameCode: "1080",
+          date: "2026-11-20",
+          validUntil: "2026-12-05",
+          client: "Yashoda & Apollo Nursing Wing (Hyd)",
+          address: "SP Road, Secunderabad, Hyderabad 500003, Telangana",
+          phone: "9849022110",
+          gstin: "36AAACY4912K1Z2",
+          gender: "FEMALE",
+          style: "NURSE PANT SHIRT (3 TUCKS)",
+          items: [
+            {
+              style: "NURSE PANT SHIRT (3 TUCKS) — YASHODA NURSING WING",
+              gender: "FEMALE",
+              cloth: "Alaskar",
+              colour: "White",
+              collar: "Yashoda Collar",
+              pattern: "Yashoda Collar • Rama Chest Logo • 3 Tucks Shirt Pattern",
+              bottomPattern: "Nada Phyajam",
+              sizes: { "34": 15, "36": 25, "38": 30, "40": 15, "42": 5, "44": 0 },
+              qty: 90,
+              rate: 720,
+              taxable: 64800
+            }
+          ],
+          sizes: { "34": 15, "36": 25, "38": 30, "40": 15, "42": 5, "44": 0 },
+          totalQty: 90,
+          rate: 720,
+          gstPct: 5,
+          remarks: "Quotation valid for 15 days • Delivery within 8 working days of PO",
+          cloth: "Alaskar",
+          colour: "White",
+          collar: "Yashoda Collar",
+          pattern: "Yashoda Collar • Rama Chest Logo • 3 Tucks Shirt Pattern",
+          bottomPattern: "Nada Phyajam",
+          piping: "Matching White Piping",
+          embrDesign: "LOGO on CHEST (Core Magnues)",
+          poCode: "STTNP-06",
+          hospt: "S T Traders Cheap Jack Musheerabad",
+          status: "Open Quotation"
+        }
+      ],
       saleOrders: [
         {
           id: "SOD-H/26-27/3496",
@@ -360,6 +405,7 @@ const FLOW_STORAGE_KEY = "st_traders_5stage_erp_v1";
         const raw = localStorage.getItem(FLOW_STORAGE_KEY);
         if (raw) {
           const parsed = JSON.parse(raw);
+          if (!Array.isArray(parsed.quotations)) parsed.quotations = JSON.parse(JSON.stringify(DEFAULT_FLOW_STATE.quotations));
           if (!Array.isArray(parsed.masterProducts)) parsed.masterProducts = JSON.parse(JSON.stringify(DEFAULT_FLOW_STATE.masterProducts));
           if (!Array.isArray(parsed.masterClients)) parsed.masterClients = JSON.parse(JSON.stringify(DEFAULT_FLOW_STATE.masterClients));
           if (!Array.isArray(parsed.users) || parsed.users.length === 0) parsed.users = JSON.parse(JSON.stringify(DEFAULT_FLOW_STATE.users));
@@ -450,6 +496,7 @@ const FLOW_STORAGE_KEY = "st_traders_5stage_erp_v1";
       "masters": { crumb: "Catalog Directory", title: "Products & Clients Master" },
       "reports": { crumb: "Analytics & Export", title: "MIS Reports & Operational Filters" },
       "users": { crumb: "Security & Access", title: "Users & Role-Based Access Rights" },
+      "quotations": { crumb: "Pre-Sales", title: "Customer & Hospital Quotations" },
       "sale-orders": { crumb: "Step 1 of 5", title: "Customer & Hospital Sale Orders" },
       "cutting-slips": { crumb: "Step 2 of 5", title: "Cutting Master Slips & Garment Preview" },
       "allocation": { crumb: "Step 3 of 5", title: "Allocation to Tailor & Production Unit" },
@@ -472,6 +519,7 @@ const FLOW_STORAGE_KEY = "st_traders_5stage_erp_v1";
     }
 
     const STEP_RIGHT_MAP = {
+      "quotations": "saleOrders",
       "sale-orders": "saleOrders",
       "cutting-slips": "cuttingSlips",
       "allocation": "allocation",
@@ -519,6 +567,7 @@ const FLOW_STORAGE_KEY = "st_traders_5stage_erp_v1";
       if (stepId === "masters") renderMastersPage();
       if (stepId === "reports") renderReportsPage();
       if (stepId === "users") renderUsersAndRights();
+      if (stepId === "quotations") renderQuotationsPage();
     }
 
     // =========================================================================
@@ -827,8 +876,13 @@ const FLOW_STORAGE_KEY = "st_traders_5stage_erp_v1";
       prodTbody.innerHTML = state.masterProducts.map((p, idx) => `
         <tr class="hover:bg-slate-50">
           <td class="py-3 px-4">
-            <div class="font-bold text-slate-900">${p.name}</div>
-            <div class="text-[11px] text-slate-500">${p.gender} • ${p.colour}</div>
+            <div class="flex items-center gap-2.5">
+              ${p.image ? `<img src="${p.image}" alt="${p.name}" class="w-10 h-10 rounded-lg object-cover border border-slate-200 shrink-0">` : `<div class="w-10 h-10 rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center text-[9px] font-bold text-slate-400 shrink-0">IMG</div>`}
+              <div>
+                <div class="font-bold text-slate-900">${p.name}</div>
+                <div class="text-[11px] text-slate-500">${p.gender} • ${p.colour}</div>
+              </div>
+            </div>
           </td>
           <td class="py-3 px-4">
             <div class="font-semibold text-slate-800">${p.cloth}</div>
@@ -837,6 +891,9 @@ const FLOW_STORAGE_KEY = "st_traders_5stage_erp_v1";
           <td class="py-3 px-4 font-extrabold text-emerald-700">${formatINR(p.rate)}</td>
           <td class="py-3 px-4 text-right">
             <div class="inline-flex gap-1.5">
+              <button onclick="editMasterProduct(${idx})" class="px-2.5 py-1 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 font-bold">
+                Edit
+              </button>
               <button onclick="bookOrderWithProduct(${idx})" class="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold">
                 + Order
               </button>
@@ -873,10 +930,89 @@ const FLOW_STORAGE_KEY = "st_traders_5stage_erp_v1";
       `).join("");
     }
 
+    let draftMasterProductImage = "";
+    let draftMasterProductImageName = "";
+
+    function handleMasterProductImageUpload(e) {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        draftMasterProductImage = evt.target.result;
+        draftMasterProductImageName = file.name;
+        const box = document.getElementById("prod-img-preview-box");
+        const fn = document.getElementById("prod-img-filename");
+        const clr = document.getElementById("prod-img-clear-btn");
+        if (box) box.innerHTML = `<img src="${draftMasterProductImage}" alt="Preview" class="w-full h-full object-cover">`;
+        if (fn) fn.textContent = file.name;
+        if (clr) clr.classList.remove("hidden");
+        showToast(`Attached garment image "${file.name}".`, "success");
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function clearMasterProductDraftImage() {
+      draftMasterProductImage = "";
+      draftMasterProductImageName = "";
+      const inp = document.getElementById("prod-image-file");
+      const box = document.getElementById("prod-img-preview-box");
+      const fn = document.getElementById("prod-img-filename");
+      const clr = document.getElementById("prod-img-clear-btn");
+      if (inp) inp.value = "";
+      if (box) box.innerHTML = "NO PHOTO";
+      if (fn) fn.textContent = "Optional — auto-fills Cutting Slip preview";
+      if (clr) clr.classList.add("hidden");
+    }
+
+    let editingMasterProductIndex = -1;
+
+    function editMasterProduct(idx) {
+      const p = state.masterProducts[idx];
+      if (!p) return;
+      editingMasterProductIndex = idx;
+      document.getElementById("prod-name").value = p.name || "";
+      document.getElementById("prod-rate").value = p.rate || 650;
+      document.getElementById("prod-gender").value = p.gender || "UNISEX";
+      document.getElementById("prod-cloth").value = p.cloth || "";
+      document.getElementById("prod-colour").value = p.colour || "";
+      document.getElementById("prod-collar").value = p.collar || "";
+      document.getElementById("prod-bottom").value = p.bottomPattern || "";
+      document.getElementById("prod-pattern").value = p.pattern || "";
+
+      if (p.image) {
+        draftMasterProductImage = p.image;
+        document.getElementById("prod-img-preview-box").innerHTML = `<img src="${p.image}" alt="Preview" class="w-full h-full object-cover">`;
+        document.getElementById("prod-img-filename").textContent = "Saved garment photo attached";
+        document.getElementById("prod-img-clear-btn").classList.remove("hidden");
+      } else {
+        clearMasterProductDraftImage();
+      }
+
+      document.getElementById("prod-form-title").textContent = `Edit Product: ${p.name}`;
+      document.getElementById("prod-submit-btn").textContent = "Update Product in Catalog ✓";
+      document.getElementById("prod-cancel-edit-btn").classList.remove("hidden");
+      document.getElementById("prod-name").scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+
+    function cancelEditMasterProduct() {
+      editingMasterProductIndex = -1;
+      document.getElementById("prod-name").value = "";
+      document.getElementById("prod-rate").value = "720";
+      document.getElementById("prod-gender").value = "FEMALE";
+      document.getElementById("prod-cloth").value = "Alaskar";
+      document.getElementById("prod-colour").value = "White";
+      document.getElementById("prod-collar").value = "Yashoda Collar";
+      document.getElementById("prod-bottom").value = "Nada Phyajam";
+      document.getElementById("prod-pattern").value = "3 Tucks Shirt Pattern Down 2 Pocket Front Open Buttons";
+      clearMasterProductDraftImage();
+      document.getElementById("prod-form-title").textContent = "Add New Garment / Uniform Product";
+      document.getElementById("prod-submit-btn").textContent = "+ Save Product to Catalog";
+      document.getElementById("prod-cancel-edit-btn").classList.add("hidden");
+    }
+
     function addMasterProduct(e) {
       e.preventDefault();
-      const prod = {
-        id: `PRD-${String(state.masterProducts.length + 1).padStart(2, "0")}`,
+      const updatedFields = {
         name: document.getElementById("prod-name").value.trim().toUpperCase(),
         gender: document.getElementById("prod-gender").value,
         cloth: document.getElementById("prod-cloth").value.trim(),
@@ -884,11 +1020,26 @@ const FLOW_STORAGE_KEY = "st_traders_5stage_erp_v1";
         collar: document.getElementById("prod-collar").value.trim(),
         bottomPattern: document.getElementById("prod-bottom").value.trim(),
         pattern: document.getElementById("prod-pattern").value.trim(),
-        rate: parseFloat(document.getElementById("prod-rate").value) || 650
+        rate: parseFloat(document.getElementById("prod-rate").value) || 650,
+        image: draftMasterProductImage || ""
+      };
+
+      if (editingMasterProductIndex >= 0 && state.masterProducts[editingMasterProductIndex]) {
+        const existing = state.masterProducts[editingMasterProductIndex];
+        state.masterProducts[editingMasterProductIndex] = { ...existing, ...updatedFields };
+        saveFlowState();
+        cancelEditMasterProduct();
+        showToast(`Updated product "${updatedFields.name}".`, "success");
+        return;
+      }
+
+      const prod = {
+        id: `PRD-${String(state.masterProducts.length + 1).padStart(2, "0")}`,
+        ...updatedFields
       };
       state.masterProducts.unshift(prod);
       saveFlowState();
-      document.getElementById("prod-name").value = "";
+      cancelEditMasterProduct();
       showToast(`Added product "${prod.name}" to catalog.`, "success");
     }
 
@@ -1166,6 +1317,7 @@ const FLOW_STORAGE_KEY = "st_traders_5stage_erp_v1";
       soDraftItems[rowIdx].pattern = p.pattern || "";
       soDraftItems[rowIdx].bottomPattern = p.bottomPattern || "Standard Bottom";
       soDraftItems[rowIdx].rate = Number(p.rate) || 650;
+      if (p.image) soDraftItems[rowIdx].image = p.image;
       activeSoItemIndex = rowIdx;
       renderSoDraftItemsTable();
     }
@@ -1475,70 +1627,74 @@ const FLOW_STORAGE_KEY = "st_traders_5stage_erp_v1";
         resolved = await queryLiveGstinTaxpayer(clean);
       }
 
-      // 5. If Live Portal is unreachable from browser CORS/offline, DO NOT overwrite Name with fake placeholder text!
-      //    Instead, keep Name clean & focused for typing the exact Trade Name, and pre-fill State & Category accurately.
+      // 5. Fallback when external GST API is unreachable/blocked by CORS:
+      //    Construct a clean, non-verbose Firm Name from PAN + Entity Type + State so all fields are filled immediately
       if (!resolved) {
-        const stateAddr = `${meta.stateName} (State Code ${meta.stateCode})`;
-        const autoCat = meta.entityType.includes("Trust") ? "Hospital & Healthcare" : "Corporate & Hospitality";
+        const existingSoName = (document.getElementById("so-client")?.value || "").trim();
+        const existingQuickName = (document.getElementById("quick-cli-name")?.value || "").trim();
+        const existingMasterName = (document.getElementById("cli-name")?.value || "").trim();
 
-        if (targetContext === "so") {
-          document.getElementById("so-gstin").value = clean;
-          const nameEl = document.getElementById("so-client");
-          if (nameEl && nameEl.value.startsWith("M/s Registered")) nameEl.value = "";
-          if (nameEl) { nameEl.placeholder = `Type Legal/Trade Name for PAN ${meta.pan} *`; nameEl.focus(); }
-          const addrEl = document.getElementById("so-address");
-          if (addrEl && (!addrEl.value.trim() || addrEl.value.includes("Kubera Complex"))) {
-            addrEl.value = stateAddr;
-          }
-          syncSoShippingPreview();
-          recalcSoDocumentTotals();
-        } else if (targetContext === "quick") {
-          document.getElementById("quick-cli-gstin").value = clean;
-          const qName = document.getElementById("quick-cli-name");
-          if (qName) { qName.value = ""; qName.placeholder = `Type Legal/Trade Name for PAN ${meta.pan} *`; qName.focus(); }
-          const qAddr = document.getElementById("quick-cli-address");
-          if (qAddr && !qAddr.value.trim()) qAddr.value = stateAddr;
-        } else if (targetContext === "master") {
-          document.getElementById("cli-gstin").value = clean;
-          const mName = document.getElementById("cli-name");
-          if (mName) { mName.value = ""; mName.placeholder = `Type Legal/Trade Name for PAN ${meta.pan} *`; mName.focus(); }
-          const mCity = document.getElementById("cli-city");
-          if (mCity) mCity.value = stateAddr;
-          const catSel = document.getElementById("cli-category");
-          if (catSel) catSel.value = autoCat;
-        }
+        const suffixMap = {
+          "C": "PVT LTD",
+          "P": "TRADERS",
+          "F": "ASSOCIATES",
+          "T": "HOSPITALS & TRUST",
+          "H": "ENTERPRISES",
+          "G": "GOVT UNDERTAKING"
+        };
+        const suffix = suffixMap[meta.entityChar] || "ENTERPRISES";
+        const panShort = meta.pan.slice(2); // e.g., GCP7003D
+        const fallbackName = `${panShort} ${suffix}`;
+        const fallbackAddr = `${meta.stateName} (GST State Code: ${meta.stateCode})`;
+        const autoCat = meta.entityChar === "T" ? "Hospital & Healthcare" : "Corporate & Hospitality";
 
-        showToast(`Verified ${meta.isChecksumValid ? 'Valid' : 'Format'} GSTIN • ${meta.stateName} (${meta.stateCode}) • ${meta.entityType} (PAN: ${meta.pan}). Enter Firm Name once—it will auto-save for future orders.`, "info");
-        return;
+        resolved = {
+          name: (targetContext === "so" && existingSoName && !existingSoName.startsWith("M/s Registered")) ? existingSoName
+                : (targetContext === "quick" && existingQuickName) ? existingQuickName
+                : (targetContext === "master" && existingMasterName) ? existingMasterName
+                : fallbackName,
+          address: fallbackAddr,
+          phone: "",
+          category: autoCat,
+          source: `${meta.stateName} (${meta.stateCode}) • PAN ${meta.pan}`
+        };
       }
 
-      // Apply exact resolved Firm / Company details
+      // Apply resolved Firm / Company details to all fields in the target form
       if (targetContext === "so") {
-        document.getElementById("so-gstin").value = clean;
-        document.getElementById("so-client").value = resolved.name;
-        if (resolved.address) document.getElementById("so-address").value = resolved.address;
-        if (resolved.phone && document.getElementById("so-phone")) {
-          document.getElementById("so-phone").value = resolved.phone;
-        }
+        const gstEl = document.getElementById("so-gstin");
+        const cliEl = document.getElementById("so-client");
+        const addrEl = document.getElementById("so-address");
+        const phoneEl = document.getElementById("so-phone");
+        if (gstEl) gstEl.value = clean;
+        if (cliEl) { cliEl.value = resolved.name; cliEl.dispatchEvent(new Event("input", { bubbles: true })); }
+        if (addrEl && resolved.address) { addrEl.value = resolved.address; addrEl.dispatchEvent(new Event("input", { bubbles: true })); }
+        if (phoneEl && resolved.phone) { phoneEl.value = resolved.phone; phoneEl.dispatchEvent(new Event("input", { bubbles: true })); }
         syncSoShippingPreview();
         recalcSoDocumentTotals();
       } else if (targetContext === "quick") {
-        document.getElementById("quick-cli-gstin").value = clean;
-        document.getElementById("quick-cli-name").value = resolved.name;
-        if (resolved.address) document.getElementById("quick-cli-address").value = resolved.address;
-        if (resolved.phone) document.getElementById("quick-cli-phone").value = resolved.phone;
+        const qGst = document.getElementById("quick-cli-gstin");
+        const qName = document.getElementById("quick-cli-name");
+        const qAddr = document.getElementById("quick-cli-address");
+        const qPhone = document.getElementById("quick-cli-phone");
+        if (qGst) qGst.value = clean;
+        if (qName) { qName.value = resolved.name; qName.dispatchEvent(new Event("input", { bubbles: true })); }
+        if (qAddr && resolved.address) { qAddr.value = resolved.address; qAddr.dispatchEvent(new Event("input", { bubbles: true })); }
+        if (qPhone && resolved.phone) { qPhone.value = resolved.phone; qPhone.dispatchEvent(new Event("input", { bubbles: true })); }
       } else if (targetContext === "master") {
-        document.getElementById("cli-gstin").value = clean;
-        document.getElementById("cli-name").value = resolved.name;
-        if (resolved.address) document.getElementById("cli-city").value = resolved.address;
+        const mGst = document.getElementById("cli-gstin");
+        const mName = document.getElementById("cli-name");
+        const mCity = document.getElementById("cli-city");
         const catSel = document.getElementById("cli-category");
+        const mContact = document.getElementById("cli-contact");
+        if (mGst) mGst.value = clean;
+        if (mName) { mName.value = resolved.name; mName.dispatchEvent(new Event("input", { bubbles: true })); }
+        if (mCity && resolved.address) { mCity.value = resolved.address; mCity.dispatchEvent(new Event("input", { bubbles: true })); }
         if (catSel && resolved.category) catSel.value = resolved.category;
-        if (resolved.phone && document.getElementById("cli-contact")) {
-          document.getElementById("cli-contact").value = `Purchase Dept • +91 ${resolved.phone}`;
-        }
+        if (mContact && resolved.phone) mContact.value = `Purchase Dept • +91 ${resolved.phone}`;
       }
 
-      showToast(`Fetched [${resolved.source}]: ${resolved.name}`, "success");
+      showToast(`Filled [${resolved.source}]: ${resolved.name}`, "success");
     }
 
     function applyClientPreset(idxStr) {
@@ -2263,6 +2419,20 @@ const FLOW_STORAGE_KEY = "st_traders_5stage_erp_v1";
         hospt: "S T Traders Cheap Jack Musheerabad",
         stage: "New Sale Order"
       };
+      if (so.id.toUpperCase().startsWith("QTN-")) {
+        if (!Array.isArray(state.quotations)) state.quotations = [];
+        state.quotations.unshift({
+          ...so,
+          validUntil: new Date(Date.now() + 15 * 86400000).toISOString().split("T")[0],
+          status: "Open Quotation"
+        });
+        saveFlowState();
+        closeModal("new-so-modal");
+        switchStep("quotations");
+        showToast(`Quotation ${so.id} saved (${normalizedItems.length} item row(s), ${totalQty} pcs).`, "success");
+        openQuotationPrint(so.id);
+        return;
+      }
       state.saleOrders.unshift(so);
       // Auto-learn new GSTIN -> Firm Name mapping in Master Clients if not already saved
       if (so.gstin && so.client && !so.client.startsWith("M/s Registered")) {
@@ -2553,7 +2723,9 @@ const FLOW_STORAGE_KEY = "st_traders_5stage_erp_v1";
             </div>
             <div class="cutting-slip-right md:col-span-5 border-2 border-black p-2 flex flex-col items-center justify-center bg-white min-h-[260px]">
               <div class="cutting-slip-image-box w-full flex items-center justify-center">
-                ${getGarmentIllustrationSvg(so.style)}
+                ${((so.items && so.items[0] && so.items[0].image) || (state.masterProducts.find(mp => (so.style || "").toUpperCase().includes(mp.name))?.image))
+                  ? `<img src="${(so.items && so.items[0] && so.items[0].image) || state.masterProducts.find(mp => (so.style || "").toUpperCase().includes(mp.name)).image}" alt="${so.style || 'Garment'}" class="max-h-[240px] w-auto mx-auto object-contain">`
+                  : getGarmentIllustrationSvg(so.style)}
               </div>
             </div>
           </div>
@@ -3028,6 +3200,7 @@ const FLOW_STORAGE_KEY = "st_traders_5stage_erp_v1";
         hospt: so.hospt || "",
         stage: so.stage
       }));
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(state.quotations || []), "Quotations");
       XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(soRows), "SaleOrders");
       XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(state.cuttingSlips), "CuttingSlips");
       XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(state.allocations), "Allocations");
@@ -3329,7 +3502,11 @@ const FLOW_STORAGE_KEY = "st_traders_5stage_erp_v1";
 
     function updateStepperBadges() {
       const fgTotalPcs = state.finishedGoods.reduce((s, f) => s + f.passedQty, 0);
+      const qtnList = state.quotations || [];
       document.getElementById("step-sub-masters").textContent = `${state.masterProducts.length} items • ${state.masterClients.length} clients`;
+
+      if (document.getElementById("badge-step-quot")) document.getElementById("badge-step-quot").textContent = qtnList.length;
+      if (document.getElementById("step-sub-quot")) document.getElementById("step-sub-quot").textContent = `${qtnList.length} quotations`;
 
       document.getElementById("badge-step-4").textContent = state.saleOrders.length;
       document.getElementById("step-sub-so").textContent = `${state.saleOrders.length} active orders`;
@@ -3347,6 +3524,103 @@ const FLOW_STORAGE_KEY = "st_traders_5stage_erp_v1";
       document.getElementById("step-sub-inv").textContent = `${state.invoices.length} invoices`;
     }
 
+    function openQuotationPageOrModal() {
+      if (typeof openNewSaleOrderModal === "function") {
+        openNewSaleOrderModal();
+        const soIdInput = document.getElementById("so-id");
+        if (soIdInput) soIdInput.value = `QTN-H/26-27/${1041 + ((state.quotations && state.quotations.length) || 0)}`;
+        const refInput = document.getElementById("so-order-ref");
+        if (refInput) refInput.value = "QUOTATION • VALID 15 DAYS";
+        const modalTitle = document.querySelector("#new-so-modal h3");
+        if (modalTitle) modalTitle.textContent = "Pre-Sales: Create New Quotation (Sale Order Print Format)";
+      }
+    }
+
+    function openQuotationPrint(qtnId) {
+      const qtn = (state.quotations || []).find(x => x.id === qtnId);
+      if (!qtn) return;
+      state.saleOrders.unshift({ ...qtn, orderRef: qtn.orderRef || `QUOTATION • VALID ${qtn.validUntil || "15D"}` });
+      openSaleOrderPrint(qtn.id);
+      state.saleOrders.shift();
+      document.getElementById("print-modal-title").textContent = `Quotation (Sale Order Format) — ${qtn.id}`;
+      const docBanner = document.querySelector("#print-area .text-\\[15px\\]");
+      if (docBanner) docBanner.textContent = "QUOTATION / PROFORMA ESTIMATE";
+    }
+
+    function renderQuotationsPage() {
+      const tbody = document.getElementById("quotations-tbody");
+      if (!tbody) return;
+      if (!Array.isArray(state.quotations)) state.quotations = [];
+
+      const subEl = document.getElementById("step-sub-quot");
+      const badgeEl = document.getElementById("badge-step-quot");
+      if (subEl) subEl.textContent = `${state.quotations.length} quotations`;
+      if (badgeEl) badgeEl.textContent = state.quotations.length;
+
+      tbody.innerHTML = state.quotations.map((qtn, idx) => {
+        const taxable = (Number(qtn.totalQty) || 0) * (Number(qtn.rate) || 0);
+        const grand = taxable * (1 + (Number(qtn.gstPct) || 5) / 100);
+        const done = qtn.status === "Converted to SO";
+        return `
+          <tr class="hover:bg-slate-50 transition">
+            <td class="py-3.5 px-4 font-bold text-xs text-slate-900">
+              ${qtn.id}
+              <div class="text-[11px] font-normal text-slate-500">${qtn.date || ""}</div>
+            </td>
+            <td class="py-3.5 px-4 text-xs">
+              <div class="font-bold text-slate-800">${qtn.client || ""}</div>
+              <div class="font-mono text-[11px] text-slate-500">${qtn.gstin || ""}</div>
+            </td>
+            <td class="py-3.5 px-4 text-xs">
+              <div class="font-bold text-slate-900">${qtn.style || ""}</div>
+              <div class="text-[11px] text-slate-500">${qtn.cloth || ""} ${qtn.colour ? "• " + qtn.colour : ""}</div>
+            </td>
+            <td class="py-3.5 px-4 text-xs font-extrabold text-indigo-700">${qtn.totalQty || 0} pcs</td>
+            <td class="py-3.5 px-4 text-xs font-extrabold text-slate-900">${formatINR2(grand)}</td>
+            <td class="py-3.5 px-4">
+              <span class="px-2.5 py-1 rounded-full text-[11px] font-bold ${done ? "bg-emerald-50 text-emerald-700 border border-emerald-200" : "bg-teal-50 text-teal-800 border border-teal-200"}">
+                ${qtn.status || "Open Quotation"}
+              </span>
+            </td>
+            <td class="py-3.5 px-4 text-right">
+              <div class="inline-flex flex-wrap justify-end gap-1.5">
+                <button onclick="openQuotationPrint('${qtn.id}')" class="px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition">
+                  Print Quotation
+                </button>
+                ${!done ? `
+                  <button onclick="convertQuotationToSaleOrder(${idx})" class="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold transition">
+                    Convert to SO →
+                  </button>
+                ` : `
+                  <button onclick="switchStep('sale-orders')" class="px-2.5 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-bold">
+                    View SO (${qtn.convertedSoId || "Booked"})
+                  </button>
+                `}
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join("") || `<tr><td colspan="7" class="py-8 text-center text-slate-400">No quotations yet. Click "+ Create Quotation" above.</td></tr>`;
+    }
+
+    function convertQuotationToSaleOrder(idx) {
+      const qtn = state.quotations[idx];
+      if (!qtn) return;
+      const newSoId = `SOD-H/26-27/${3496 + state.saleOrders.length + 1}`;
+      state.saleOrders.unshift({
+        ...JSON.parse(JSON.stringify(qtn)),
+        id: newSoId,
+        orderRef: `FROM ${qtn.id}`,
+        date: new Date().toISOString().split("T")[0],
+        stage: "New Sale Order"
+      });
+      qtn.status = "Converted to SO";
+      qtn.convertedSoId = newSoId;
+      saveFlowState();
+      switchStep("sale-orders");
+      showToast(`Converted ${qtn.id} into Sale Order ${newSoId}.`, "success");
+    }
+
     function renderAllSteps() {
       applyRbacUiRestrictions();
       updateStepperBadges();
@@ -3355,6 +3629,7 @@ const FLOW_STORAGE_KEY = "st_traders_5stage_erp_v1";
       renderTrackingPage();
       renderMastersPage();
       renderReportsPage();
+      renderQuotationsPage();
       renderSaleOrders();
       renderCuttingSlips();
       renderAllocations();
@@ -3365,7 +3640,7 @@ const FLOW_STORAGE_KEY = "st_traders_5stage_erp_v1";
     window.addEventListener("DOMContentLoaded", () => {
       renderAllSteps();
       const hash = window.location.hash.replace("#", "").trim();
-      if (["dashboard", "tracking", "masters", "reports", "users", "sale-orders", "cutting-slips", "allocation", "receiving-fg", "tax-invoice"].includes(hash)) {
+      if (["dashboard", "tracking", "masters", "reports", "users", "quotations", "sale-orders", "cutting-slips", "allocation", "receiving-fg", "tax-invoice"].includes(hash)) {
         switchStep(hash);
       } else {
         switchStep("dashboard");
