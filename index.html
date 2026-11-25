@@ -179,6 +179,14 @@
         <div>
           <div class="px-3 mb-2 text-[10px] font-extrabold uppercase tracking-wider text-slate-500">5-Stage Factory Flow</div>
           <div class="space-y-1">
+		  <button onclick="switchStep('quotations')" data-step="quotations" class="step-card w-full text-left px-3 py-2.5 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-white transition flex items-center justify-between">
+  <div>
+    <div class="text-[10px] font-extrabold uppercase text-teal-400">Pre-Sales</div>
+    <div class="text-xs font-bold">Quotations</div>
+    <div id="step-sub-quot" class="text-[10px] text-slate-400">0 quotations</div>
+  </div>
+  <span id="badge-step-quot" class="px-2 py-0.5 rounded-full bg-slate-800 text-slate-200 text-xs font-extrabold">0</span>
+</button>
             <button onclick="switchStep('sale-orders')" data-step="sale-orders" class="step-card w-full text-left px-3 py-2.5 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-white transition flex items-center justify-between">
               <div>
                 <div class="text-[10px] font-extrabold uppercase text-indigo-400">Step 1</div>
@@ -1071,6 +1079,36 @@
       <!-- =============================================================== -->
       <!-- STEP 1: SALE ORDERS                                             -->
       <!-- =============================================================== -->
+	  <section id="view-quotations" class="step-view hidden tab-fade space-y-6">
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+    <div>
+      <h2 class="text-xl font-extrabold text-slate-900">Quotations — S T Traders Annexe CheapJack</h2>
+      <p class="text-xs sm:text-sm text-slate-500">Create client quotations, print in Sale Order format, or convert into a Sale Order</p>
+    </div>
+    <button onclick="openQuotationPageOrModal()" class="px-4 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white text-xs sm:text-sm font-bold shadow-xs">
+      + Create Quotation
+    </button>
+  </div>
+
+  <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full text-left border-collapse">
+        <thead>
+          <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+            <th class="py-3.5 px-4">Quotation No. & Date</th>
+            <th class="py-3.5 px-4">Client / Hospital & GSTIN</th>
+            <th class="py-3.5 px-4">Garment & Cloth</th>
+            <th class="py-3.5 px-4">Qty</th>
+            <th class="py-3.5 px-4">Quoted Total</th>
+            <th class="py-3.5 px-4">Status</th>
+            <th class="py-3.5 px-4 text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="quotations-tbody" class="divide-y divide-slate-100 text-sm"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
       <section id="view-sale-orders" class="step-view hidden tab-fade space-y-6">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
