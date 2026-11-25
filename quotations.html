@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quotations — S T Traders Annexe CheapJack</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'] },
+          colors: { pacifica: '#1E77B4' }
+        }
+      }
+    }
+  </script>
+  <style>
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #f1f5f9; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
+    @media print {
+      html, body { height: auto !important; overflow: visible !important; margin: 0 !important; padding: 0 !important; }
+      body * { visibility: hidden; }
+      #print-preview-modal { position: static !important; background: transparent !important; padding: 0 !important; overflow: visible !important; display: block !important; }
+      #print-area, #print-area * { visibility: visible; }
+      #print-area { position: fixed; left: 0; top: 0; width: 200mm; padding: 0 !important; margin: 0 !important; background: #fff !important; }
+      @page { size: A4 portrait; margin: 5mm; }
+      .so-a4-sheet {
+        height: 282mm !important;
+        max-height: 282mm !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: space-between !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased selection:bg-indigo-600 selection:text-white">
+
+  <!-- Toast Container -->
+  <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none px-4 sm:px-0"></div>
+
+  <div class="min-h-screen flex flex-col">
+    <!-- Top Header Navigation Bar (Links directly back to untouched index.html) -->
+    <header class="bg-slate-900 text-white border-b border-slate-800 px-4 sm:px-8 py-4 sticky top-0 z-20 shadow-md">
+      <div class="max-w-[1440px] mx-auto flex flex-wrap items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <div id="hdr-short-tag" class="w-10 h-10 rounded-xl bg-gradient-to-br from-teal-500 to-indigo-600 flex items-center justify-center font-extrabold text-white text-base shadow-lg shrink-0">
+            ST
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h1 id="hdr-firm-name" class="text-sm sm:text-base font-extrabold tracking-tight">S T Traders Annexe CheapJack</h1>
+              <span class="px-2 py-0.5 rounded bg-teal-500/20 text-teal-300 text-[10px] font-bold border border-teal-500/30">QUOTATIONS MODULE</span>
+            </div>
+            <p class="text-[11px] text-slate-400">Synced with Main ERP Storage • Print in Sale Order Format • 1-Click Convert to Sale Order</p>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2">
+          <a href="index.html" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-slate-700 transition">
+            ← Back to Main Dashboard (index.html)
+          </a>
+          <a href="index.html#sale-orders" class="px-3.5 py-2 rounded-xl bg-indigo-950 hover:bg-indigo-900 text-indigo-200 text-xs font-bold border border-indigo-800 transition">
+            View Sale Orders →
+          </a>
+          <button onclick="openNewQuotationModal()" class="px-4 py-2 rounded-xl bg-teal-600 hover:bg-teal-500 text-white text-xs font-extrabold shadow-sm transition">
+            + Create New Quotation
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="flex-1 max-w-[1440px] w-full mx-auto px-4 sm:px-8 py-6 space-y-6">
+
+      <!-- KPI Summary Strip -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs">
+          <div class="text-[11px] font-bold uppercase text-slate-400">Total Quotations</div>
+          <div id="kpi-total-count" class="text-2xl font-extrabold text-slate-900 mt-1">0</div>
+          <div class="text-xs text-slate-500 mt-0.5">All hospital & party tenders</div>
+        </div>
+        <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs">
+          <div class="text-[11px] font-bold uppercase text-slate-400">Open Quotations Value</div>
+          <div id="kpi-open-val" class="text-2xl font-extrabold text-teal-700 mt-1">₹0</div>
+          <div id="kpi-open-sub" class="text-xs text-slate-500 mt-0.5">0 open quotes awaiting PO</div>
+        </div>
+        <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs">
+          <div class="text-[11px] font-bold uppercase text-slate-400">Converted to Sale Orders</div>
+          <div id="kpi-conv-count" class="text-2xl font-extrabold text-indigo-700 mt-1">0</div>
+          <div class="text-xs text-slate-500 mt-0.5">Synced directly to index.html</div>
+        </div>
+        <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs">
+          <div class="text-[11px] font-bold uppercase text-slate-400">Quoted Garment Volume</div>
+          <div id="kpi-total-pcs" class="text-2xl font-extrabold text-slate-900 mt-1">0 pcs</div>
+          <div class="text-xs text-slate-500 mt-0.5">Across all size ratios</div>
+        </div>
+      </div>
+
+      <!-- Filter & Search Bar -->
+      <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div class="relative flex-1 max-w-md">
+          <input type="text" id="qtn-search" oninput="renderQuotationsTable()" placeholder="Search Quotation No., Client / Hospital, GSTIN, or Garment..." class="w-full px-4 py-2 rounded-xl bg-slate-100 border border-slate-200 text-xs sm:text-sm focus:bg-white focus:border-teal-600 focus:outline-none">
+        </div>
+        <div class="flex items-center gap-2">
+          <select id="qtn-status-filter" onchange="renderQuotationsTable()" class="px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold bg-slate-50">
+            <option value="ALL">All Quotations</option>
+            <option value="OPEN">Open Quotations Only</option>
+            <option value="CONVERTED">Converted to SO Only</option>
+          </select>
+          <button onclick="openNewQuotationModal()" class="px-4 py-2 rounded-xl bg-teal-600 hover:bg-teal-700 text-white text-xs font-extrabold transition">
+            + New Quotation
+          </button>
+        </div>
+      </div>
+
+      <!-- Quotations Register Table -->
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+        <div class="p-4 border-b border-slate-100 flex items-center justify-between">
+          <h2 class="text-sm sm:text-base font-extrabold text-slate-900">Customer & Hospital Quotations Register</h2>
+          <span id="qtn-table-count" class="text-xs font-bold text-teal-700">0 quotations</span>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                <th class="py-3.5 px-4">Quotation No. & Date</th>
+                <th class="py-3.5 px-4">Client / Hospital & GSTIN</th>
+                <th class="py-3.5 px-4">Garment Items & Specs</th>
+                <th class="py-3.5 px-4">Total Qty</th>
+                <th class="py-3.5 px-4">Quoted Total (Incl. GST)</th>
+                <th class="py-3.5 px-4">Status</th>
+                <th class="py-3.5 px-4 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="quotations-tbody" class="divide-y divide-slate-100 text-sm"></tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- MODAL 1: CREATE NEW QUOTATION (EXACT SALE ORDER / ESTIMATE FORMAT)    -->
+  <!-- ===================================================================== -->
+  <div id="new-qtn-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/70 backdrop-blur-xs p-3 sm:p-5 overflow-y-auto">
+    <div class="bg-white rounded-2xl max-w-4xl w-full shadow-2xl border border-slate-300 overflow-hidden my-auto">
+      <div class="px-5 py-3.5 bg-slate-900 text-white flex items-center justify-between">
+        <div>
+          <h3 class="text-sm sm:text-base font-extrabold">Create New Quotation (Exact Sale Order Print Format)</h3>
+          <p class="text-[11px] text-slate-400">Select saved Client & Product (auto-applies Client-Wise SKUs if mapped) and add multi-item rows</p>
+        </div>
+        <button onclick="closeModal('new-qtn-modal')" class="text-slate-400 hover:text-white text-base font-bold px-2">✕</button>
+      </div>
+
+      <!-- Quick Client & Product Preset Toolbar -->
+      <div class="px-5 py-3 bg-teal-50/70 border-b border-teal-200 grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div>
+          <label class="block text-[11px] font-extrabold text-teal-950 uppercase mb-1">Load Saved Client / Hospital</label>
+          <select id="qtn-client-preset" onchange="applyClientPreset(this.value)" class="w-full px-3 py-1.5 rounded-lg border border-teal-200 text-xs font-bold bg-white"></select>
+        </div>
+        <div>
+          <label class="block text-[11px] font-extrabold text-teal-950 uppercase mb-1">Apply Saved Product to Active Row</label>
+          <select id="qtn-product-preset" onchange="applyProductToActiveRow(this.value)" class="w-full px-3 py-1.5 rounded-lg border border-teal-200 text-xs font-bold bg-white"></select>
+        </div>
+      </div>
+
+      <form onsubmit="saveQuotation(event)" class="p-4 sm:p-6 bg-slate-100/70 space-y-4">
+        <div class="border border-black bg-white text-black font-sans text-[11px] leading-snug shadow-sm">
+          <!-- Header -->
+          <div class="px-3 pt-1.5 pb-2 border-b border-black relative">
+            <div class="text-right text-[10px] font-semibold tracking-wide">QUOTATION</div>
+            <div class="text-center -mt-1">
+              <h1 id="doc-firm-name" class="text-[19px] sm:text-[21px] font-extrabold tracking-wide uppercase">ST TRADERS ANNEXE CHEAP JACK</h1>
+              <p id="doc-firm-addr" class="text-[10.5px] font-medium">10-5-348/A, Tukaram Gate, Buddha Nagar, Lalaguda gate,, Secundrabad, 500017</p>
+              <p id="doc-firm-gst" class="text-[10.5px] font-medium">Ph No:9347203651, GST No: 36AAIPF1095L1ZJ</p>
+              <p id="doc-firm-email" class="text-[10.5px] font-medium">sttradersannexecheapjack@gmail.com</p>
+              <div class="text-[15px] font-extrabold uppercase tracking-wide mt-0.5">QUOTATION / PROFORMA ESTIMATE</div>
+            </div>
+          </div>
+
+          <!-- Quotation No | Validity Ref | Quote Date -->
+          <div class="grid grid-cols-12 px-2.5 py-1.5 border-b border-black text-[11px] items-center gap-2 bg-slate-50/50">
+            <div class="col-span-12 sm:col-span-4 flex items-center gap-1">
+              <span class="font-bold shrink-0">Quote No. :</span>
+              <input type="text" id="qtn-id" required class="w-full px-1.5 py-0.5 border border-slate-300 rounded font-extrabold text-[11px] bg-white">
+            </div>
+            <div class="col-span-12 sm:col-span-4 flex items-center justify-center">
+              <input type="text" id="qtn-ref" value="VALID FOR 15 DAYS" class="w-full px-1.5 py-0.5 border border-slate-300 rounded font-extrabold uppercase text-center text-[11px] bg-white">
+            </div>
+            <div class="col-span-12 sm:col-span-4 flex items-center justify-end gap-1">
+              <span class="font-bold shrink-0">Date :</span>
+              <input type="date" id="qtn-date" required class="px-1.5 py-0.5 border border-slate-300 rounded font-extrabold text-[11px] bg-white">
+            </div>
+          </div>
+
+          <!-- Customer & Shipping Details -->
+          <div class="grid grid-cols-1 md:grid-cols-12 border-b border-black text-[11px]">
+            <div class="md:col-span-6 border-b md:border-b-0 md:border-r border-black">
+              <div class="px-2.5 py-1 border-b border-black font-bold bg-slate-50">Customer Details :</div>
+              <div class="p-2.5 space-y-1.5">
+                <input type="text" id="qtn-client" oninput="syncShipPreview()" placeholder="Hospital / Company Name *" required class="w-full px-2 py-1 border border-slate-300 rounded font-bold text-[11px] bg-yellow-50/40">
+                <textarea id="qtn-address" oninput="syncShipPreview()" rows="2" placeholder="Full Address *" required class="w-full px-2 py-1 border border-slate-300 rounded text-[11px] bg-yellow-50/40"></textarea>
+                <div class="grid grid-cols-2 gap-2">
+                  <div class="flex items-center gap-1">
+                    <span class="font-semibold shrink-0">GST No :</span>
+                    <input type="text" id="qtn-gstin" oninput="recalcTotals()" maxlength="15" required class="w-full px-1.5 py-0.5 border border-slate-300 rounded font-bold uppercase text-[11px]">
+                  </div>
+                  <div class="flex items-center gap-1">
+                    <span class="font-semibold shrink-0">Phone :</span>
+                    <input type="text" id="qtn-phone" oninput="syncShipPreview()" placeholder="98490XXXXX" class="w-full px-1.5 py-0.5 border border-slate-300 rounded text-[11px]">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="md:col-span-6">
+              <div class="px-2.5 py-1 border-b border-black font-bold bg-slate-50">Delivery / Shipping Address</div>
+              <div class="p-2.5 space-y-1.5">
+                <input type="text" id="qtn-ship-client" placeholder="Delivery Party Name" class="w-full px-2 py-1 border border-slate-200 rounded font-semibold text-[11px] bg-slate-50/50">
+                <textarea id="qtn-ship-address" rows="2" placeholder="Delivery Address" class="w-full px-2 py-1 border border-slate-200 rounded text-[11px] bg-slate-50/50"></textarea>
+                <div class="flex items-center gap-1">
+                  <span class="font-semibold shrink-0">Valid Until :</span>
+                  <input type="date" id="qtn-valid-until" class="px-1.5 py-0.5 border border-slate-200 rounded text-[11px] font-semibold">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Multi-Item Grid -->
+          <div class="overflow-x-auto">
+            <div class="px-2.5 py-1.5 bg-teal-50/70 border-b border-black flex items-center justify-between">
+              <span class="text-[10.5px] font-extrabold text-teal-950 uppercase">Quoted Line Items</span>
+              <button type="button" onclick="addItemRow()" class="px-2.5 py-1 rounded bg-teal-600 hover:bg-teal-700 text-white text-[10.5px] font-extrabold">
+                + Add Item Row
+              </button>
+            </div>
+            <table class="w-full border-collapse border-b border-black text-[11px]">
+              <thead>
+                <tr class="border-b border-black text-center font-bold bg-slate-50">
+                  <th class="w-[34px] py-1 px-1 border-r border-black">sno</th>
+                  <th class="py-1 px-2 border-r border-black">Description & SKU</th>
+                  <th class="w-[23%] py-1 px-2 border-r border-black">Specs / Collar</th>
+                  <th class="w-[18%] py-1 px-1 border-r border-black">Size Ratio</th>
+                  <th class="w-[68px] py-1 px-2 border-r border-black">QTY</th>
+                  <th class="w-[74px] py-1 px-2 border-r border-black">Rate</th>
+                  <th class="w-[90px] py-1 px-2 border-r border-black">Taxable Amt</th>
+                  <th class="w-[30px] py-1 px-1">Del</th>
+                </tr>
+              </thead>
+              <tbody id="qtn-items-tbody" class="divide-y divide-black/40"></tbody>
+            </table>
+          </div>
+
+          <div class="py-1 px-3 border-b border-black text-center font-bold text-[11.5px] bg-slate-50/60">
+            Total Qty : <span id="doc-total-qty" class="ml-3 font-extrabold">0</span>
+          </div>
+
+          <!-- Remarks, Words, Terms & Totals -->
+          <div class="grid grid-cols-1 md:grid-cols-12 border-b border-black text-[10.5px]">
+            <div class="md:col-span-8 border-b md:border-b-0 md:border-r border-black flex flex-col justify-between">
+              <div class="px-2.5 py-1.5 border-b border-black flex items-center gap-2">
+                <span class="font-bold shrink-0">Remarks :</span>
+                <input type="text" id="qtn-remarks" value="Quotation valid for 15 days • Delivery within 8 working days of PO" class="w-full px-1.5 py-0.5 border border-slate-200 rounded text-[10.5px]">
+              </div>
+              <div class="px-2.5 py-1.5 border-b border-black">
+                <div class="font-semibold">Quoted Value (In Words)</div>
+                <div id="doc-words" class="font-bold mt-0.5 text-slate-900">Indian Rupees Zero Only</div>
+              </div>
+              <div id="doc-terms" class="px-2.5 py-1.5 space-y-0.5"></div>
+            </div>
+            <div class="md:col-span-4 flex flex-col justify-between">
+              <div class="p-2.5 space-y-1.5">
+                <div class="flex justify-between">
+                  <span class="font-semibold">Total Before Tax</span>
+                  <span id="doc-before-tax" class="font-extrabold">0.00</span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span class="font-semibold flex items-center gap-1">
+                    GST %:
+                    <select id="qtn-gst-pct" onchange="recalcTotals()" class="px-1 py-0.5 border border-slate-300 rounded text-[10px] font-bold bg-white">
+                      <option value="5" selected>5%</option>
+                      <option value="12">12%</option>
+                      <option value="18">18%</option>
+                      <option value="0">0%</option>
+                    </select>
+                  </span>
+                  <span class="text-[10px] text-slate-500">(CGST + SGST)</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="font-semibold">CGST</span>
+                  <span id="doc-cgst" class="font-extrabold">0.00</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="font-semibold">SGST</span>
+                  <span id="doc-sgst" class="font-extrabold">0.00</span>
+                </div>
+              </div>
+              <div class="px-2.5 py-2 border-t border-black flex justify-between items-center bg-slate-100">
+                <span class="font-bold">Total After Tax</span>
+                <span id="doc-after-tax" class="font-extrabold text-[12px]">0.00</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bank Footer -->
+          <div class="grid grid-cols-12 px-2.5 py-2 text-[10.5px] items-end">
+            <div id="doc-bank" class="col-span-7 sm:col-span-6 space-y-0.5"></div>
+            <div class="col-span-5 sm:col-span-6 text-right flex flex-col justify-between h-full space-y-6">
+              <div id="doc-sign-firm" class="font-bold">For, ST TRADERS ANNEXE CHEAP JACK</div>
+              <div class="font-semibold">Authorised Signatory</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex justify-end gap-2">
+          <button type="button" onclick="closeModal('new-qtn-modal')" class="px-4 py-2 rounded-xl border border-slate-300 bg-white text-xs font-bold text-slate-700">Cancel</button>
+          <button type="submit" class="px-5 py-2 rounded-xl bg-teal-600 hover:bg-teal-700 text-white text-xs font-extrabold shadow-sm">Save Quotation & Print Preview ✓</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- MODAL 2: PRINTABLE QUOTATION SHEET (EXACT SALE ORDER FORMAT)          -->
+  <!-- ===================================================================== -->
+  <div id="print-preview-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/60 backdrop-blur-xs p-4 overflow-y-auto">
+    <div class="bg-white rounded-2xl max-w-4xl w-full shadow-2xl border border-slate-200 overflow-hidden my-auto">
+      <div class="px-6 py-4 bg-slate-900 text-white flex items-center justify-between">
+        <h3 id="print-modal-title" class="text-base font-bold">Quotation Preview</h3>
+        <button onclick="closeModal('print-preview-modal')" class="text-slate-400 hover:text-white">✕</button>
+      </div>
+      <div id="print-area" class="p-6 bg-white"></div>
+      <div class="px-6 py-4 bg-slate-50 border-t border-slate-200 flex justify-end gap-2">
+        <button onclick="window.print()" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold">Print Quotation</button>
+        <button onclick="closeModal('print-preview-modal')" class="px-4 py-2 rounded-xl bg-slate-800 text-white text-xs font-semibold">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Shares the exact same localStorage key as index.html so quotations & converted Sale Orders stay 100% synced!
+    const FLOW_STORAGE_KEY = "st_traders_5stage_erp_v1";
+
+    const FALLBACK_COMPANY = {
+      firmName: "ST TRADERS ANNEXE CHEAP JACK",
+      shortTag: "ST",
+      address: "10-5-348/A, Tukaram Gate, Buddha Nagar, Lalaguda gate,, Secundrabad, 500017",
+      gstin: "36AAIPF1095L1ZJ",
+      phone: "9347203651",
+      email: "sttradersannexecheapjack@gmail.com",
+      bankName: "BANK OF BARODA",
+      bankAc: "71700200000140",
+      bankIfsc: "BARBODBSECE",
+      bankBranch: "East Marredpally",
+      soPrefix: "SOD-H/26-27/",
+      defaultGst: 5,
+      terms: "1. 100 % Advance , Delivery Of Goods Within 8 days\n2. Goods once sold can not be returned back or exchanged.\n3. Our responsiblities ceases as soon as goods leave our premses.\n4. Subject to 36-Telangana Jurisdiction"
+    };
+
+    const SAMPLE_QUOTATIONS = [
+      {
+        id: "QTN-H/26-27/1041",
+        orderRef: "TENDER-YASHODA-2026",
+        nameCode: "1080",
+        date: "2026-11-20",
+        validUntil: "2026-12-05",
+        client: "Yashoda & Apollo Nursing Wing (Hyd)",
+        address: "SP Road, Secunderabad, Hyderabad 500003, Telangana",
+        phone: "9849022110",
+        gstin: "36AAACY4912K1Z2",
+        gender: "FEMALE",
+        style: "NURSE PANT SHIRT (3 TUCKS)",
+        items: [
+          {
+            skuCode: "YSH-NPS-WHT-01",
+            style: "NURSE PANT SHIRT (3 TUCKS) — YASHODA NURSING WING",
+            gender: "FEMALE",
+            cloth: "Alaskar",
+            colour: "White",
+            collar: "Yashoda Collar",
+            pattern: "Yashoda Collar • Rama Chest Logo • 3 Tucks Shirt Pattern",
+            bottomPattern: "Nada Phyajam",
+            sizes: { "34": 15, "36": 25, "38": 30, "40": 15, "42": 5, "44": 0 },
+            qty: 90,
+            rate: 720,
+            taxable: 64800
+          }
+        ],
+        sizes: { "34": 15, "36": 25, "38": 30, "40": 15, "42": 5, "44": 0 },
+        totalQty: 90,
+        rate: 720,
+        gstPct: 5,
+        remarks: "Quotation valid for 15 days • Delivery within 8 working days of PO",
+        cloth: "Alaskar",
+        colour: "White",
+        collar: "Yashoda Collar",
+        pattern: "Yashoda Collar • Rama Chest Logo • 3 Tucks Shirt Pattern",
+        bottomPattern: "Nada Phyajam",
+        piping: "Matching White Piping",
+        embrDesign: "LOGO on CHEST (Core Magnues)",
+        poCode: "STTNP-06",
+        hospt: "S T Traders Cheap Jack Musheerabad",
+        status: "Open Quotation"
+      }
+    ];
+
+    function loadState() {
+      let parsed = {};
+      try {
+        parsed = JSON.parse(localStorage.getItem(FLOW_STORAGE_KEY) || "{}");
+      } catch (e) {}
+      if (!Array.isArray(parsed.quotations)) parsed.quotations = JSON.parse(JSON.stringify(SAMPLE_QUOTATIONS));
+      if (!Array.isArray(parsed.saleOrders)) parsed.saleOrders = [];
+      if (!Array.isArray(parsed.masterClients)) {
+        parsed.masterClients = [
+          { id: "CLI-01", code: "1080", name: "Yashoda & Apollo Nursing Wing (Hyd)", gstin: "36AAACY4912K1Z2", phone: "9849022110", city: "SP Road, Secunderabad, Hyderabad 500003" },
+          { id: "CLI-02", code: "1082", name: "KIMS Hospitals Secunderabad", gstin: "36AAACK6219P1Z9", phone: "9848033445", city: "1-8-31/1, Minister Road, Secunderabad, Hyderabad 500003" }
+        ];
+      }
+      if (!Array.isArray(parsed.masterProducts)) {
+        parsed.masterProducts = [
+          { id: "PRD-01", sku: "SKU-NPS-02", name: "NURSE PANT SHIRT (3 TUCKS)", gender: "FEMALE", cloth: "Alaskar", colour: "White", collar: "Yashoda Collar", pattern: "3 Tucks Shirt Pattern", bottomPattern: "Nada Phyajam", rate: 720 },
+          { id: "PRD-02", sku: "SKU-SCR-03", name: "CLASSIC FIT MAROON V-NECK SCRUB SET", gender: "UNISEX", cloth: "Maroon Poly-Viscose Twill", colour: "Maroon", collar: "V-Neck Scrub Collar", pattern: "V-Neck Top 1 Chest Pocket", bottomPattern: "Cargo Trouser", rate: 685 }
+        ];
+      }
+      if (!Array.isArray(parsed.clientProductSkus)) parsed.clientProductSkus = [];
+      if (!parsed.companyConfig) parsed.companyConfig = JSON.parse(JSON.stringify(FALLBACK_COMPANY));
+      return parsed;
+    }
+
+    let state = loadState();
+    let draftItems = [];
+    let activeRowIdx = 0;
+
+    function saveState() {
+      try {
+        localStorage.setItem(FLOW_STORAGE_KEY, JSON.stringify(state));
+      } catch (e) {}
+      renderAll();
+    }
+
+    function formatINR(n) { return "₹" + Number(n || 0).toLocaleString("en-IN", { maximumFractionDigits: 0 }); }
+    function formatINR2(n) { return "₹" + Number(n || 0).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+    function formatPlain2(n) { return Number(n || 0).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+    function formatSizeRatio(sizes) {
+      return Object.entries(sizes || {}).filter(([, q]) => q > 0).map(([sz, q]) => `${sz}/${q}`).join("+");
+    }
+
+    function numberToIndianWords(amount) {
+      const num = Math.round(Number(amount) || 0);
+      if (num === 0) return "Indian Rupees Zero Only";
+      const ones = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"];
+      const tens = ["", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"];
+      const two = (n) => n === 0 ? "" : n < 20 ? ones[n] : tens[Math.floor(n / 10)] + (n % 10 ? " " + ones[n % 10] : "");
+      const three = (n) => {
+        const h = Math.floor(n / 100), rem = n % 100;
+        return (h ? ones[h] + " Hundred" + (rem ? " " : "") : "") + two(rem);
+      };
+      let n = num, parts = [];
+      const cr = Math.floor(n / 10000000); n %= 10000000;
+      const lk = Math.floor(n / 100000); n %= 100000;
+      const th = Math.floor(n / 1000); n %= 1000;
+      if (cr) parts.push(three(cr) + " Crore");
+      if (lk) parts.push(two(lk) + " Lakh");
+      if (th) parts.push(two(th) + " Thousand");
+      if (n) parts.push(three(n));
+      return "Indian Rupees " + parts.join(" ") + " Only";
+    }
+
+    function showToast(msg) {
+      const box = document.getElementById("toast-container");
+      const el = document.createElement("div");
+      el.className = "pointer-events-auto px-4 py-3 rounded-xl bg-slate-900 text-white border-l-4 border-teal-400 shadow-xl text-xs sm:text-sm font-medium";
+      el.textContent = msg;
+      box.appendChild(el);
+      setTimeout(() => el.remove(), 3200);
+    }
+
+    function applyCompanyHeader() {
+      const cfg = state.companyConfig || FALLBACK_COMPANY;
+      document.getElementById("hdr-firm-name").textContent = cfg.firmName;
+      document.getElementById("hdr-short-tag").textContent = cfg.shortTag || "ST";
+      document.getElementById("doc-firm-name").textContent = cfg.firmName;
+      document.getElementById("doc-firm-addr").textContent = cfg.address;
+      document.getElementById("doc-firm-gst").textContent = `Ph No:${cfg.phone}, GST No: ${cfg.gstin}`;
+      document.getElementById("doc-firm-email").textContent = cfg.email;
+      document.getElementById("doc-sign-firm").textContent = `For, ${cfg.firmName}`;
+      document.getElementById("doc-terms").innerHTML = `<div class="font-bold">Terms and Conditions :</div>` +
+        (cfg.terms || FALLBACK_COMPANY.terms).split("\n").filter(Boolean).map(l => `<div>${l}</div>`).join("");
+      document.getElementById("doc-bank").innerHTML = `
+        <div><span class="font-semibold">Our Bankers:</span> <span class="font-bold">${cfg.bankName}</span></div>
+        <div><span class="font-semibold">A/C No. :</span> <span class="font-bold">${cfg.bankAc}</span></div>
+        <div><span class="font-semibold">IFSC CODE:</span> <span class="font-bold">${cfg.bankIfsc}</span></div>
+        <div><span class="font-semibold">Branch :</span> <span class="font-bold">${cfg.bankBranch}</span></div>
+      `;
+    }
+
+    function renderAll() {
+      applyCompanyHeader();
+      const list = state.quotations || [];
+      const openList = list.filter(q => q.status !== "Converted to SO");
+      const convList = list.filter(q => q.status === "Converted to SO");
+      const openVal = openList.reduce((s, q) => s + (q.totalQty * q.rate * (1 + (Number(q.gstPct) || 5) / 100)), 0);
+      const totalPcs = list.reduce((s, q) => s + (Number(q.totalQty) || 0), 0);
+
+      document.getElementById("kpi-total-count").textContent = list.length;
+      document.getElementById("kpi-open-val").textContent = formatINR(openVal);
+      document.getElementById("kpi-open-sub").textContent = `${openList.length} open quotes awaiting PO`;
+      document.getElementById("kpi-conv-count").textContent = convList.length;
+      document.getElementById("kpi-total-pcs").textContent = `${totalPcs.toLocaleString("en-IN")} pcs`;
+      renderQuotationsTable();
+    }
+
+    function renderQuotationsTable() {
+      const tbody = document.getElementById("quotations-tbody");
+      const q = (document.getElementById("qtn-search")?.value || "").trim().toLowerCase();
+      const f = document.getElementById("qtn-status-filter")?.value || "ALL";
+
+      const filtered = (state.quotations || []).filter(item => {
+        if (f === "OPEN" && item.status === "Converted to SO") return false;
+        if (f === "CONVERTED" && item.status !== "Converted to SO") return false;
+        if (!q) return true;
+        return [item.id, item.client, item.gstin, item.style, item.cloth].join(" ").toLowerCase().includes(q);
+      });
+
+      document.getElementById("qtn-table-count").textContent = `${filtered.length} quotation(s)`;
+
+      tbody.innerHTML = filtered.map(qtn => {
+        const realIdx = state.quotations.findIndex(x => x.id === qtn.id);
+        const taxable = qtn.totalQty * qtn.rate;
+        const grand = taxable * (1 + (Number(qtn.gstPct) || 5) / 100);
+        const isConverted = qtn.status === "Converted to SO";
+        return `
+          <tr class="hover:bg-slate-50 transition">
+            <td class="py-3.5 px-4">
+              <div class="font-extrabold text-slate-900 text-xs">${qtn.id}</div>
+              <div class="text-[11px] text-slate-500">Date: ${qtn.date} • Valid: ${qtn.validUntil || "15d"}</div>
+            </td>
+            <td class="py-3.5 px-4">
+              <div class="font-bold text-slate-800 text-xs">${qtn.client}</div>
+              <div class="text-[11px] font-mono text-slate-500">${qtn.gstin}</div>
+            </td>
+            <td class="py-3.5 px-4">
+              <div class="font-bold text-slate-900 text-xs">${qtn.style}</div>
+              <div class="text-[11px] text-slate-500">Cloth: ${qtn.cloth} • Colour: ${qtn.colour}</div>
+            </td>
+            <td class="py-3.5 px-4 text-xs font-extrabold text-indigo-700">${qtn.totalQty} pcs</td>
+            <td class="py-3.5 px-4 text-xs font-extrabold text-slate-900">${formatINR2(grand)}</td>
+            <td class="py-3.5 px-4">
+              <span class="px-2.5 py-1 rounded-full text-[11px] font-bold ${isConverted ? "bg-emerald-50 text-emerald-700 border border-emerald-200" : "bg-teal-50 text-teal-800 border border-teal-200"}">
+                ${qtn.status || "Open Quotation"}
+              </span>
+            </td>
+            <td class="py-3.5 px-4 text-right">
+              <div class="inline-flex flex-wrap justify-end gap-1.5">
+                <button onclick="openQuotationPrint('${qtn.id}')" class="px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition">
+                  Print Quotation
+                </button>
+                ${!isConverted ? `
+                  <button onclick="convertQuotationToSaleOrder(${realIdx})" class="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold transition">
+                    Convert to Sale Order →
+                  </button>
+                ` : `
+                  <a href="index.html#sale-orders" class="px-2.5 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-bold">
+                    In SO (${qtn.convertedSoId || "Booked"})
+                  </a>
+                `}
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join("") || `<tr><td colspan="7" class="py-10 text-center text-slate-400">No quotations found. Click "+ Create New Quotation" above.</td></tr>`;
+    }
+
+    function openNewQuotationModal() {
+      const nextNum = 1041 + (state.quotations || []).length;
+      document.getElementById("qtn-id").value = `QTN-H/26-27/${nextNum}`;
+      const today = new Date();
+      document.getElementById("qtn-date").value = today.toISOString().split("T")[0];
+      document.getElementById("qtn-valid-until").value = new Date(today.getTime() + 15 * 86400000).toISOString().split("T")[0];
+
+      const cliSel = document.getElementById("qtn-client-preset");
+      cliSel.innerHTML = `<option value="">-- Select Saved Client / Hospital --</option>` +
+        state.masterClients.map((c, i) => `<option value="${i}">${c.name} (${c.gstin})</option>`).join("");
+
+      const prodSel = document.getElementById("qtn-product-preset");
+      prodSel.innerHTML = `<option value="">-- Select Saved Product --</option>` +
+        state.masterProducts.map((p, i) => `<option value="${i}">${p.name} — ₹${p.rate}</option>`).join("");
+
+      const p0 = state.masterProducts[0] || { name: "NURSE PANT SHIRT (3 TUCKS)", gender: "FEMALE", cloth: "Alaskar", colour: "White", collar: "Yashoda Collar", pattern: "3 Tucks Shirt Pattern", bottomPattern: "Nada Phyajam", rate: 720 };
+      draftItems = [{
+        skuCode: p0.sku || "",
+        style: p0.name,
+        gender: p0.gender || "UNISEX",
+        cloth: p0.cloth || "Alaskar",
+        colour: p0.colour || "White",
+        collar: p0.collar || "Standard Collar",
+        pattern: p0.pattern || "",
+        bottomPattern: p0.bottomPattern || "Standard Bottom",
+        sizes: { "34": 0, "36": 0, "38": 25, "40": 0, "42": 0, "44": 0 },
+        rate: Number(p0.rate) || 650
+      }];
+      activeRowIdx = 0;
+
+      if (state.masterClients.length > 0) {
+        cliSel.value = "0";
+        applyClientPreset("0");
+      }
+      renderItemsTable();
+      document.getElementById("new-qtn-modal").classList.remove("hidden");
+      document.getElementById("new-qtn-modal").classList.add("flex");
+    }
+
+    function closeModal(id) {
+      const el = document.getElementById(id);
+      if (el) { el.classList.add("hidden"); el.classList.remove("flex"); }
+    }
+
+    function syncShipPreview() {
+      document.getElementById("qtn-ship-client").value = document.getElementById("qtn-client").value;
+      document.getElementById("qtn-ship-address").value = document.getElementById("qtn-address").value;
+    }
+
+    function applyClientPreset(idxStr) {
+      if (idxStr === "") return;
+      const c = state.masterClients[parseInt(idxStr)];
+      if (!c) return;
+      document.getElementById("qtn-client").value = c.name;
+      document.getElementById("qtn-gstin").value = c.gstin;
+      document.getElementById("qtn-address").value = c.city || "Hyderabad, Telangana";
+      document.getElementById("qtn-phone").value = c.phone || "";
+      syncShipPreview();
+      renderItemsTable();
+    }
+
+    function applyProductToActiveRow(idxStr) {
+      if (idxStr === "") return;
+      const p = state.masterProducts[parseInt(idxStr)];
+      if (!p || !draftItems[activeRowIdx]) return;
+      const cliName = document.getElementById("qtn-client").value.trim().toLowerCase();
+      const cliGst = document.getElementById("qtn-gstin").value.trim().toUpperCase();
+      const mapped = (state.clientProductSkus || []).find(m =>
+        ((cliGst && (m.clientGstin || "").toUpperCase() === cliGst) || (cliName && (m.clientName || "").toLowerCase() === cliName)) &&
+        ((m.productId && m.productId === p.id) || (m.productName || "").toUpperCase() === (p.name || "").toUpperCase())
+      );
+      draftItems[activeRowIdx] = {
+        ...draftItems[activeRowIdx],
+        skuCode: mapped ? mapped.skuCode : (p.sku || ""),
+        style: mapped ? (mapped.customDescription || p.name) : p.name,
+        gender: p.gender || "UNISEX",
+        cloth: p.cloth || "Alaskar",
+        colour: p.colour || "White",
+        collar: p.collar || "Standard Collar",
+        pattern: mapped && mapped.customSpec ? `${mapped.customSpec} • ${p.pattern || ""}` : (p.pattern || ""),
+        bottomPattern: p.bottomPattern || "Standard Bottom",
+        rate: mapped ? Number(mapped.rate) : Number(p.rate)
+      };
+      renderItemsTable();
+    }
+
+    function addItemRow() {
+      const p = state.masterProducts[draftItems.length % Math.max(1, state.masterProducts.length)] || {};
+      draftItems.push({
+        skuCode: p.sku || "",
+        style: p.name || "UNIFORM SET",
+        gender: p.gender || "UNISEX",
+        cloth: p.cloth || "Alaskar",
+        colour: p.colour || "White",
+        collar: p.collar || "Standard Collar",
+        pattern: p.pattern || "",
+        bottomPattern: p.bottomPattern || "Standard Bottom",
+        sizes: { "34": 0, "36": 0, "38": 10, "40": 0, "42": 0, "44": 0 },
+        rate: Number(p.rate) || 650
+      });
+      activeRowIdx = draftItems.length - 1;
+      renderItemsTable();
+    }
+
+    function removeItemRow(idx) {
+      if (draftItems.length <= 1) return;
+      draftItems.splice(idx, 1);
+      if (activeRowIdx >= draftItems.length) activeRowIdx = draftItems.length - 1;
+      renderItemsTable();
+    }
+
+    function renderItemsTable() {
+      const tbody = document.getElementById("qtn-items-tbody");
+      tbody.innerHTML = draftItems.map((it, idx) => {
+        const qty = Object.values(it.sizes || {}).reduce((a, b) => a + (Number(b) || 0), 0);
+        const tax = qty * (Number(it.rate) || 0);
+        return `
+          <tr onclick="activeRowIdx=${idx}" class="align-top ${idx === activeRowIdx ? 'bg-teal-50/30' : 'bg-white'}">
+            <td class="py-2 px-1 text-center border-r border-black font-bold">${idx + 1}</td>
+            <td class="py-2 px-2 border-r border-black space-y-1">
+              <div class="flex gap-1">
+                <input type="text" value="${it.skuCode || ''}" oninput="draftItems[${idx}].skuCode=this.value.toUpperCase()" placeholder="SKU" class="w-24 px-1.5 py-0.5 border border-indigo-300 rounded font-mono font-bold text-[10px] uppercase">
+                <input type="text" value="${it.style}" oninput="draftItems[${idx}].style=this.value.toUpperCase()" required class="w-full px-1.5 py-0.5 border border-slate-300 rounded font-extrabold text-[11px] uppercase">
+              </div>
+              <div class="grid grid-cols-2 gap-1">
+                <input type="text" value="${it.cloth}" oninput="draftItems[${idx}].cloth=this.value" placeholder="Cloth" class="px-1.5 py-0.5 border border-slate-300 rounded text-[10px]">
+                <input type="text" value="${it.colour}" oninput="draftItems[${idx}].colour=this.value" placeholder="Colour" class="px-1.5 py-0.5 border border-slate-300 rounded text-[10px]">
+              </div>
+            </td>
+            <td class="py-2 px-2 border-r border-black space-y-1">
+              <input type="text" value="${it.collar}" oninput="draftItems[${idx}].collar=this.value" placeholder="Collar" class="w-full px-1.5 py-0.5 border border-slate-300 rounded text-[10px] font-semibold">
+              <textarea rows="2" oninput="draftItems[${idx}].pattern=this.value" class="w-full px-1.5 py-0.5 border border-slate-300 rounded text-[10px]">${it.pattern || ''}</textarea>
+            </td>
+            <td class="py-2 px-1.5 border-r border-black">
+              <div class="grid grid-cols-3 gap-1 text-center">
+                ${["34", "36", "38", "40", "42", "44"].map(sz => `
+                  <div>
+                    <span class="block text-[8.5px] font-bold text-slate-500">${sz}</span>
+                    <input type="number" min="0" value="${(it.sizes && it.sizes[sz]) || 0}" oninput="draftItems[${idx}].sizes['${sz}']=parseInt(this.value)||0; renderItemsTable();" class="w-full px-0.5 py-0.5 border border-slate-300 rounded text-center text-[10px] font-bold">
+                  </div>
+                `).join("")}
+              </div>
+            </td>
+            <td class="py-2 px-1.5 text-right border-r border-black font-extrabold">${formatPlain2(qty)}</td>
+            <td class="py-2 px-1.5 text-right border-r border-black">
+              <input type="number" step="0.01" value="${it.rate}" oninput="draftItems[${idx}].rate=parseFloat(this.value)||0; renderItemsTable();" class="w-full px-1 py-0.5 border border-slate-300 rounded text-right font-extrabold text-[11px]">
+            </td>
+            <td class="py-2 px-2 text-right border-r border-black font-extrabold">${formatPlain2(tax)}</td>
+            <td class="py-2 px-1 text-center">
+              <button type="button" onclick="removeItemRow(${idx})" class="px-1.5 py-0.5 rounded bg-rose-50 text-rose-600 font-bold">✕</button>
+            </td>
+          </tr>
+        `;
+      }).join("");
+      recalcTotals();
+    }
+
+    function recalcTotals() {
+      let totalQty = 0, taxable = 0;
+      draftItems.forEach(it => {
+        const q = Object.values(it.sizes || {}).reduce((a, b) => a + (Number(b) || 0), 0);
+        totalQty += q;
+        taxable += q * (Number(it.rate) || 0);
+      });
+      const gstPct = parseFloat(document.getElementById("qtn-gst-pct")?.value) || 0;
+      const taxAmt = taxable * (gstPct / 100);
+      const afterTax = taxable + taxAmt;
+      document.getElementById("doc-total-qty").textContent = totalQty;
+      document.getElementById("doc-before-tax").textContent = formatPlain2(taxable);
+      document.getElementById("doc-cgst").textContent = formatPlain2(taxAmt / 2);
+      document.getElementById("doc-sgst").textContent = formatPlain2(taxAmt / 2);
+      document.getElementById("doc-after-tax").textContent = formatPlain2(afterTax);
+      document.getElementById("doc-words").textContent = numberToIndianWords(afterTax);
+      return totalQty;
+    }
+
+    function saveQuotation(e) {
+      e.preventDefault();
+      const totalQty = recalcTotals();
+      if (totalQty <= 0) return showToast("Enter at least 1 pair/pc.");
+
+      const normalized = draftItems.map(it => {
+        const qty = Object.values(it.sizes || {}).reduce((a, b) => a + (Number(b) || 0), 0);
+        return { ...it, qty, taxable: qty * (Number(it.rate) || 0) };
+      }).filter(x => x.qty > 0);
+
+      const primary = normalized[0];
+      const mergedSizes = { "34": 0, "36": 0, "38": 0, "40": 0, "42": 0, "44": 0 };
+      let totalTaxable = 0;
+      normalized.forEach(it => {
+        totalTaxable += it.taxable;
+        ["34", "36", "38", "40", "42", "44"].forEach(sz => mergedSizes[sz] += Number(it.sizes[sz]) || 0);
+      });
+
+      const qtn = {
+        id: document.getElementById("qtn-id").value.trim(),
+        orderRef: document.getElementById("qtn-ref").value.trim(),
+        nameCode: String(1080 + state.quotations.length),
+        date: document.getElementById("qtn-date").value,
+        validUntil: document.getElementById("qtn-valid-until").value,
+        client: document.getElementById("qtn-client").value.trim(),
+        address: document.getElementById("qtn-address").value.trim(),
+        shipClient: document.getElementById("qtn-ship-client").value.trim(),
+        shipAddress: document.getElementById("qtn-ship-address").value.trim(),
+        phone: document.getElementById("qtn-phone").value.trim(),
+        gstin: document.getElementById("qtn-gstin").value.trim().toUpperCase(),
+        gender: primary.gender || "UNISEX",
+        style: normalized.length > 1 ? `${primary.style} (+${normalized.length - 1} more)` : primary.style,
+        items: normalized,
+        sizes: mergedSizes,
+        totalQty,
+        rate: totalTaxable / totalQty,
+        gstPct: parseFloat(document.getElementById("qtn-gst-pct").value) || 5,
+        remarks: document.getElementById("qtn-remarks").value.trim(),
+        cloth: primary.cloth,
+        colour: primary.colour,
+        collar: primary.collar,
+        pattern: primary.pattern,
+        bottomPattern: primary.bottomPattern || "Nada Phyajam",
+        piping: "Standard Piping",
+        embrDesign: "LOGO on CHEST",
+        poCode: "STTNP-06",
+        hospt: "S T Traders Cheap Jack Musheerabad",
+        status: "Open Quotation"
+      };
+
+      state.quotations.unshift(qtn);
+      saveState();
+      closeModal("new-qtn-modal");
+      showToast(`Saved Quotation ${qtn.id}.`);
+      openQuotationPrint(qtn.id);
+    }
+
+    // Print Quotation using the exact Sale Order / Estimate A4 layout
+    function openQuotationPrint(qtnId) {
+      const qtn = (state.quotations || []).find(x => x.id === qtnId);
+      if (!qtn) return;
+      const cfg = state.companyConfig || FALLBACK_COMPANY;
+      const items = (Array.isArray(qtn.items) && qtn.items.length > 0) ? qtn.items : [{
+        skuCode: "", style: qtn.style, cloth: qtn.cloth, colour: qtn.colour, collar: qtn.collar, pattern: qtn.pattern, sizes: qtn.sizes, qty: qtn.totalQty, rate: qtn.rate, taxable: qtn.totalQty * qtn.rate
+      }];
+      const taxableAmt = items.reduce((s, it) => s + (Number(it.taxable) || (Number(it.qty) * Number(it.rate))), 0);
+      const totalQtySum = items.reduce((s, it) => s + (Number(it.qty) || 0), 0);
+      const gstPct = Number(qtn.gstPct) || 5;
+      const isIntra = (qtn.gstin || "36").startsWith("36");
+      const totalTax = taxableAmt * (gstPct / 100);
+      const afterTax = taxableAmt + totalTax;
+      const dispDate = (qtn.date || "").split("-").reverse().join("/");
+
+      const rowsHtml = items.map((it, idx) => {
+        const ratio = formatSizeRatio(it.sizes);
+        const codeCol = it.skuCode ? `${it.skuCode}<br><span class="text-[9.5px] font-normal">SIZE: ${ratio}</span>` : `SIZE: ${ratio}`;
+        const rowTax = Number(it.taxable) || (Number(it.qty) * Number(it.rate));
+        const isLast = idx === items.length - 1;
+        return `
+          <tr class="align-top ${!isLast ? 'border-b border-black/30' : ''}">
+            <td class="py-2 px-1 text-center border-r border-black ${isLast ? 'h-[260px]' : ''}">${idx + 1}</td>
+            <td class="py-2 px-2 border-r border-black">
+              <div contenteditable="true" class="font-semibold uppercase">${it.style}</div>
+              <div class="text-[10px] text-slate-700 mt-0.5">${it.cloth || ''} • Colour: ${it.colour || ''} • Collar: ${it.collar || ''}</div>
+            </td>
+            <td class="py-2 px-2 border-r border-black">${it.pattern || "-"}</td>
+            <td class="py-2 px-1.5 border-r border-black font-bold text-center">${codeCol}</td>
+            <td class="py-2 px-2 text-right border-r border-black font-extrabold">${formatPlain2(it.qty)}</td>
+            <td class="py-2 px-2 text-right border-r border-black">${formatPlain2(it.rate)}</td>
+            <td class="py-2 px-2 text-right font-semibold">${formatPlain2(rowTax)}</td>
+          </tr>
+        `;
+      }).join("");
+
+      const termsHtml = (cfg.terms || FALLBACK_COMPANY.terms).split("\n").filter(Boolean).map(l => `<div>${l}</div>`).join("");
+
+      document.getElementById("print-modal-title").textContent = `Quotation (Sale Order Print Format) — ${qtn.id}`;
+      document.getElementById("print-area").innerHTML = `
+        <div class="so-a4-sheet border border-black bg-white text-black font-sans text-[11px] leading-snug">
+          <div>
+            <div class="px-3 pt-1.5 pb-2 border-b border-black">
+              <div class="text-right text-[10px] font-semibold">QUOTATION</div>
+              <div class="text-center -mt-1">
+                <h1 class="text-[20px] font-extrabold uppercase">${cfg.firmName}</h1>
+                <p class="text-[10.5px]">${cfg.address}</p>
+                <p class="text-[10.5px]">Ph No:${cfg.phone}, GST No: ${cfg.gstin}</p>
+                <p class="text-[10.5px]">${cfg.email}</p>
+                <div class="text-[15px] font-extrabold uppercase mt-0.5">QUOTATION / PROFORMA ESTIMATE</div>
+              </div>
+            </div>
+            <div class="grid grid-cols-12 px-2.5 py-1 border-b border-black text-[11px]">
+              <div class="col-span-4"><span class="font-bold">Quote No. :</span> <span class="font-extrabold">${qtn.id}</span></div>
+              <div class="col-span-4 text-center font-extrabold uppercase">${qtn.orderRef || `VALID UP TO ${qtn.validUntil || ''}`}</div>
+              <div class="col-span-4 text-right"><span class="font-bold">Date :</span> <span class="font-extrabold">${dispDate}</span></div>
+            </div>
+            <div class="grid grid-cols-12 border-b border-black text-[11px]">
+              <div class="col-span-6 border-r border-black">
+                <div class="px-2.5 py-0.5 border-b border-black font-bold">Customer Details :</div>
+                <div class="p-2.5 space-y-1 min-h-[100px]">
+                  <div class="font-semibold">${qtn.client}</div>
+                  <div>${qtn.address}</div>
+                  <div class="pt-1"><span class="font-semibold">GST No :</span> <span class="font-bold">${qtn.gstin}</span></div>
+                  <div><span class="font-semibold">Phone :</span> ${qtn.phone || ""}</div>
+                </div>
+              </div>
+              <div class="col-span-6">
+                <div class="px-2.5 py-0.5 border-b border-black font-bold">Shipping Address</div>
+                <div class="p-2.5 space-y-1 min-h-[100px]">
+                  <div class="font-semibold">${qtn.shipClient || qtn.client}</div>
+                  <div>${qtn.shipAddress || qtn.address}</div>
+                  <div class="pt-1"><span class="font-semibold">Valid Until :</span> ${qtn.validUntil || "15 Days"}</div>
+                </div>
+              </div>
+            </div>
+            <table class="w-full border-collapse border-b border-black text-[11px]">
+              <thead>
+                <tr class="border-b border-black text-center font-bold">
+                  <th class="w-[34px] py-1 px-1 border-r border-black">sno</th>
+                  <th class="py-1 px-2 border-r border-black">Description</th>
+                  <th class="w-[26%] py-1 px-2 border-r border-black">Name</th>
+                  <th class="w-[78px] py-1 px-1 border-r border-black">Code</th>
+                  <th class="w-[74px] py-1 px-2 border-r border-black">QTY</th>
+                  <th class="w-[74px] py-1 px-2 border-r border-black">Rate</th>
+                  <th class="w-[96px] py-1 px-2">Taxable Amt</th>
+                </tr>
+              </thead>
+              <tbody>${rowsHtml}</tbody>
+            </table>
+            <div class="py-1 px-3 border-b border-black text-center font-bold text-[11.5px]">
+              Total Qty : <span class="ml-3 font-extrabold">${totalQtySum}</span>
+            </div>
+            <div class="grid grid-cols-12 border-b border-black text-[10.5px]">
+              <div class="col-span-8 border-r border-black flex flex-col justify-between">
+                <div class="px-2.5 py-1.5 border-b border-black"><span class="font-bold">Remarks :</span> ${qtn.remarks || ""}</div>
+                <div class="px-2.5 py-1.5 border-b border-black">
+                  <div class="font-semibold">Quoted Value (In Words)</div>
+                  <div class="font-bold mt-0.5">${numberToIndianWords(afterTax)}</div>
+                </div>
+                <div class="px-2.5 py-1.5 space-y-0.5"><div class="font-bold">Terms and Conditions :</div>${termsHtml}</div>
+              </div>
+              <div class="col-span-4 flex flex-col justify-between">
+                <div class="p-2.5 space-y-1.5">
+                  <div class="flex justify-between"><span>Total Before Tax</span><span class="font-extrabold">${formatPlain2(taxableAmt)}</span></div>
+                  ${isIntra ? `
+                    <div class="flex justify-between"><span>Tax Amount : CGST</span><span class="font-extrabold">${formatPlain2(totalTax / 2)}</span></div>
+                    <div class="flex justify-between"><span>Tax Amount : SGST</span><span class="font-extrabold">${formatPlain2(totalTax / 2)}</span></div>
+                  ` : `
+                    <div class="flex justify-between"><span>Tax Amount : IGST</span><span class="font-extrabold">${formatPlain2(totalTax)}</span></div>
+                  `}
+                </div>
+                <div class="px-2.5 py-2 border-t border-black flex justify-between items-center bg-slate-50">
+                  <span class="font-bold">Total After Tax</span>
+                  <span class="font-extrabold text-[12px]">${formatPlain2(afterTax)}</span>
+                </div>
+              </div>
+            </div>
+            <div class="grid grid-cols-12 px-2.5 py-2 text-[10.5px] items-end">
+              <div class="col-span-6 space-y-0.5">
+                <div>Our Bankers: <strong>${cfg.bankName}</strong></div>
+                <div>A/C No. : <strong>${cfg.bankAc}</strong></div>
+                <div>IFSC CODE: <strong>${cfg.bankIfsc}</strong></div>
+                <div>Branch : <strong>${cfg.bankBranch}</strong></div>
+              </div>
+              <div class="col-span-6 text-right space-y-8">
+                <div class="font-bold">For, ${cfg.firmName}</div>
+                <div class="font-semibold">Authorised Signatory</div>
+              </div>
+            </div>
+          </div>
+          <div class="text-center text-[10px] py-1 border-t border-black/20">Page 1 of 1</div>
+        </div>
+      `;
+      document.getElementById("print-preview-modal").classList.remove("hidden");
+      document.getElementById("print-preview-modal").classList.add("flex");
+    }
+
+    // 1-Click Convert to Sale Order: pushes directly into `state.saleOrders` so `index.html` immediately shows it!
+    function convertQuotationToSaleOrder(qtnIdx) {
+      const qtn = state.quotations[qtnIdx];
+      if (!qtn) return;
+      const cfg = state.companyConfig || FALLBACK_COMPANY;
+      const num = 3496 + (state.saleOrders || []).length + 1;
+      const newSoId = `${cfg.soPrefix || "SOD-H/26-27/"}${num}`;
+
+      const so = {
+        ...JSON.parse(JSON.stringify(qtn)),
+        id: newSoId,
+        orderRef: `FROM ${qtn.id}`,
+        date: new Date().toISOString().split("T")[0],
+        stage: "New Sale Order"
+      };
+      delete so.status;
+      delete so.validUntil;
+      delete so.convertedSoId;
+
+      if (!Array.isArray(state.saleOrders)) state.saleOrders = [];
+      state.saleOrders.unshift(so);
+      qtn.status = "Converted to SO";
+      qtn.convertedSoId = newSoId;
+      saveState();
+      showToast(`Converted ${qtn.id} → Sale Order ${newSoId} (Ready in index.html)!`);
+    }
+
+    window.addEventListener("DOMContentLoaded", renderAll);
+  </script>
+</body>
+</html>
