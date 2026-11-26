@@ -1,0 +1,1856 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>S T Traders Annexe CheapJack — Sale Order to Tax Invoice ERP</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'] },
+          colors: { pacifica: '#1E77B4' }
+        }
+      }
+    }
+  </script>
+  <style>
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #f1f5f9; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
+    .tab-fade { animation: fadeIn 0.2s ease-out; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @media print {
+      html, body { height: auto !important; overflow: visible !important; margin: 0 !important; padding: 0 !important; }
+      body * { visibility: hidden; }
+      #print-preview-modal { position: static !important; background: transparent !important; padding: 0 !important; overflow: visible !important; display: block !important; }
+      #print-area, #print-area * { visibility: visible; }
+      #print-area { position: fixed; left: 0; top: 0; width: 200mm; padding: 0 !important; margin: 0 !important; background: #fff !important; }
+      @page { size: A4 portrait; margin: 5mm; }
+      .cutting-a4-sheet {
+        height: 280mm !important;
+        max-height: 280mm !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: space-between !important;
+        overflow: hidden !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+      }
+      .cutting-copy-block { page-break-inside: avoid !important; break-inside: avoid !important; }
+      .cutting-slip-grid { display: grid !important; grid-template-columns: repeat(12, minmax(0, 1fr)) !important; gap: 6px !important; }
+      .cutting-slip-left { grid-column: span 7 / span 7 !important; padding: 7px 10px !important; font-size: 12.5px !important; line-height: 1.3 !important; }
+      .cutting-slip-right { grid-column: span 5 / span 5 !important; min-height: 112mm !important; max-height: 118mm !important; padding: 4px !important; }
+      .cutting-slip-image-box svg, .cutting-slip-image-box img { max-height: 108mm !important; width: auto !important; }
+      .so-a4-sheet {
+        height: 282mm !important;
+        max-height: 282mm !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: space-between !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased selection:bg-indigo-600 selection:text-white">
+
+  <!-- Toast Container -->
+  <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none px-4 sm:px-0"></div>
+
+  <div class="h-screen overflow-hidden flex bg-slate-50">
+    
+    <!-- =================================================================== -->
+    <!-- LEFT SIDEBAR NAVIGATION (ALWAYS VISIBLE & FULL-HEIGHT LOCKED)       -->
+    <!-- =================================================================== -->
+    <aside id="app-sidebar" class="w-64 sm:w-72 bg-slate-900 text-slate-200 flex flex-col border-r border-slate-800 h-full shrink-0 z-30">
+      
+      <!-- Sidebar Brand Header -->
+      <div class="px-5 py-5 border-b border-slate-800 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-700 flex items-center justify-center font-extrabold text-white text-base shadow-lg shrink-0">
+            ST
+          </div>
+          <div>
+            <h1 class="text-sm font-extrabold text-white tracking-tight leading-snug">S T Traders Annexe CheapJack</h1>
+            <div class="flex items-center gap-1.5 mt-0.5">
+              <span class="px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 text-[10px] font-bold border border-emerald-500/30">GST 36</span>
+              <span class="text-[11px] text-slate-400">Hyd Units</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Primary CTA in Sidebar -->
+      <div class="px-4 pt-4 pb-2">
+        <button onclick="openNewSaleOrderModal();" class="w-full py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow-md inline-flex items-center justify-center gap-2 transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+          <span>Book New Sale Order</span>
+        </button>
+      </div>
+
+      <!-- Scrollable Navigation Menu -->
+      <nav class="flex-1 overflow-y-auto px-3 py-3 space-y-5">
+        
+        <!-- Group 1: Command & Masters -->
+        <div>
+          <div class="px-3 mb-2 text-[10px] font-extrabold uppercase tracking-wider text-slate-500">Command & Catalog</div>
+          <div class="space-y-1">
+            <button onclick="switchStep('dashboard')" data-step="dashboard" class="step-card w-full text-left px-3 py-2.5 rounded-xl bg-indigo-600 text-white transition flex items-center justify-between">
+              <div class="flex items-center gap-2.5">
+                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                <div>
+                  <div class="text-xs font-bold">Dashboard Overview</div>
+                  <div id="step-sub-dash" class="text-[10px] opacity-80">Live Floor Summary</div>
+                </div>
+              </div>
+              <span id="badge-step-0" class="w-2 h-2 rounded-full bg-emerald-400 shrink-0"></span>
+            </button>
+
+            <button onclick="switchStep('tracking')" data-step="tracking" class="step-card w-full text-left px-3 py-2.5 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-white transition flex items-center justify-between">
+              <div class="flex items-center gap-2.5">
+                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 103.5 10.5a7.5 7.5 0 0013.15 6.15z"/></svg>
+                <div>
+                  <div class="text-xs font-bold">Order & Slip Tracker</div>
+                  <div id="step-sub-track" class="text-[10px] text-slate-400">Search SO / Slip / Inv</div>
+                </div>
+              </div>
+              <span id="badge-step-1" class="hidden"></span>
+            </button>
+
+            <button onclick="switchStep('masters')" data-step="masters" class="step-card w-full text-left px-3 py-2.5 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-white transition flex items-center justify-between">
+              <div class="flex items-center gap-2.5">
+                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+                <div>
+                  <div class="text-xs font-bold">Products & Clients</div>
+                  <div id="step-sub-masters" class="text-[10px] text-slate-400">0 items • 0 clients</div>
+                </div>
+              </div>
+              <span id="badge-step-2" class="hidden"></span>
+            </button>
+
+            <button onclick="switchStep('reports')" data-step="reports" class="step-card w-full text-left px-3 py-2.5 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-white transition flex items-center justify-between">
+              <div class="flex items-center gap-2.5">
+                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                <div>
+                  <div class="text-xs font-bold">MIS Reports & CSV</div>
+                  <div id="step-sub-reports" class="text-[10px] text-slate-400">Date & Unit Filters</div>
+                </div>
+              </div>
+              <span id="badge-step-3" class="hidden"></span>
+            </button>
+
+            <button onclick="switchStep('users')" data-step="users" class="step-card w-full text-left px-3 py-2.5 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-white transition flex items-center justify-between">
+              <div class="flex items-center gap-2.5">
+                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                <div>
+                  <div class="text-xs font-bold">Users & Rights</div>
+                  <div id="step-sub-users" class="text-[10px] text-slate-400">Admin • Role Access</div>
+                </div>
+              </div>
+              <span id="badge-step-users" class="px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 text-[10px] font-bold">RBAC</span>
+            </button>
+
+            <button onclick="switchStep('settings')" data-step="settings" class="step-card w-full text-left px-3 py-2.5 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-white transition flex items-center justify-between">
+              <div class="flex items-center gap-2.5">
+                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                <div>
+                  <div class="text-xs font-bold">Company Settings</div>
+                  <div id="step-sub-settings" class="text-[10px] text-slate-400">Firm, GST, Bank & Prefixes</div>
+                </div>
+              </div>
+              <span class="px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-300 text-[10px] font-bold">CFG</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Group 2: 5-Stage Production Pipeline -->
+        <div>
+          <div class="px-3 mb-2 text-[10px] font-extrabold uppercase tracking-wider text-slate-500">5-Stage Factory Flow</div>
+          <div class="space-y-1">
+		  <button onclick="switchStep('quotations')" data-step="quotations" class="step-card w-full text-left px-3 py-2.5 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-white transition flex items-center justify-between">
+  <div>
+    <div class="text-[10px] font-extrabold uppercase text-teal-400">Pre-Sales</div>
+    <div class="text-xs font-bold">Quotations</div>
+    <div id="step-sub-quot" class="text-[10px] text-slate-400">0 quotations</div>
+  </div>
+  <span id="badge-step-quot" class="px-2 py-0.5 rounded-full bg-slate-800 text-slate-200 text-xs font-extrabold">0</span>
+</button>
+            <button onclick="switchStep('sale-orders')" data-step="sale-orders" class="step-card w-full text-left px-3 py-2.5 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-white transition flex items-center justify-between">
+              <div>
+                <div class="text-[10px] font-extrabold uppercase text-indigo-400">Step 1</div>
+                <div class="text-xs font-bold">Sale Orders</div>
+                <div id="step-sub-so" class="text-[10px] text-slate-400">0 active orders</div>
+              </div>
+              <span id="badge-step-4" class="px-2 py-0.5 rounded-full bg-slate-800 text-slate-200 text-xs font-extrabold">0</span>
+            </button>
+
+            <button onclick="switchStep('cutting-slips')" data-step="cutting-slips" class="step-card w-full text-left px-3 py-2.5 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-white transition flex items-center justify-between">
+              <div>
+                <div class="text-[10px] font-extrabold uppercase text-amber-400">Step 2</div>
+                <div class="text-xs font-bold">Cutting Slips</div>
+                <div id="step-sub-cut" class="text-[10px] text-slate-400">0 slips</div>
+              </div>
+              <span id="badge-step-5" class="px-2 py-0.5 rounded-full bg-slate-800 text-slate-200 text-xs font-extrabold">0</span>
+            </button>
+
+            <button onclick="switchStep('allocation')" data-step="allocation" class="step-card w-full text-left px-3 py-2.5 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-white transition flex items-center justify-between">
+              <div>
+                <div class="text-[10px] font-extrabold uppercase text-sky-400">Step 3</div>
+                <div class="text-xs font-bold">Tailor & Unit</div>
+                <div id="step-sub-alloc" class="text-[10px] text-slate-400">0 on floor</div>
+              </div>
+              <span id="badge-step-6" class="px-2 py-0.5 rounded-full bg-slate-800 text-slate-200 text-xs font-extrabold">0</span>
+            </button>
+
+            <button onclick="switchStep('receiving-fg')" data-step="receiving-fg" class="step-card w-full text-left px-3 py-2.5 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-white transition flex items-center justify-between">
+              <div>
+                <div class="text-[10px] font-extrabold uppercase text-emerald-400">Step 4</div>
+                <div class="text-xs font-bold">Receive FG</div>
+                <div id="step-sub-fg" class="text-[10px] text-slate-400">0 pcs in store</div>
+              </div>
+              <span id="badge-step-7" class="px-2 py-0.5 rounded-full bg-slate-800 text-slate-200 text-xs font-extrabold">0</span>
+            </button>
+
+            <button onclick="switchStep('tax-invoice')" data-step="tax-invoice" class="step-card w-full text-left px-3 py-2.5 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-white transition flex items-center justify-between">
+              <div>
+                <div class="text-[10px] font-extrabold uppercase text-purple-400">Step 5</div>
+                <div class="text-xs font-bold">Tax Invoice</div>
+                <div id="step-sub-inv" class="text-[10px] text-slate-400">0 invoices</div>
+              </div>
+              <span id="badge-step-8" class="px-2 py-0.5 rounded-full bg-slate-800 text-slate-200 text-xs font-extrabold">0</span>
+            </button>
+
+            <button onclick="switchStep('due-list')" data-step="due-list" class="step-card w-full text-left px-3 py-2.5 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-white transition flex items-center justify-between">
+              <div>
+                <div class="text-[10px] font-extrabold uppercase text-rose-400">Accounts</div>
+                <div class="text-xs font-bold">Due List</div>
+                <div id="step-sub-due" class="text-[10px] text-slate-400">Pending bills</div>
+              </div>
+              <span id="badge-step-due" class="px-2 py-0.5 rounded-full bg-slate-800 text-slate-200 text-xs font-extrabold">0</span>
+            </button>
+          </div>
+        </div>
+      </nav>
+
+      <!-- Sidebar Footer: Plant Status -->
+      <div class="p-4 border-t border-slate-800 bg-slate-950/50 text-[11px] text-slate-400 space-y-1">
+        <div class="flex items-center justify-between">
+          <span class="font-semibold text-slate-300">Cherlapally & Musheerabad</span>
+          <span class="inline-flex items-center gap-1 text-emerald-400 font-bold"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>Live</span>
+        </div>
+        <div>Sale Order → Cutting → Tailor → FG → GST</div>
+      </div>
+    </aside>
+
+    <!-- =================================================================== -->
+    <!-- RIGHT MAIN SHELL (COMPACT TOP UTILITY BAR + SCROLLABLE WORKSPACE)   -->
+    <!-- =================================================================== -->
+    <div class="flex-1 flex flex-col min-w-0 h-full overflow-y-auto">
+
+      <!-- Compact Top Utility Header -->
+      <header class="bg-white border-b border-slate-200 px-4 sm:px-8 py-3.5 sticky top-0 z-20 shadow-2xs">
+        <div class="max-w-[1440px] mx-auto flex flex-wrap items-center justify-between gap-3">
+          
+          <!-- Active Page Title -->
+          <div class="flex items-center gap-3">
+            <div>
+              <div id="topbar-breadcrumb" class="text-[11px] font-bold uppercase tracking-wider text-indigo-600">Overview</div>
+              <h2 id="topbar-page-title" class="text-sm sm:text-base font-extrabold text-slate-900">Dashboard Overview</h2>
+            </div>
+          </div>
+
+          <!-- Global Quick Search Bar -->
+          <div class="flex-1 max-w-md w-full order-3 sm:order-2">
+            <div class="relative">
+              <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 103.5 10.5a7.5 7.5 0 0013.15 6.15z"/></svg>
+              <input type="text" id="global-search-input" oninput="handleGlobalSearch(this.value)" placeholder="Search Sale Order, Cutting Slip, Invoice, or Company..." class="w-full pl-10 pr-8 py-2 rounded-xl bg-slate-100 border border-slate-200 text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:border-indigo-500 transition">
+              <button id="global-search-clear" onclick="clearGlobalSearch()" class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-800 text-xs font-bold">✕</button>
+            </div>
+          </div>
+
+          <!-- Active User & Role Switcher -->
+          <div class="flex items-center gap-2 order-2 sm:order-3 bg-slate-100 border border-slate-200 px-2.5 py-1 rounded-xl">
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+            <span class="text-[11px] font-bold text-slate-500 hidden md:inline">Active User:</span>
+            <select id="active-user-switcher" onchange="switchActiveUser(this.value)" class="bg-transparent text-xs font-extrabold text-slate-900 focus:outline-none cursor-pointer"></select>
+            <button onclick="openPinUnlockModal()" title="Switch / Verify PIN" class="px-1.5 py-0.5 rounded bg-white border border-slate-200 text-[10px] font-bold text-indigo-700 hover:bg-indigo-50">
+              PIN
+            </button>
+          </div>
+
+          <!-- Backup & Demo Utilities -->
+          <div class="flex items-center gap-2 order-4">
+            <button onclick="exportBackupExcel()" class="px-3 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-bold border border-emerald-200 transition">
+              Export Excel (.xlsx)
+            </button>
+            <label class="cursor-pointer px-3 py-1.5 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-800 text-xs font-bold border border-indigo-200 transition">
+              Import Excel (.xlsx)
+              <input type="file" accept=".xlsx,.xls,.csv" onchange="importBackupExcel(event)" class="hidden">
+            </label>
+            <button onclick="resetDemoFlow()" class="hidden sm:inline-flex px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold border border-slate-200 transition">
+              Reset Demo
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <!-- MAIN CONTENT WORKSPACE -->
+      <main class="flex-1 max-w-[1440px] w-full mx-auto px-4 sm:px-8 py-6 space-y-6">
+
+      <!-- =============================================================== -->
+      <!-- VIEW: COMPANY CONFIGURATION & SETTINGS                          -->
+      <!-- =============================================================== -->
+      <section id="view-settings" class="step-view hidden tab-fade space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h2 class="text-xl font-extrabold text-slate-900">Company Configuration & ERP Settings</h2>
+            <p class="text-xs sm:text-sm text-slate-500">Configure firm header, GSTIN, Bank of Baroda details, document prefixes & terms printed across Sale Orders, Cutting Slips & Tax Invoices</p>
+          </div>
+          <div class="flex gap-2">
+            <button type="button" onclick="resetCompanyConfigDefaults()" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition">
+              Restore Defaults
+            </button>
+            <button type="button" onclick="document.getElementById('company-settings-form').requestSubmit()" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-extrabold shadow-xs transition">
+              Save Company Configuration ✓
+            </button>
+          </div>
+        </div>
+
+        <form id="company-settings-form" onsubmit="saveCompanySettings(event)" class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <!-- Left 6 Cols: Firm Identity, Address & GST -->
+          <div class="lg:col-span-6 bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-xs space-y-4">
+            <div>
+              <h3 class="text-base font-bold text-slate-900">1. Firm Profile, Tax & Unit Locations</h3>
+              <p class="text-xs text-slate-500">Appears on the top banner of Sale Order / Estimate & GST Tax Invoices</p>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div class="sm:col-span-2">
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Registered Firm Name</label>
+                <input type="text" id="cfg-firm-name" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-extrabold uppercase">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Sidebar Short Tag</label>
+                <input type="text" id="cfg-short-tag" maxlength="4" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-extrabold uppercase text-center">
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Registered Head Office / Billing Address</label>
+              <textarea id="cfg-address" rows="2" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs"></textarea>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Company GSTIN</label>
+                <input type="text" id="cfg-gstin" maxlength="15" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold uppercase">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Contact Phone(s)</label>
+                <input type="text" id="cfg-phone" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Official Email</label>
+                <input type="email" id="cfg-email" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs">
+              </div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Home State Code & Jurisdiction</label>
+                <input type="text" id="cfg-jurisdiction" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Factory / Plant Units Label</label>
+                <input type="text" id="cfg-units-label" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold">
+              </div>
+            </div>
+          </div>
+
+          <!-- Right 6 Cols: Bank Details, Document Series & Terms -->
+          <div class="lg:col-span-6 bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-xs space-y-4">
+            <div>
+              <h3 class="text-base font-bold text-slate-900">2. Banker Details, Series Prefixes & Print Terms</h3>
+              <p class="text-xs text-slate-500">Printed in the footer of Sale Orders and Tax Invoices</p>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Bank Name</label>
+                <input type="text" id="cfg-bank-name" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold uppercase">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Bank Account No.</label>
+                <input type="text" id="cfg-bank-ac" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold">
+              </div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">IFSC Code</label>
+                <input type="text" id="cfg-bank-ifsc" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold uppercase">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Branch Name</label>
+                <input type="text" id="cfg-bank-branch" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold">
+              </div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Sale Order Prefix</label>
+                <input type="text" id="cfg-so-prefix" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Tax Invoice Prefix</label>
+                <input type="text" id="cfg-inv-prefix" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Default GST Slab (%)</label>
+                <select id="cfg-default-gst" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold bg-white">
+                  <option value="5">5% GST</option>
+                  <option value="12">12% GST</option>
+                  <option value="18">18% GST</option>
+                  <option value="0">0% Exempt</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Terms & Conditions (One line per point)</label>
+              <textarea id="cfg-terms" rows="4" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs"></textarea>
+            </div>
+            <button type="submit" class="w-full py-2.5 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-extrabold shadow-xs transition">
+              Save All Company Settings ✓
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <!-- =============================================================== -->
+      <!-- VIEW: USERS & ROLE-BASED ACCESS RIGHTS (RBAC)                   -->
+      <!-- =============================================================== -->
+      <section id="view-users" class="step-view hidden tab-fade space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h2 class="text-xl font-extrabold text-slate-900">Users & Role-Based Access Rights</h2>
+            <p class="text-xs sm:text-sm text-slate-500">Manage staff logins for <strong>Cherlapally</strong> & <strong>Musheerabad</strong> units and control module permissions, approvals & Excel export rights</p>
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <span id="users-active-banner" class="px-3 py-1.5 rounded-xl bg-indigo-50 border border-indigo-200 text-indigo-800 text-xs font-bold">Logged in as Admin</span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <!-- Left 4 Cols: Add New Staff User -->
+          <div class="lg:col-span-4 bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-xs space-y-4">
+            <div>
+              <h3 class="text-base font-bold text-slate-900">Add Staff User & Role</h3>
+              <p class="text-xs text-slate-500">Assign unit, role preset, and 4-digit shop-floor PIN</p>
+            </div>
+            <form onsubmit="addSystemUser(event)" class="space-y-3">
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Full Name</label>
+                <input type="text" id="usr-name" placeholder="e.g., Ramesh Kumar" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold">
+              </div>
+              <div class="grid grid-cols-2 gap-2.5">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-700 mb-1">Username / ID</label>
+                  <input type="text" id="usr-login" placeholder="e.g., ramesh.cut" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-700 mb-1">4-Digit PIN</label>
+                  <input type="text" id="usr-pin" value="1234" maxlength="4" pattern="[0-9]{4}" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-extrabold tracking-widest text-center">
+                </div>
+              </div>
+              <div class="grid grid-cols-2 gap-2.5">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-700 mb-1">Role Template</label>
+                  <select id="usr-role" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold bg-white">
+                    <option value="Admin">Admin (Full Control)</option>
+                    <option value="Sales & Billing">Sales & Billing</option>
+                    <option value="Cutting Master">Cutting Master</option>
+                    <option value="Floor Supervisor">Floor Supervisor</option>
+                    <option value="Accounts & MIS">Accounts & MIS</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-700 mb-1">Assigned Unit</label>
+                  <select id="usr-unit" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold bg-white">
+                    <option value="All Units (Hyd)">All Units (Hyd)</option>
+                    <option value="Cherlapally Unit">Cherlapally Unit</option>
+                    <option value="Musheerabad Unit">Musheerabad Unit</option>
+                  </select>
+                </div>
+              </div>
+              <button type="submit" class="w-full py-2.5 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-xs transition">
+                + Create User & Assign Rights
+              </button>
+            </form>
+          </div>
+
+          <!-- Right 8 Cols: Active Users Directory & Permission Matrix -->
+          <div class="lg:col-span-8 space-y-6">
+            <!-- Users Table -->
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+              <div class="p-4 border-b border-slate-100 flex items-center justify-between">
+                <h3 class="text-sm font-bold text-slate-900">Registered ERP Users</h3>
+                <span id="users-count-badge" class="text-xs font-semibold text-indigo-600">0 users</span>
+              </div>
+              <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                  <thead>
+                    <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                      <th class="py-3 px-4">User & Login ID</th>
+                      <th class="py-3 px-4">Role & Unit</th>
+                      <th class="py-3 px-4">PIN</th>
+                      <th class="py-3 px-4">Status</th>
+                      <th class="py-3 px-4 text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="users-list-tbody" class="divide-y divide-slate-100 text-xs"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Interactive Granular Rights Matrix -->
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+              <div class="p-4 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div>
+                  <h3 class="text-sm font-bold text-slate-900">Granular Permissions Matrix (Click Checkboxes to Toggle Rights)</h3>
+                  <p class="text-[11px] text-slate-500">Changes take effect immediately across sidebar navigation and action buttons</p>
+                </div>
+                <button onclick="saveFlowState(); showToast('Saved user rights & permissions.', 'success');" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold self-start sm:self-auto">
+                  Save Rights ✓
+                </button>
+              </div>
+              <div class="overflow-x-auto">
+                <table class="w-full text-center border-collapse">
+                  <thead>
+                    <tr class="bg-slate-50 border-b border-slate-200 text-[10px] font-extrabold uppercase tracking-wider text-slate-600">
+                      <th class="py-3 px-3 text-left">User / Role</th>
+                      <th class="py-3 px-2">1. Sale Orders</th>
+                      <th class="py-3 px-2">2. Cutting Slips</th>
+                      <th class="py-3 px-2">3. Tailor & Unit</th>
+                      <th class="py-3 px-2">4. Receive FG</th>
+                      <th class="py-3 px-2">5. Tax Invoice</th>
+                      <th class="py-3 px-2">Catalog & Reports</th>
+                      <th class="py-3 px-2">Excel Export</th>
+                      <th class="py-3 px-2">Manage Users</th>
+                    </tr>
+                  </thead>
+                  <tbody id="rights-matrix-tbody" class="divide-y divide-slate-100 text-xs"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =============================================================== -->
+      <!-- VIEW: MIS REPORTS & ANALYTICS WITH FILTERS                      -->
+      <!-- =============================================================== -->
+      <section id="view-reports" class="step-view hidden tab-fade space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h2 class="text-xl font-extrabold text-slate-900">MIS Reports & Operational Analytics</h2>
+            <p class="text-xs sm:text-sm text-slate-500">Filter production, tailor piece-rate wages, fabric valuation & GST sales registers by date, client, unit, or tailor</p>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <button onclick="resetReportFilters()" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition">
+              Reset Filters
+            </button>
+            <button onclick="exportCurrentReportCsv()" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-xs transition">
+              Export CSV (Excel)
+            </button>
+            <button onclick="printCurrentReport()" class="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold shadow-xs transition">
+              Print Report
+            </button>
+          </div>
+        </div>
+
+        <!-- Multi-Criteria Report Filter Bar -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-4 sm:p-5 shadow-xs space-y-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3">
+            <div>
+              <label class="block text-[11px] font-bold text-slate-600 mb-1">From Date</label>
+              <input type="date" id="rep-date-from" onchange="renderReportsPage()" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold bg-white">
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-slate-600 mb-1">To Date</label>
+              <input type="date" id="rep-date-to" onchange="renderReportsPage()" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold bg-white">
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-slate-600 mb-1">Client / Hospital</label>
+              <select id="rep-filter-client" onchange="renderReportsPage()" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold bg-white">
+                <option value="ALL">All Clients & Hospitals</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-slate-600 mb-1">Production Unit</label>
+              <select id="rep-filter-unit" onchange="renderReportsPage()" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold bg-white">
+                <option value="ALL">All Units</option>
+                <option value="Cherlapally">Cherlapally Unit</option>
+                <option value="Musheerabad">Musheerabad Unit</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-slate-600 mb-1">Tailor / Master</label>
+              <select id="rep-filter-tailor" onchange="renderReportsPage()" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold bg-white">
+                <option value="ALL">All Tailors & Masters</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-slate-600 mb-1">Order Stage</label>
+              <select id="rep-filter-stage" onchange="renderReportsPage()" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold bg-white">
+                <option value="ALL">All Stages</option>
+                <option value="New Sale Order">New Sale Order</option>
+                <option value="Cutting Slip Generated">Cutting Slip Generated</option>
+                <option value="Allocated to Tailor">Allocated to Tailor</option>
+                <option value="Finished Goods Received">Finished Goods Received</option>
+                <option value="Tax Invoice Raised">Tax Invoice Raised</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Report Section Switcher Tabs -->
+          <div class="flex flex-wrap gap-2 pt-2 border-t border-slate-100">
+            <button onclick="switchReportTab('ORDERS')" id="rep-tab-ORDERS" class="rep-tab-btn px-3.5 py-2 rounded-xl bg-indigo-600 text-white text-xs font-bold">
+1. Sale Orders & Stage Register
+            </button>
+            <button onclick="switchReportTab('TAILOR')" id="rep-tab-TAILOR" class="rep-tab-btn px-3.5 py-2 rounded-xl bg-slate-100 text-slate-700 text-xs font-bold">
+2. Tailor Piece-Rate Wages & Unit Output
+            </button>
+            <button onclick="switchReportTab('FABRIC')" id="rep-tab-FABRIC" class="rep-tab-btn px-3.5 py-2 rounded-xl bg-slate-100 text-slate-700 text-xs font-bold">
+3. Fabric Consumption & Stock Valuation
+            </button>
+            <button onclick="switchReportTab('GST')" id="rep-tab-GST" class="rep-tab-btn px-3.5 py-2 rounded-xl bg-slate-100 text-slate-700 text-xs font-bold">
+4. GST Tax & Sales Register (GSTR-1 Ready)
+            </button>
+          </div>
+        </div>
+
+        <!-- Report Summary KPI Strip -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs">
+            <div class="text-[11px] font-bold uppercase text-slate-400">Filtered Order Value</div>
+            <div id="rep-kpi-1" class="text-xl font-extrabold text-slate-900 mt-1">₹0</div>
+            <div id="rep-kpi-1-sub" class="text-xs text-slate-500 mt-0.5">0 orders • 0 pcs</div>
+          </div>
+          <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs">
+            <div class="text-[11px] font-bold uppercase text-slate-400">Tailor Piece-Rate Wages</div>
+            <div id="rep-kpi-2" class="text-xl font-extrabold text-indigo-700 mt-1">₹0</div>
+            <div id="rep-kpi-2-sub" class="text-xs text-slate-500 mt-0.5">0 stitched pcs logged</div>
+          </div>
+          <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs">
+            <div class="text-[11px] font-bold uppercase text-slate-400">Cloth Stock Valuation</div>
+            <div id="rep-kpi-3" class="text-xl font-extrabold text-amber-700 mt-1">₹0</div>
+            <div id="rep-kpi-3-sub" class="text-xs text-slate-500 mt-0.5">0 meters in warehouse</div>
+          </div>
+          <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs">
+            <div class="text-[11px] font-bold uppercase text-slate-400">Filtered GST Sales Total</div>
+            <div id="rep-kpi-4" class="text-xl font-extrabold text-emerald-700 mt-1">₹0</div>
+            <div id="rep-kpi-4-sub" class="text-xs text-slate-500 mt-0.5">Includes ₹0 GST tax</div>
+          </div>
+        </div>
+
+        <!-- Report Data Table Container -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+          <div class="p-4 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <h3 id="rep-table-title" class="text-sm font-bold text-slate-900">Sale Orders & Stage Register</h3>
+            <span id="rep-row-count" class="text-xs font-semibold text-indigo-600">0 records</span>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead id="rep-table-head"></thead>
+              <tbody id="rep-table-body" class="divide-y divide-slate-100 text-xs"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- =============================================================== -->
+      <!-- VIEW: PRODUCTS & CLIENTS MASTER CATALOG                         -->
+      <!-- =============================================================== -->
+      <section id="view-masters" class="step-view hidden tab-fade space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h2 class="text-xl font-extrabold text-slate-900">Products, Clients & Client-Wise SKU Catalog</h2>
+            <p class="text-xs sm:text-sm text-slate-500">Define base garments & assign <strong>Client-Wise SKUs</strong> (different SKU code, rate, cloth/colour & photo per Client + Product) for instant auto-fill in Sale Orders</p>
+          </div>
+          <button onclick="openNewSaleOrderModal()" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-xs self-start sm:self-auto transition">
+            + Book Sale Order Using Masters →
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          
+          <!-- LEFT COLUMN: ADD & MANAGE PRODUCTS (GARMENT TEMPLATES) -->
+          <div class="lg:col-span-6 space-y-4">
+            <div class="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-xs">
+              <div class="flex items-center justify-between mb-1">
+                <h3 id="prod-form-title" class="text-base font-bold text-slate-900">Add New Garment / Uniform Product</h3>
+                <button type="button" id="prod-cancel-edit-btn" onclick="cancelEditMasterProduct()" class="hidden px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold">
+                  Cancel Edit
+                </button>
+              </div>
+              <p class="text-xs text-slate-500 mb-4">Define or update standard cutting specs, cloth, collar, wholesale rate & garment photo</p>
+              
+              <form onsubmit="addMasterProduct(event)" class="space-y-3">
+                <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
+                  <div class="sm:col-span-2">
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Garment / Product Name</label>
+                    <input type="text" id="prod-name" placeholder="e.g., FEMALE NURSE PANT SHIRT" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold">
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Base SKU Code</label>
+                    <input type="text" id="prod-sku" placeholder="e.g., SKU-NPS-01" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-extrabold uppercase">
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Default Rate (₹)</label>
+                    <input type="number" id="prod-rate" value="720" min="1" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold">
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Gender / Fit</label>
+                    <select id="prod-gender" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold bg-white">
+                      <option value="FEMALE">FEMALE</option>
+                      <option value="MALE">MALE</option>
+                      <option value="UNISEX">UNISEX</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Cloth Quality</label>
+                    <input type="text" id="prod-cloth" value="Alaskar" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold">
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Default Colour</label>
+                    <input type="text" id="prod-colour" value="White" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold">
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Collar Style</label>
+                    <input type="text" id="prod-collar" value="Yashoda Collar" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs">
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Bottom / Male Pattern</label>
+                    <input type="text" id="prod-bottom" value="Nada Phyajam" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs">
+                  </div>
+                </div>
+
+                <div>
+                  <label class="block text-xs font-semibold text-slate-700 mb-1">Top / Shirt Pattern & Embroidery Spec</label>
+                  <input type="text" id="prod-pattern" value="3 Tucks Shirt Pattern Down 2 Pocket Front Open Buttons" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs">
+                </div>
+
+                <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between gap-3">
+                  <div class="flex items-center gap-3 min-w-0">
+                    <div id="prod-img-preview-box" class="w-14 h-14 rounded-lg border border-slate-300 bg-white flex items-center justify-center overflow-hidden shrink-0 text-[10px] font-bold text-slate-400">
+                      NO PHOTO
+                    </div>
+                    <div class="min-w-0">
+                      <div class="text-xs font-bold text-slate-800">Garment / Uniform Photo</div>
+                      <div id="prod-img-filename" class="text-[11px] text-slate-500 truncate">Optional — auto-fills Cutting Slip preview</div>
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-1.5 shrink-0">
+                    <label class="cursor-pointer px-3 py-1.5 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 text-xs font-bold transition">
+                      Upload Image
+                      <input type="file" id="prod-image-file" accept="image/*" onchange="handleMasterProductImageUpload(event)" class="hidden">
+                    </label>
+                    <button type="button" id="prod-img-clear-btn" onclick="clearMasterProductDraftImage()" class="hidden px-2 py-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 text-xs font-bold">
+                      ✕
+                    </button>
+                  </div>
+                </div>
+
+                <button type="submit" id="prod-submit-btn" class="w-full py-2.5 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-xs transition">
+                  + Save Product to Catalog
+                </button>
+              </form>
+            </div>
+
+            <!-- Saved Products List -->
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+              <div class="p-4 border-b border-slate-100 flex items-center justify-between">
+                <h3 class="text-sm font-bold text-slate-900">Saved Garment & Uniform Catalog</h3>
+                <span id="master-prod-count" class="text-xs font-semibold text-indigo-600">0 products</span>
+              </div>
+              <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                  <thead>
+                    <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                      <th class="py-3 px-4">Product / Style</th>
+                      <th class="py-3 px-4">Cloth & Collar</th>
+                      <th class="py-3 px-4">Rate (₹)</th>
+                      <th class="py-3 px-4 text-right">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody id="master-products-tbody" class="divide-y divide-slate-100 text-xs"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT COLUMN: ADD & MANAGE CLIENTS / COMPANIES -->
+          <div class="lg:col-span-6 space-y-4">
+            <div class="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-xs">
+              <h3 class="text-base font-bold text-slate-900 mb-1">Add New Client / Hospital / Company</h3>
+              <p class="text-xs text-slate-500 mb-4">Store GSTIN, billing location & contact details for instant Sale Orders & Tax Invoices</p>
+              
+              <form onsubmit="addMasterClient(event)" class="space-y-3">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div class="sm:col-span-2">
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Hospital / Company Name</label>
+                    <input type="text" id="cli-name" placeholder="e.g., Yashoda Hospitals Secunderabad" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold">
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Client Code</label>
+                    <input type="text" id="cli-code" placeholder="e.g., 1088" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold">
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">15-Digit GSTIN (Auto-Fetches Firm Details)</label>
+                    <div class="flex gap-1.5">
+                      <input type="text" id="cli-gstin" oninput="handleGstinAutoFetch(this.value, 'master')" placeholder="36AAACY4912K1Z2" maxlength="15" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold uppercase">
+                      <button type="button" onclick="fetchGstinDetails(document.getElementById('cli-gstin').value, 'master', true)" class="px-3 py-2 rounded-xl bg-slate-900 hover:bg-indigo-600 text-white text-xs font-bold shrink-0">
+                        Fetch
+                      </button>
+                    </div>
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Sector / Category</label>
+                    <select id="cli-category" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold bg-white">
+                      <option value="Hospital & Healthcare">Hospital & Healthcare</option>
+                      <option value="Industrial & Pharma">Industrial & Pharma</option>
+                      <option value="Corporate & Hospitality">Corporate & Hospitality</option>
+                      <option value="Retail / Wholesale Dealer">Retail / Wholesale Dealer</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Contact Person & Phone</label>
+                    <input type="text" id="cli-contact" placeholder="Purchase Dept • +91 98490 11223" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs">
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">City / Delivery Address</label>
+                    <input type="text" id="cli-city" value="Hyderabad, Telangana" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs">
+                  </div>
+                </div>
+
+                <button type="submit" class="w-full py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-xs transition">
+                  + Save Client / Company
+                </button>
+              </form>
+            </div>
+
+            <!-- Saved Clients List -->
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+              <div class="p-4 border-b border-slate-100 flex items-center justify-between">
+                <h3 class="text-sm font-bold text-slate-900">Saved Clients & Companies Directory</h3>
+                <span id="master-cli-count" class="text-xs font-semibold text-emerald-700">0 clients</span>
+              </div>
+              <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                  <thead>
+                    <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                      <th class="py-3 px-4">Client / Hospital</th>
+                      <th class="py-3 px-4">GSTIN & Category</th>
+                      <th class="py-3 px-4">Contact</th>
+                      <th class="py-3 px-4 text-right">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody id="master-clients-tbody" class="divide-y divide-slate-100 text-xs"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- CLIENT-WISE PRODUCT SKU MAPPING (EACH PRODUCT & CLIENT DIFFERENT SKUs) -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-xs space-y-5">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+            <div>
+              <h3 class="text-base font-extrabold text-slate-900">Client-Wise Product SKU Matrix (Each Client & Product Different SKU)</h3>
+              <p class="text-xs text-slate-500">Assign unique hospital/client-specific SKU codes, contract rates, custom cloth/colour specs, and optional photo overrides per Client + Product</p>
+            </div>
+            <span id="master-csku-count" class="px-3 py-1 rounded-full bg-indigo-50 text-indigo-700 text-xs font-extrabold self-start sm:self-auto">0 client SKUs</span>
+          </div>
+
+          <form onsubmit="addClientProductSku(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-3 items-end bg-slate-50 p-4 rounded-xl border border-slate-200">
+            <div class="lg:col-span-3">
+              <label class="block text-[11px] font-bold text-slate-700 mb-1">Select Client / Hospital *</label>
+              <select id="csku-client-select" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold bg-white"></select>
+            </div>
+            <div class="lg:col-span-3">
+              <label class="block text-[11px] font-bold text-slate-700 mb-1">Select Base Product *</label>
+              <select id="csku-product-select" onchange="prefillClientSkuFromProduct(this.value)" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold bg-white"></select>
+            </div>
+            <div class="lg:col-span-2">
+              <label class="block text-[11px] font-bold text-slate-700 mb-1">Client SKU Code *</label>
+              <input type="text" id="csku-code" placeholder="e.g., YSH-NUR-WHT" required class="w-full px-3 py-2 rounded-xl border border-indigo-300 text-xs font-extrabold uppercase bg-white">
+            </div>
+            <div class="lg:col-span-2">
+              <label class="block text-[11px] font-bold text-slate-700 mb-1">Client Contract Rate (₹) *</label>
+              <input type="number" id="csku-rate" value="720" min="1" step="0.01" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-extrabold bg-white">
+            </div>
+            <div class="lg:col-span-2">
+              <label class="block text-[11px] font-bold text-slate-700 mb-1">Client Shade / Spec</label>
+              <input type="text" id="csku-spec" placeholder="e.g., Rama Green Piping" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs bg-white">
+            </div>
+            <div class="lg:col-span-9">
+              <label class="block text-[11px] font-bold text-slate-700 mb-1">Client-Specific Item Description / Embroidery Override</label>
+              <input type="text" id="csku-desc" placeholder="e.g., YASHODA NURSE PANT SHIRT WITH HOSPITAL CHEST LOGO" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold bg-white">
+            </div>
+            <div class="lg:col-span-3">
+              <button type="submit" class="w-full py-2 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-extrabold shadow-xs transition">
+                + Save Client SKU Mapping
+              </button>
+            </div>
+          </form>
+
+          <div class="overflow-x-auto border border-slate-200 rounded-xl">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                  <th class="py-3 px-4">Client / Hospital</th>
+                  <th class="py-3 px-4">Base Product</th>
+                  <th class="py-3 px-4">Client SKU Code</th>
+                  <th class="py-3 px-4">Client Custom Spec / Description</th>
+                  <th class="py-3 px-4 text-right">Client Rate (₹)</th>
+                  <th class="py-3 px-4 text-right">Action</th>
+                </tr>
+              </thead>
+              <tbody id="master-csku-tbody" class="divide-y divide-slate-100 text-xs"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- =============================================================== -->
+      <!-- VIEW: END-TO-END ORDER, SLIP & INVOICE TRACKING                 -->
+      <!-- =============================================================== -->
+      <section id="view-tracking" class="step-view hidden tab-fade space-y-6">
+        <div class="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-xs space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h2 class="text-xl font-extrabold text-slate-900">Live Order, Cutting Slip & Tax Invoice Tracker</h2>
+              <p class="text-xs sm:text-sm text-slate-500">Search by <strong>Sale Order No.</strong> (e.g. <code>AM-H/26-27/2716</code>), <strong>Cutting Slip</strong> (<code>CS-2716</code>), <strong>Invoice No.</strong> (<code>STC/26-27/0415</code>), <strong>Company/Hospital Name</strong>, or <strong>Tailor</strong></p>
+            </div>
+            <div class="flex gap-2">
+              <button onclick="filterTrackingCategory('ALL')" id="track-pill-ALL" class="track-pill px-3 py-1.5 rounded-lg bg-slate-900 text-white text-xs font-bold">All Records</button>
+              <button onclick="filterTrackingCategory('SO')" id="track-pill-SO" class="track-pill px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 text-xs font-bold">Sale Orders</button>
+              <button onclick="filterTrackingCategory('SLIP')" id="track-pill-SLIP" class="track-pill px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 text-xs font-bold">Cutting Slips</button>
+              <button onclick="filterTrackingCategory('INV')" id="track-pill-INV" class="track-pill px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 text-xs font-bold">Tax Invoices</button>
+            </div>
+          </div>
+
+          <div class="relative">
+            <svg class="w-5 h-5 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 103.5 10.5a7.5 7.5 0 0013.15 6.15z"/></svg>
+            <input type="text" id="tracking-search-box" oninput="syncTrackingSearch(this.value)" placeholder="Type Sale Order ID, Cutting Slip No., Tax Invoice No., Hospital/Company Name, GSTIN, or Tailor Name..." class="w-full pl-12 pr-24 py-3.5 rounded-2xl border-2 border-indigo-200 focus:border-indigo-600 focus:outline-none text-sm font-semibold text-slate-900 bg-slate-50">
+            <button onclick="clearGlobalSearch()" class="absolute right-3 top-1/2 -translate-y-1/2 px-3 py-1.5 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-bold">Clear</button>
+          </div>
+
+          <div id="tracking-summary-bar" class="text-xs font-semibold text-slate-500">Showing all tracked orders, slips & invoices</div>
+        </div>
+
+        <!-- Unified Timeline Tracking Cards -->
+        <div id="tracking-results-grid" class="space-y-4"></div>
+      </section>
+
+      <!-- =============================================================== -->
+      <!-- VIEW 0: DASHBOARD OVERVIEW                                      -->
+      <!-- =============================================================== -->
+      <section id="view-dashboard" class="step-view tab-fade space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h2 class="text-xl font-extrabold text-slate-900">Dashboard Overview — S T Traders Annexe CheapJack</h2>
+            <p class="text-xs sm:text-sm text-slate-500">Live shop-floor snapshot across <strong>Cherlapally</strong> & <strong>Musheerabad</strong> units • Click any card to jump directly into that stage</p>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <button onclick="openNewSaleOrderModal()" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-xs transition">
+              + Book Sale Order
+            </button>
+            <button onclick="switchStep('cutting-slips')" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold shadow-xs transition">
+              Print Cutting Slips
+            </button>
+          </div>
+        </div>
+
+        <!-- 4 Real-Time KPI Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div onclick="switchStep('sale-orders')" class="cursor-pointer bg-white rounded-2xl border border-slate-200 hover:border-indigo-400 p-5 shadow-xs transition">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Sale Order Book Value</span>
+              <span class="px-2 py-0.5 rounded-md bg-indigo-50 text-indigo-700 text-[11px] font-bold">Step 1</span>
+            </div>
+            <div id="dash-kpi-so-val" class="text-2xl font-extrabold text-slate-900 mt-2">₹0</div>
+            <div id="dash-kpi-so-sub" class="text-xs text-slate-500 mt-1">0 active orders • 0 pairs</div>
+          </div>
+
+          <div onclick="switchStep('allocation')" class="cursor-pointer bg-white rounded-2xl border border-slate-200 hover:border-indigo-400 p-5 shadow-xs transition">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Tailor & Unit WIP</span>
+              <span class="px-2 py-0.5 rounded-md bg-amber-50 text-amber-700 text-[11px] font-bold">Steps 2–3</span>
+            </div>
+            <div id="dash-kpi-wip-pcs" class="text-2xl font-extrabold text-slate-900 mt-2">0 pcs</div>
+            <div id="dash-kpi-wip-wages" class="text-xs text-slate-500 mt-1">Accrued Tailor Wages: ₹0</div>
+          </div>
+
+          <div onclick="switchStep('receiving-fg')" class="cursor-pointer bg-white rounded-2xl border border-slate-200 hover:border-indigo-400 p-5 shadow-xs transition">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Finished Goods Store</span>
+              <span class="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 text-[11px] font-bold">Step 4</span>
+            </div>
+            <div id="dash-kpi-fg-pcs" class="text-2xl font-extrabold text-emerald-700 mt-2">0 pcs</div>
+            <div id="dash-kpi-fg-cartons" class="text-xs text-slate-500 mt-1">0 packed cartons ready to bill</div>
+          </div>
+
+          <div onclick="switchStep('tax-invoice')" class="cursor-pointer bg-white rounded-2xl border border-slate-200 hover:border-indigo-400 p-5 shadow-xs transition">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">GST Tax Billed</span>
+              <span class="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 text-[11px] font-bold">Step 5</span>
+            </div>
+            <div id="dash-kpi-inv-val" class="text-2xl font-extrabold text-slate-900 mt-2">₹0</div>
+            <div id="dash-kpi-inv-sub" class="text-xs text-slate-500 mt-1">0 GST Tax Invoices issued</div>
+          </div>
+        </div>
+
+        <!-- Visual 5-Stage Production Pipeline Tracker -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-xs">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h3 class="text-base font-bold text-slate-900">End-to-End 5-Stage Manufacturing Pipeline</h3>
+              <p class="text-xs text-slate-500">Click any stage box below to open that department's live queue</p>
+            </div>
+            <span class="text-xs font-semibold text-indigo-600">Real-Time Floor Sync</span>
+          </div>
+          <div id="dash-pipeline-grid" class="grid grid-cols-1 sm:grid-cols-5 gap-3"></div>
+        </div>
+
+        <!-- Two-Column Live Floor Activity & Fabric Stock Summary -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <!-- Left: Active Orders & Tailor Allocation Status -->
+          <div class="lg:col-span-7 bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-xs">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-base font-bold text-slate-900">Active Orders & Floor Stage Tracker</h3>
+              <button onclick="switchStep('sale-orders')" class="text-xs font-semibold text-indigo-600 hover:underline">Manage All Orders →</button>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr class="border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                    <th class="py-2.5 px-2">SNo. & Client</th>
+                    <th class="py-2.5 px-2">Style & Qty</th>
+                    <th class="py-2.5 px-2">Current Stage</th>
+                    <th class="py-2.5 px-2 text-right">Quick Action</th>
+                  </tr>
+                </thead>
+                <tbody id="dash-orders-tbody" class="divide-y divide-slate-100 text-xs"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Right: Cutting Room Fabric Balances & Tailor Progress -->
+          <div class="lg:col-span-5 space-y-6">
+            <div class="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-xs">
+              <div class="flex items-center justify-between mb-3">
+                <h3 class="text-base font-bold text-slate-900">Tailor & Unit Stitching Progress</h3>
+                <button onclick="switchStep('allocation')" class="text-xs font-semibold text-indigo-600 hover:underline">Floor Ledger →</button>
+              </div>
+              <div id="dash-tailor-list" class="space-y-3"></div>
+            </div>
+
+            <div class="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-xs">
+              <div class="flex items-center justify-between mb-3">
+                <h3 class="text-base font-bold text-slate-900">Warehouse Cloth Roll Stock</h3>
+                <button onclick="switchStep('cutting-slips')" class="text-xs font-semibold text-indigo-600 hover:underline">Cutting Room →</button>
+              </div>
+              <div id="dash-fabric-list" class="space-y-2.5"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =============================================================== -->
+      <!-- STEP 1: SALE ORDERS                                             -->
+      <!-- =============================================================== -->
+	  <section id="view-quotations" class="step-view hidden tab-fade space-y-6">
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+    <div>
+      <h2 class="text-xl font-extrabold text-slate-900">Quotations — S T Traders Annexe CheapJack</h2>
+      <p class="text-xs sm:text-sm text-slate-500">Create client quotations, print in Sale Order format, or convert into a Sale Order</p>
+    </div>
+    <button onclick="openQuotationPageOrModal()" class="px-4 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white text-xs sm:text-sm font-bold shadow-xs">
+      + Create Quotation
+    </button>
+  </div>
+
+  <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full text-left border-collapse">
+        <thead>
+          <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+            <th class="py-3.5 px-4">Quotation No. & Date</th>
+            <th class="py-3.5 px-4">Client / Hospital & GSTIN</th>
+            <th class="py-3.5 px-4">Garment & Cloth</th>
+            <th class="py-3.5 px-4">Qty</th>
+            <th class="py-3.5 px-4">Quoted Total</th>
+            <th class="py-3.5 px-4">Status</th>
+            <th class="py-3.5 px-4 text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="quotations-tbody" class="divide-y divide-slate-100 text-sm"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+      <section id="view-sale-orders" class="step-view hidden tab-fade space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h2 class="text-xl font-extrabold text-slate-900">Step 1: Customer & Hospital Sale Orders</h2>
+            <p class="text-xs sm:text-sm text-slate-500">Book uniform or bedsheet sale orders with size ratios, cloth specs & rates, then click <strong>Generate Cutting Slip →</strong></p>
+          </div>
+          <button onclick="openNewSaleOrderModal()" class="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs sm:text-sm font-bold shadow-xs self-start sm:self-auto transition">
+            + Book New Sale Order
+          </button>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                  <th class="py-3.5 px-4">Sale Order & Date</th>
+                  <th class="py-3.5 px-4">Hospital / Client & GSTIN</th>
+                  <th class="py-3.5 px-4">Garment Style, Cloth & Colour</th>
+                  <th class="py-3.5 px-4">Size Ratio & Pairs</th>
+                  <th class="py-3.5 px-4">Order Value (₹)</th>
+                  <th class="py-3.5 px-4">Current Stage</th>
+                  <th class="py-3.5 px-4 text-right">Next Step Action</th>
+                </tr>
+              </thead>
+              <tbody id="sale-orders-tbody" class="divide-y divide-slate-100 text-sm"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- =============================================================== -->
+      <!-- STEP 2: CUTTING SLIPS (WITH IMAGE PREVIEW & FABRIC STOCK)       -->
+      <!-- =============================================================== -->
+      <section id="view-cutting-slips" class="step-view hidden tab-fade space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h2 class="text-xl font-extrabold text-slate-900">Step 2: Cutting Master Slips & Garment Preview</h2>
+            <p class="text-xs sm:text-sm text-slate-500">Print or customize the two-column Cutting Slip with Garment Photo, issue fabric meters, and send to <strong>Tailor & Unit Allocation →</strong></p>
+          </div>
+          <button onclick="switchStep('sale-orders')" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold self-start sm:self-auto">
+            ← Back to Sale Orders
+          </button>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                  <th class="py-3.5 px-4">Cutting Slip / SNo.</th>
+                  <th class="py-3.5 px-4">Style, Collar & Pattern Specs</th>
+                  <th class="py-3.5 px-4">Cloth & Est. Meters</th>
+                  <th class="py-3.5 px-4">Size Breakdown</th>
+                  <th class="py-3.5 px-4">Status</th>
+                  <th class="py-3.5 px-4 text-right">Slip & Floor Actions</th>
+                </tr>
+              </thead>
+              <tbody id="cutting-slips-tbody" class="divide-y divide-slate-100 text-sm"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Compact Warehouse Fabric Roll Balance Bar -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="text-sm font-bold text-slate-900">Cutting Room Fabric Roll Balances (Live Meters)</h3>
+            <span class="text-xs text-slate-500">Auto-deducted when Cutting Slips are issued</span>
+          </div>
+          <div id="fabric-mini-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3"></div>
+        </div>
+      </section>
+
+      <!-- =============================================================== -->
+      <!-- STEP 3: ALLOCATION OF SLIPS TO TAILOR AND UNIT                  -->
+      <!-- =============================================================== -->
+      <section id="view-allocation" class="step-view hidden tab-fade space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h2 class="text-xl font-extrabold text-slate-900">Step 3: Allocation of Cutting Slips to Tailor & Production Unit</h2>
+            <p class="text-xs sm:text-sm text-slate-500">Add or manage Production Units & Tailors/Masters, then assign cutting bundles with piece-rate wages in ₹</p>
+          </div>
+          <button type="button" onclick="toggleManageTailorUnitDrawer()" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-indigo-600 text-white text-xs font-extrabold shadow-xs self-start sm:self-auto transition">
+            + Add / Manage Tailors & Units
+          </button>
+        </div>
+
+        <!-- Collapsible Drawer: Add & Manage Tailors and Production Units -->
+        <div id="manage-tailor-unit-drawer" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-5 bg-indigo-50/60 border-2 border-indigo-200 rounded-2xl p-5">
+          <!-- Add Production Unit -->
+          <div class="lg:col-span-6 bg-white rounded-xl border border-slate-200 p-4 space-y-3">
+            <div class="flex items-center justify-between">
+              <h3 class="text-sm font-extrabold text-slate-900">+ Add Production Unit / Line</h3>
+              <span id="units-master-count" class="text-[11px] font-bold text-indigo-600">0 units</span>
+            </div>
+            <form onsubmit="addMasterUnit(event)" class="grid grid-cols-1 sm:grid-cols-12 gap-2">
+              <input type="text" id="new-unit-name" placeholder="Unit / Line Name (e.g., Cherlapally Unit — Line C)" required class="sm:col-span-6 px-3 py-2 rounded-lg border border-slate-200 text-xs font-semibold">
+              <input type="text" id="new-unit-loc" placeholder="Location / Supervisor" required class="sm:col-span-4 px-3 py-2 rounded-lg border border-slate-200 text-xs">
+              <button type="submit" class="sm:col-span-2 py-2 px-3 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold">
+                Add
+              </button>
+            </form>
+            <div id="master-units-list" class="divide-y divide-slate-100 max-h-40 overflow-y-auto text-xs"></div>
+          </div>
+
+          <!-- Add Tailor / Master -->
+          <div class="lg:col-span-6 bg-white rounded-xl border border-slate-200 p-4 space-y-3">
+            <div class="flex items-center justify-between">
+              <h3 class="text-sm font-extrabold text-slate-900">+ Add Tailor / Cutting Master</h3>
+              <span id="tailors-master-count" class="text-[11px] font-bold text-emerald-700">0 tailors</span>
+            </div>
+            <form onsubmit="addMasterTailor(event)" class="grid grid-cols-1 sm:grid-cols-12 gap-2">
+              <input type="text" id="new-tailor-name" placeholder="Tailor Name & Role (e.g., Abdul Kareem — Scrubs)" required class="sm:col-span-5 px-3 py-2 rounded-lg border border-slate-200 text-xs font-semibold">
+              <input type="text" id="new-tailor-phone" placeholder="Phone / Unit" class="sm:col-span-3 px-3 py-2 rounded-lg border border-slate-200 text-xs">
+              <input type="number" id="new-tailor-rate" value="95" min="1" title="Default Piece Rate ₹" class="sm:col-span-2 px-2.5 py-2 rounded-lg border border-slate-200 text-xs font-bold text-center">
+              <button type="submit" class="sm:col-span-2 py-2 px-3 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold">
+                Add
+              </button>
+            </form>
+            <div id="master-tailors-list" class="divide-y divide-slate-100 max-h-40 overflow-y-auto text-xs"></div>
+          </div>
+        </div>
+
+        <!-- Allocate Cutting Slip Form Card -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-xs">
+          <h3 class="text-sm font-bold text-slate-900 mb-4">Assign Cutting Slip to Tailor & Unit</h3>
+          <form onsubmit="allocateSlipToTailor(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3 items-end">
+            <div class="lg:col-span-2">
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Select Cutting Slip</label>
+              <select id="alloc-slip-select" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-semibold bg-slate-50"></select>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Production Unit</label>
+              <select id="alloc-unit-select" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-semibold bg-white"></select>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Assign Tailor / Master</label>
+              <select id="alloc-tailor-select" onchange="onAllocTailorChange(this.value)" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-semibold bg-white"></select>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Stitching Piece Rate (₹/pc)</label>
+              <input type="number" id="alloc-piece-rate" value="95" min="1" required class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm font-bold">
+            </div>
+            <div>
+              <button type="submit" class="w-full py-2.5 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-xs transition">
+                Allocate to Tailor →
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Active Tailor & Unit Allocations Table -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+          <div class="p-4 border-b border-slate-100 flex items-center justify-between">
+            <h3 class="text-sm font-bold text-slate-900">Active Tailor & Unit Stitching Ledger</h3>
+            <span class="text-xs text-slate-500">Log stitched progress or send completed batch to Step 4 (Finished Goods)</span>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                  <th class="py-3.5 px-4">Slip & Order ID</th>
+                  <th class="py-3.5 px-4">Assigned Unit & Tailor</th>
+                  <th class="py-3.5 px-4">Garment Style</th>
+                  <th class="py-3.5 px-4">Stitched Progress</th>
+                  <th class="py-3.5 px-4">Tailor Wages (₹)</th>
+                  <th class="py-3.5 px-4 text-right">Stitching Floor Actions</th>
+                </tr>
+              </thead>
+              <tbody id="allocation-tbody" class="divide-y divide-slate-100 text-sm"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- =============================================================== -->
+      <!-- STEP 4: RECEIVING FINISHED GOODS (QC & FG STORE)                -->
+      <!-- =============================================================== -->
+      <section id="view-receiving-fg" class="step-view hidden tab-fade space-y-6">
+        <div>
+          <h2 class="text-xl font-extrabold text-slate-900">Step 4: Receiving Finished Goods (AQL 2.5 QC & Packing)</h2>
+          <p class="text-xs sm:text-sm text-slate-500">Verify stitched quantities received from tailors/units, record passed vs rework pieces, and move to <strong>Tax Invoice →</strong></p>
+        </div>
+
+        <!-- Receive Finished Goods Intake Form -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-xs">
+          <h3 class="text-sm font-bold text-slate-900 mb-4">Inward Finished Goods Receipt Entry (GRN)</h3>
+          <form onsubmit="receiveFinishedGoods(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3 items-end">
+            <div class="lg:col-span-2">
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Select Allocated Batch</label>
+              <select id="fg-alloc-select" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-semibold bg-slate-50"></select>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Passed Good Pcs</label>
+              <input type="number" id="fg-passed-qty" value="100" min="1" required class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm font-bold text-emerald-700">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Rework / Alter Pcs</label>
+              <input type="number" id="fg-rework-qty" value="0" min="0" required class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm font-bold text-rose-600">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Master Cartons Packed</label>
+              <input type="number" id="fg-cartons" value="4" min="1" required class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm font-bold">
+            </div>
+            <div>
+              <button type="submit" class="w-full py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-xs transition">
+                Receive into FG Store ✓
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Finished Goods Stock Ledger -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+          <div class="p-4 border-b border-slate-100 flex items-center justify-between">
+            <h3 class="text-sm font-bold text-slate-900">Finished Goods (FG) Ready-to-Bill Store</h3>
+            <span class="text-xs text-slate-500">Click <strong>Generate Tax Invoice →</strong> to raise GST bill in Step 5</span>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                  <th class="py-3.5 px-4">FG Receipt ID & Date</th>
+                  <th class="py-3.5 px-4">Sale Order & Client</th>
+                  <th class="py-3.5 px-4">Garment Style & Tailor</th>
+                  <th class="py-3.5 px-4">Passed / Rework</th>
+                  <th class="py-3.5 px-4">Cartons</th>
+                  <th class="py-3.5 px-4 text-right">Billing Action</th>
+                </tr>
+              </thead>
+              <tbody id="fg-tbody" class="divide-y divide-slate-100 text-sm"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- =============================================================== -->
+      <!-- STEP 5: TAX INVOICE (GST & TALLYPRIME EXPORT)                   -->
+      <!-- =============================================================== -->
+      <section id="view-tax-invoice" class="step-view hidden tab-fade space-y-6">
+        <div>
+          <h2 class="text-xl font-extrabold text-slate-900">Step 5: GST Tax Invoice & E-Way Bill Dispatch</h2>
+          <p class="text-xs sm:text-sm text-slate-500">Generate GST Tax Invoices (Telangana State Code 36 • HSN 6211 / 6302), print customer copies, and download TallyPrime CSV</p>
+        </div>
+
+        <!-- Generate Tax Invoice Builder Card -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-xs space-y-4">
+          <h3 class="text-sm font-bold text-slate-900">Create GST Tax Invoice from Finished Goods</h3>
+          <form onsubmit="createTaxInvoice(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3 items-end">
+            <div class="lg:col-span-2">
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Select Finished Goods Receipt</label>
+              <select id="inv-fg-select" onchange="previewInvoiceTotals()" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-semibold bg-slate-50"></select>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">HSN & GST Slab</label>
+              <select id="inv-hsn-gst" onchange="previewInvoiceTotals()" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-semibold bg-white">
+                <option value="6211|5">HSN 6211 — 5% GST</option>
+                <option value="6211|12">HSN 6211 — 12% GST</option>
+                <option value="6302|5">HSN 6302 — 5% GST</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Transport / Porter / AWB</label>
+              <input type="text" id="inv-transport" value="Porter Mini-Truck TS09UC7741" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-medium">
+            </div>
+            <div class="p-2.5 rounded-xl bg-slate-900 text-white text-xs">
+              <span class="text-slate-400 block text-[10px]">Grand Total (Incl. GST)</span>
+              <span id="inv-live-grand" class="text-sm font-extrabold text-emerald-400">₹0.00</span>
+            </div>
+            <div>
+              <button type="submit" class="w-full py-2.5 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-xs transition">
+                Raise Tax Invoice ✓
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Issued Tax Invoices Register -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+          <div class="p-4 border-b border-slate-100 flex items-center justify-between">
+            <h3 class="text-sm font-bold text-slate-900">Issued GST Tax Invoices Register</h3>
+            <span class="text-xs text-slate-500">Print Tax Invoice or export TallyPrime Sales CSV</span>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                  <th class="py-3.5 px-4">Invoice No. & Date</th>
+                  <th class="py-3.5 px-4">Client & Buyer GSTIN</th>
+                  <th class="py-3.5 px-4">Item & HSN</th>
+                  <th class="py-3.5 px-4">Taxable & GST</th>
+                  <th class="py-3.5 px-4">Grand Total (₹)</th>
+                  <th class="py-3.5 px-4 text-right">Print & Tally Export</th>
+                </tr>
+              </thead>
+              <tbody id="invoices-tbody" class="divide-y divide-slate-100 text-sm"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- =============================================================== -->
+      <!-- DUE LIST VIEW (PENDING & OVERDUE TAX INVOICES)                  -->
+      <!-- =============================================================== -->
+      <section id="view-due-list" class="step-view hidden tab-fade space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h2 class="text-xl font-extrabold text-slate-900">Customer Due List</h2>
+            <p class="text-xs sm:text-sm text-slate-500">Pending & overdue balances from raised Tax Invoices</p>
+          </div>
+          <button onclick="exportDueListCsv()" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-xs transition">
+            Export Due List CSV
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs">
+            <div class="text-[11px] font-bold uppercase text-slate-400">Total Billed</div>
+            <div id="due-kpi-billed" class="text-xl font-extrabold text-slate-900 mt-1">₹0.00</div>
+            <div id="due-kpi-billed-sub" class="text-xs text-slate-500 mt-0.5">0 total invoices</div>
+          </div>
+          <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs">
+            <div class="text-[11px] font-bold uppercase text-slate-400">Total Received</div>
+            <div id="due-kpi-paid" class="text-xl font-extrabold text-emerald-700 mt-1">₹0.00</div>
+            <div class="text-xs text-slate-500 mt-0.5">Cleared payments</div>
+          </div>
+          <div class="bg-white rounded-2xl border border-rose-200 p-4 shadow-xs">
+            <div class="text-[11px] font-bold uppercase text-rose-700">Balance Due</div>
+            <div id="due-kpi-balance" class="text-xl font-extrabold text-rose-700 mt-1">₹0.00</div>
+            <div id="due-kpi-balance-sub" class="text-xs text-rose-600 font-semibold mt-0.5">0 pending bills</div>
+          </div>
+          <div class="bg-white rounded-2xl border border-amber-200 p-4 shadow-xs">
+            <div class="text-[11px] font-bold uppercase text-amber-800">Overdue (&gt; 8 Days)</div>
+            <div id="due-kpi-overdue" class="text-xl font-extrabold text-amber-800 mt-1">₹0.00</div>
+            <div id="due-kpi-overdue-sub" class="text-xs text-amber-700 mt-0.5">0 overdue invoices</div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+          <div class="p-4 border-b border-slate-100 flex flex-wrap items-center justify-between gap-2">
+            <div class="flex items-center gap-2">
+              <h3 class="text-sm font-bold text-slate-900">Due Invoices Register</h3>
+              <select id="due-status-filter" onchange="renderDueListPage()" class="px-2.5 py-1 rounded-lg border border-slate-200 text-xs font-bold bg-slate-50">
+                <option value="PENDING">Pending & Overdue Only</option>
+                <option value="OVERDUE">Overdue (&gt; 8 Days) Only</option>
+                <option value="ALL">All Invoices (Incl. Paid)</option>
+              </select>
+            </div>
+            <span id="due-table-count" class="text-xs font-semibold text-rose-600">0 bill(s)</span>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                  <th class="py-3.5 px-4">Invoice & Date</th>
+                  <th class="py-3.5 px-4">Client & GSTIN</th>
+                  <th class="py-3.5 px-4 text-right">Billed Total (₹)</th>
+                  <th class="py-3.5 px-4 text-right">Received (₹)</th>
+                  <th class="py-3.5 px-4 text-right">Balance Due (₹)</th>
+                  <th class="py-3.5 px-4">Status & Aging</th>
+                  <th class="py-3.5 px-4 text-right">Action</th>
+                </tr>
+              </thead>
+              <tbody id="due-list-tbody" class="divide-y divide-slate-100 text-xs"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- MODAL 1: BOOK NEW SALE ORDER (EXACT SALE ORDER / ESTIMATE FORMAT)     -->
+  <!-- ===================================================================== -->
+  <div id="new-so-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/70 backdrop-blur-xs p-3 sm:p-5 overflow-y-auto">
+    <div class="bg-white rounded-2xl max-w-4xl w-full shadow-2xl border border-slate-300 overflow-hidden my-auto">
+      
+      <!-- Top Modal Bar -->
+      <div class="px-5 py-3.5 bg-slate-900 text-white flex flex-wrap items-center justify-between gap-2">
+        <div>
+          <h3 class="text-sm sm:text-base font-extrabold">Step 1: Book New Sale Order / Estimate (Live Print Format)</h3>
+          <p class="text-[11px] text-slate-400">Select a saved Client & Product or create new ones inline — edits reflect directly on the Sale Order sheet</p>
+        </div>
+        <button onclick="closeModal('new-so-modal')" class="text-slate-400 hover:text-white text-base font-bold px-2">✕</button>
+      </div>
+
+      <!-- Quick Selector & Inline Create New Client / Product Toolbar -->
+      <div class="px-5 py-3 bg-indigo-50 border-b border-indigo-200 space-y-3">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <!-- Client Selector + Create New Client Button -->
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <label class="text-[11px] font-extrabold text-indigo-950 uppercase tracking-wide">Saved Client / Company</label>
+              <button type="button" onclick="toggleInlineSoCreator('client')" class="px-2 py-0.5 rounded bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] font-extrabold shadow-2xs transition">
+                + Create New Client
+              </button>
+            </div>
+            <select id="so-client-preset" onchange="handleSoClientDropdown(this.value)" class="w-full px-3 py-1.5 rounded-lg border border-indigo-200 text-xs font-bold bg-white text-slate-900"></select>
+          </div>
+
+          <!-- Product Selector + Create New Product Button -->
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <label class="text-[11px] font-extrabold text-indigo-950 uppercase tracking-wide">Saved Product / Garment Style</label>
+              <button type="button" onclick="toggleInlineSoCreator('product')" class="px-2 py-0.5 rounded bg-indigo-600 hover:bg-indigo-700 text-white text-[10px] font-extrabold shadow-2xs transition">
+                + Create New Product
+              </button>
+            </div>
+            <select id="so-product-preset" onchange="handleSoProductDropdown(this.value)" class="w-full px-3 py-1.5 rounded-lg border border-indigo-200 text-xs font-bold bg-white text-slate-900"></select>
+          </div>
+        </div>
+
+        <!-- Inline Quick Create New Client Drawer -->
+        <div id="inline-new-client-box" class="hidden p-3.5 rounded-xl bg-white border-2 border-emerald-400 shadow-sm space-y-2.5">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-extrabold text-emerald-800 uppercase">+ Quick Create New Client / Company (Saves to Catalog & Auto-Fills SO)</span>
+            <button type="button" onclick="toggleInlineSoCreator('none')" class="text-xs font-bold text-slate-400 hover:text-slate-700">✕ Close</button>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-4 gap-2">
+            <div class="flex gap-1">
+              <input type="text" id="quick-cli-gstin" oninput="handleGstinAutoFetch(this.value, 'quick')" placeholder="Type 15-Digit GSTIN *" maxlength="15" class="w-full px-2.5 py-1.5 rounded-lg border border-emerald-300 text-xs font-bold uppercase bg-emerald-50/40 focus:bg-white">
+              <button type="button" onclick="fetchGstinDetails(document.getElementById('quick-cli-gstin').value, 'quick', true)" class="px-2 py-1.5 rounded-lg bg-slate-900 hover:bg-indigo-600 text-white text-[10px] font-extrabold shrink-0">
+                Fetch
+              </button>
+            </div>
+            <input type="text" id="quick-cli-name" placeholder="Hospital / Company Name *" class="sm:col-span-2 px-2.5 py-1.5 rounded-lg border border-slate-300 text-xs font-semibold">
+            <input type="text" id="quick-cli-phone" placeholder="Phone Number" class="px-2.5 py-1.5 rounded-lg border border-slate-300 text-xs">
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-4 gap-2">
+            <input type="text" id="quick-cli-address" placeholder="Full Billing & Shipping Address, City, PIN *" class="sm:col-span-3 px-2.5 py-1.5 rounded-lg border border-slate-300 text-xs">
+            <button type="button" onclick="saveQuickClientFromSo()" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold">
+              Save & Apply Client ✓
+            </button>
+          </div>
+        </div>
+
+        <!-- Inline Quick Create New Product Drawer -->
+        <div id="inline-new-product-box" class="hidden p-3.5 rounded-xl bg-white border-2 border-indigo-400 shadow-sm space-y-2.5">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-extrabold text-indigo-800 uppercase">+ Quick Create New Garment / Product (Saves to Catalog & Auto-Fills SO)</span>
+            <button type="button" onclick="toggleInlineSoCreator('none')" class="text-xs font-bold text-slate-400 hover:text-slate-700">✕ Close</button>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-4 gap-2">
+            <input type="text" id="quick-prod-name" placeholder="Item / Garment Description *" class="sm:col-span-2 px-2.5 py-1.5 rounded-lg border border-slate-300 text-xs font-semibold">
+            <input type="number" id="quick-prod-rate" placeholder="Rate ₹ *" value="650" min="1" class="px-2.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold">
+            <select id="quick-prod-gender" class="px-2.5 py-1.5 rounded-lg border border-slate-300 text-xs font-semibold bg-white">
+              <option value="UNISEX">UNISEX</option>
+              <option value="FEMALE">FEMALE</option>
+              <option value="MALE">MALE</option>
+            </select>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-4 gap-2">
+            <input type="text" id="quick-prod-cloth" placeholder="Cloth (e.g. Alaskar)" value="Alaskar" class="px-2.5 py-1.5 rounded-lg border border-slate-300 text-xs">
+            <input type="text" id="quick-prod-colour" placeholder="Colour (e.g. White)" value="White" class="px-2.5 py-1.5 rounded-lg border border-slate-300 text-xs">
+            <input type="text" id="quick-prod-collar" placeholder="Collar / Pattern Spec" value="Yashoda Collar" class="px-2.5 py-1.5 rounded-lg border border-slate-300 text-xs">
+            <button type="button" onclick="saveQuickProductFromSo()" class="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-extrabold">
+              Save & Apply Product ✓
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- LIVE EDITABLE SALE ORDER / ESTIMATE DOCUMENT FORM (EXACT PRINT FORMAT) -->
+      <form onsubmit="createSaleOrder(event)" class="p-4 sm:p-6 bg-slate-100/70 space-y-4">
+        
+        <div class="border border-black bg-white text-black font-sans text-[11px] leading-snug shadow-sm">
+          <!-- Top Right ORIGINAL + Main Company Header -->
+          <div class="px-3 pt-1.5 pb-2 border-b border-black relative">
+            <div class="text-right text-[10px] font-semibold tracking-wide">ORIGINAL</div>
+            <div class="text-center -mt-1">
+              <h1 class="text-[19px] sm:text-[21px] font-extrabold tracking-wide uppercase">ST TRADERS ANNEXE CHEAP JACK</h1>
+              <p class="text-[10.5px] font-medium">10-5-348/A, Tukaram Gate, Buddha Nagar, Lalaguda gate,, Secundrabad, 500017, Ph</p>
+              <p class="text-[10.5px] font-medium">No:9347203651,, GST No: 36AAIPF1095L1ZJ</p>
+              <p class="text-[10.5px] font-medium">sttradersannexecheapjack@gmail.com</p>
+              <div class="text-[15px] font-extrabold uppercase tracking-wide mt-0.5">SALE ORDER/ESTIMATE</div>
+            </div>
+          </div>
+
+          <!-- SO No. | Order Ref | SO Date Row -->
+          <div class="grid grid-cols-12 px-2.5 py-1.5 border-b border-black text-[11px] items-center gap-2 bg-slate-50/50">
+            <div class="col-span-12 sm:col-span-4 flex items-center gap-1">
+              <span class="font-bold shrink-0">SO No. :</span>
+              <input type="text" id="so-id" value="SOD-H/26-27/3497" required class="w-full px-1.5 py-0.5 border border-slate-300 rounded font-extrabold text-[11px] bg-white focus:border-indigo-600 focus:outline-none">
+            </div>
+            <div class="col-span-12 sm:col-span-4 flex items-center justify-center">
+              <input type="text" id="so-order-ref" value="ORD-11018 PARTY ORDER" placeholder="Order Ref / Party Tag" class="w-full px-1.5 py-0.5 border border-slate-300 rounded font-extrabold uppercase text-center text-[11px] bg-white focus:border-indigo-600 focus:outline-none">
+            </div>
+            <div class="col-span-12 sm:col-span-4 flex items-center justify-end gap-1">
+              <span class="font-bold shrink-0">SO Date :</span>
+              <input type="date" id="so-date" required class="px-1.5 py-0.5 border border-slate-300 rounded font-extrabold text-[11px] bg-white focus:border-indigo-600 focus:outline-none">
+            </div>
+          </div>
+
+          <!-- Customer Details & Shipping Address Split Box -->
+          <div class="grid grid-cols-1 md:grid-cols-12 border-b border-black text-[11px]">
+            <!-- Left: Customer Details -->
+            <div class="md:col-span-6 border-b md:border-b-0 md:border-r border-black">
+              <div class="px-2.5 py-1 border-b border-black font-bold bg-slate-50">Customer Details :</div>
+              <div class="p-2.5 space-y-1.5">
+                <input type="text" id="so-client" oninput="syncSoShippingPreview()" placeholder="Customer / Hospital Name *" required class="w-full px-2 py-1 border border-slate-300 rounded font-bold text-[11px] bg-yellow-50/40 focus:bg-white focus:border-indigo-600 focus:outline-none">
+                <textarea id="so-address" oninput="syncSoShippingPreview()" rows="2" placeholder="Billing & Shipping Address *" required class="w-full px-2 py-1 border border-slate-300 rounded text-[11px] bg-yellow-50/40 focus:bg-white focus:border-indigo-600 focus:outline-none">1-5-24, Kubera Complex, Sri Krishna Colony, Musheerabad, Hyderabad 500020</textarea>
+                <div class="grid grid-cols-2 gap-2">
+                  <div class="flex items-center gap-1">
+                    <span class="font-semibold shrink-0">GST No :</span>
+                    <input type="text" id="so-gstin" oninput="handleGstinAutoFetch(this.value, 'so')" value="36ACQPM0669R1ZM" maxlength="15" required class="w-full px-1.5 py-0.5 border border-slate-300 rounded font-bold uppercase text-[11px] bg-white focus:border-indigo-600 focus:outline-none">
+                    <button type="button" onclick="fetchGstinDetails(document.getElementById('so-gstin').value, 'so', true)" title="Fetch Firm/Company Details from GSTIN" class="px-1.5 py-0.5 rounded bg-indigo-600 hover:bg-indigo-700 text-white text-[9.5px] font-extrabold shrink-0">
+                      Fetch
+                    </button>
+                  </div>
+                  <div class="flex items-center gap-1">
+                    <span class="font-semibold shrink-0">Phone :</span>
+                    <input type="text" id="so-phone" oninput="syncSoShippingPreview()" placeholder="98490XXXXX" class="w-full px-1.5 py-0.5 border border-slate-300 rounded text-[11px] bg-white focus:border-indigo-600 focus:outline-none">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right: Shipping Address (Live Mirrors Customer Details, Editable Separately) -->
+            <div class="md:col-span-6">
+              <div class="px-2.5 py-1 border-b border-black font-bold bg-slate-50 flex justify-between items-center">
+                <span>Shipping Address</span>
+                <span class="text-[9.5px] font-normal text-slate-500">(Auto-synced from Customer Details)</span>
+              </div>
+              <div class="p-2.5 space-y-1.5">
+                <input type="text" id="so-ship-client" placeholder="Shipping Party Name" class="w-full px-2 py-1 border border-slate-200 rounded font-semibold text-[11px] bg-slate-50/50 focus:bg-white focus:border-indigo-600 focus:outline-none">
+                <textarea id="so-ship-address" rows="2" placeholder="Shipping Delivery Address" class="w-full px-2 py-1 border border-slate-200 rounded text-[11px] bg-slate-50/50 focus:bg-white focus:border-indigo-600 focus:outline-none">1-5-24, Kubera Complex, Sri Krishna Colony, Musheerabad, Hyderabad 500020</textarea>
+                <div class="flex items-center gap-1">
+                  <span class="font-semibold shrink-0">Phone :</span>
+                  <input type="text" id="so-ship-phone" placeholder="Shipping Contact Phone" class="w-48 px-1.5 py-0.5 border border-slate-200 rounded text-[11px] bg-slate-50/50 focus:bg-white focus:border-indigo-600 focus:outline-none">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Item Line Grid (Multi-Item Rows: sno | Description | Name / Specs | Code / Size Ratio | QTY | Rate | Taxable Amt) -->
+          <div class="overflow-x-auto">
+            <div class="px-2.5 py-1.5 bg-indigo-50/70 border-b border-black flex flex-wrap items-center justify-between gap-2">
+              <span class="text-[10.5px] font-extrabold text-indigo-950 uppercase tracking-wide">Line Items (Add multiple garments/products to this Sale Order)</span>
+              <button type="button" onclick="addSoLineItemRow()" class="px-2.5 py-1 rounded bg-indigo-600 hover:bg-indigo-700 text-white text-[10.5px] font-extrabold shadow-2xs transition">
+                + Add Item Row
+              </button>
+            </div>
+            <table class="w-full border-collapse border-b border-black text-[11px]">
+              <thead>
+                <tr class="border-b border-black text-center font-bold bg-slate-50">
+                  <th class="w-[34px] py-1 px-1 border-r border-black leading-tight">sn<br>o</th>
+                  <th class="py-1 px-2 border-r border-black">Description</th>
+                  <th class="w-[23%] py-1 px-2 border-r border-black">Name / Specs</th>
+                  <th class="w-[18%] py-1 px-1 border-r border-black">Code / Size Ratio</th>
+                  <th class="w-[70px] py-1 px-2 border-r border-black">QTY</th>
+                  <th class="w-[76px] py-1 px-2 border-r border-black">Rate</th>
+                  <th class="w-[92px] py-1 px-2 border-r border-black">Taxable Amt</th>
+                  <th class="w-[32px] py-1 px-1">Del</th>
+                </tr>
+              </thead>
+              <tbody id="so-items-tbody" class="divide-y divide-black/40"></tbody>
+            </table>
+          </div>
+
+          <!-- Total Qty Bar -->
+          <div class="py-1 px-3 border-b border-black text-center font-bold text-[11.5px] bg-slate-50/60">
+            Total Qty : <span id="so-doc-totalqty-bar" class="ml-3 font-extrabold">100</span>
+          </div>
+
+          <!-- Remarks, Words, Terms & Tax Totals Box -->
+          <div class="grid grid-cols-1 md:grid-cols-12 border-b border-black text-[10.5px]">
+            <!-- Left 8 Cols -->
+            <div class="md:col-span-8 border-b md:border-b-0 md:border-r border-black flex flex-col justify-between">
+              <div class="px-2.5 py-1.5 border-b border-black flex items-center gap-2">
+                <span class="font-bold shrink-0">Remarks :</span>
+                <input type="text" id="so-remarks" placeholder="Optional delivery or packing remarks..." class="w-full px-1.5 py-0.5 border border-slate-200 rounded text-[10.5px] focus:border-indigo-600 focus:outline-none">
+              </div>
+              <div class="px-2.5 py-1.5 border-b border-black">
+                <div class="font-semibold">Invoice Value (In Words)</div>
+                <div id="so-doc-words" class="font-bold mt-0.5 text-slate-900">Indian Rupees Twenty Eight Thousand Eight Hundred Seventy Five Only</div>
+              </div>
+              <div class="px-2.5 py-1.5 space-y-0.5">
+                <div class="font-bold">Terms and Conditions :</div>
+                <div>1. 100 % Advance , Delivery Of Goods Within 8 days</div>
+                <div>2. Goods once sold can not be returned back or exchanged.</div>
+                <div>3. Our responsiblities ceases as soon as goods leave our premses.</div>
+                <div>4. Subject to 36-Telangana Jurisdiction</div>
+              </div>
+            </div>
+
+            <!-- Right 4 Cols: Tax Summary -->
+            <div class="md:col-span-4 flex flex-col justify-between">
+              <div class="p-2.5 space-y-1.5">
+                <div class="flex justify-between items-start gap-1">
+                  <span class="font-semibold leading-tight">Total Amount Before<br>Tax</span>
+                  <span id="so-doc-before-tax" class="font-extrabold">27,500.00</span>
+                </div>
+                <div class="flex justify-between items-center pt-1">
+                  <span class="font-semibold flex items-center gap-1">
+                    GST %:
+                    <select id="so-gst-pct" onchange="recalcSoDocumentTotals()" class="px-1 py-0.5 border border-slate-300 rounded text-[10px] font-bold bg-white">
+                      <option value="5" selected>5%</option>
+                      <option value="12">12%</option>
+                      <option value="18">18%</option>
+                      <option value="0">0%</option>
+                    </select>
+                  </span>
+                  <span class="text-[10px] text-slate-500">(CGST + SGST)</span>
+                </div>
+                <div class="flex justify-between items-center pt-0.5">
+                  <span class="font-semibold">Tax Amount : CGST</span>
+                  <span id="so-doc-cgst" class="font-extrabold">687.50</span>
+                </div>
+                <div class="flex justify-between items-center pt-0.5">
+                  <span class="font-semibold">Tax Amount : SGST</span>
+                  <span id="so-doc-sgst" class="font-extrabold">687.50</span>
+                </div>
+              </div>
+              <div class="px-2.5 py-2 border-t border-black flex justify-between items-center bg-slate-100">
+                <span class="font-bold">Total Amount After Tax</span>
+                <span id="so-doc-after-tax" class="font-extrabold text-[12px]">28,875.00</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bank Details & Authorised Signatory Footer -->
+          <div class="grid grid-cols-12 px-2.5 py-2 text-[10.5px] items-end">
+            <div class="col-span-7 sm:col-span-6 space-y-0.5">
+              <div><span class="font-semibold">Our Bankers:</span> <span class="font-bold">BANK OF BARODA</span></div>
+              <div><span class="font-semibold">A/C No. :</span> <span class="font-bold">71700200000140</span></div>
+              <div><span class="font-semibold">IFSC CODE:</span> <span class="font-bold">BARBODBSECE</span></div>
+              <div><span class="font-semibold">Branch :</span> <span class="font-bold">East Marredpally</span></div>
+            </div>
+            <div class="col-span-5 sm:col-span-6 text-right flex flex-col justify-between h-full space-y-6">
+              <div class="font-bold">For, ST TRADERS ANNEXE CHEAP JACK</div>
+              <div class="font-semibold">Authorised Signatory</div>
+            </div>
+          </div>
+          <div class="text-center text-[10px] py-1 border-t border-black/20">Page 1 of 1</div>
+        </div>
+
+        <!-- Bottom Action Buttons -->
+        <div class="flex flex-wrap items-center justify-between gap-2 pt-1">
+          <span class="text-xs text-slate-500">Saves to Step 1 (Sale Orders) & opens printable Sale Order sheet</span>
+          <div class="flex gap-2">
+            <button type="button" onclick="closeModal('new-so-modal')" class="px-4 py-2 rounded-xl border border-slate-300 bg-white text-xs font-bold text-slate-700 hover:bg-slate-50">
+              Cancel
+            </button>
+            <button type="submit" class="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-extrabold shadow-sm transition">
+              Save Sale Order & Print Preview ✓
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- MODAL 2: PRINTABLE CUTTING SLIP / SALE ORDER / TAX INVOICE PREVIEW    -->
+  <!-- ===================================================================== -->
+  <div id="print-preview-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/60 backdrop-blur-xs p-4 overflow-y-auto">
+    <div class="bg-white rounded-2xl max-w-4xl w-full shadow-2xl border border-slate-200 overflow-hidden my-auto">
+      <div class="px-6 py-4 bg-slate-900 text-white flex items-center justify-between">
+        <h3 id="print-modal-title" class="text-base font-bold">Document Preview</h3>
+        <button onclick="closeModal('print-preview-modal')" class="text-slate-400 hover:text-white">✕</button>
+      </div>
+      <div id="cutting-slip-toolbar" class="hidden px-6 py-3 bg-indigo-50 border-b border-indigo-100 flex flex-wrap items-center justify-between gap-2 text-xs">
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="font-bold text-indigo-900">Auto-Filled from Sale Order (Click any text on slip to edit) • Unit & Master:</span>
+          <select id="slip-unit-quick" onchange="updateSlipUnitMaster()" class="px-2.5 py-1 rounded-lg border border-indigo-200 bg-white font-semibold text-slate-800">
+            <option value="Cherlapally Unit — Line A">Cherlapally Unit — Line A</option>
+            <option value="Cherlapally Unit — Line B">Cherlapally Unit — Line B</option>
+            <option value="Musheerabad Unit — Line C">Musheerabad Unit — Line C</option>
+            <option value="Musheerabad Job-Work Unit">Musheerabad Job-Work Unit</option>
+          </select>
+          <select id="slip-master-quick" onchange="updateSlipUnitMaster()" class="px-2.5 py-1 rounded-lg border border-indigo-200 bg-white font-semibold text-slate-800">
+            <option value="Mohammed Riyaz (Cutting & Master)">Mohammed Riyaz (Cutting & Master)</option>
+            <option value="Lakshmi Narayana (Senior Master)">Lakshmi Narayana (Senior Master)</option>
+            <option value="Kavitha Rani (Uniform Master)">Kavitha Rani (Uniform Master)</option>
+            <option value="Srinivas Rao (Textile Master)">Srinivas Rao (Textile Master)</option>
+          </select>
+        </div>
+        <div class="flex flex-wrap items-center gap-2">
+          <button type="button" onclick="saveEditedCuttingSlip()" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold transition">
+            Save Manual Edits
+          </button>
+          <label class="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-semibold transition">
+            <span>Upload Garment Photo</span>
+            <input type="file" accept="image/*" onchange="uploadCuttingSlipImage(event)" class="hidden">
+          </label>
+        </div>
+      </div>
+      <div id="print-area" class="p-6 space-y-4 text-sm text-slate-800 bg-white"></div>
+      <div class="px-6 py-4 bg-slate-50 border-t border-slate-200 flex flex-wrap justify-end gap-2">
+        <button onclick="copyPrintText()" class="px-4 py-2 rounded-xl border border-slate-300 bg-white hover:bg-slate-100 text-slate-800 text-xs font-semibold">
+          Copy Text
+        </button>
+        <button onclick="window.print()" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold">
+          Print Document
+        </button>
+        <button onclick="closeModal('print-preview-modal')" class="px-4 py-2 rounded-xl bg-slate-800 text-white text-xs font-semibold">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- MODAL 3: USER PIN VERIFICATION MODAL                                  -->
+  <!-- ===================================================================== -->
+  <div id="pin-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/60 backdrop-blur-xs p-4">
+    <div class="bg-white rounded-2xl max-w-sm w-full shadow-2xl border border-slate-200 overflow-hidden">
+      <div class="px-5 py-4 bg-slate-900 text-white flex items-center justify-between">
+        <h3 class="text-sm font-bold">Verify Staff PIN</h3>
+        <button onclick="closeModal('pin-modal')" class="text-slate-400 hover:text-white">✕</button>
+      </div>
+      <form onsubmit="verifyAndActivateUserPin(event)" class="p-5 space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Select Staff Account</label>
+          <select id="pin-modal-user-select" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold bg-slate-50"></select>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Enter 4-Digit PIN</label>
+          <input type="password" id="pin-modal-input" maxlength="4" placeholder="••••" required class="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-center text-base font-extrabold tracking-widest">
+          <p class="text-[11px] text-slate-400 mt-1">Default Demo PINs: Admin <strong>0000</strong> • Staff <strong>1111 / 2222 / 3333</strong></p>
+        </div>
+        <div class="flex justify-end gap-2">
+          <button type="button" onclick="closeModal('pin-modal')" class="px-3.5 py-2 rounded-xl border border-slate-200 text-xs font-semibold text-slate-600">Cancel</button>
+          <button type="submit" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold">Unlock Account</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- APPLICATION STATE & 5-STAGE WORKFLOW ENGINE                           -->
+  <!-- ===================================================================== -->
+  <script src="app-engine.js"></script>
+</body>
+</html>
