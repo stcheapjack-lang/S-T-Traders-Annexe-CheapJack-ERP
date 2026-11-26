@@ -2066,6 +2066,99 @@ const FLOW_STORAGE_KEY = "st_traders_5stage_erp_v1";
     // =========================================================================
     // RENDER STEP 1: SALE ORDERS
     // =========================================================================
+
+    function escapeSoStatusText(value) {
+      return String(value == null ? "" : value).replace(/[&<>"']/g, ch => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+      }[ch]));
+    }
+
+    function openSaleOrderItemStatus(soId) {
+      const so = state.saleOrders.find(x => x.id === soId);
+      if (!so) {
+        showToast("Sale Order not found.", "warning");
+        return;
+      }
+
+      const items = Array.isArray(so.items) && so.items.length
+        ? so.items
+        : [{ style: so.style || "Sale Order Item", cloth: so.cloth || "", colour: so.colour || "",
+             qty: Number(so.totalQty) || 0, rate: Number(so.rate) || 0 }];
+
+      const allocations = (state.allocations || []).filter(a => a.soId === so.id);
+      const finished = (state.finishedGoods || []).filter(f => f.soId === so.id);
+      const orderFgPassed = finished.reduce((sum, f) => sum + (Number(f.passedQty) || 0), 0);
+      const orderStitched = allocations.reduce((sum, a) => sum + (Number(a.stitchedQty) || 0), 0);
+      const orderAllocated = allocations.reduce((sum, a) => sum + (Number(a.totalQty) || 0), 0);
+      const orderQty = Number(so.totalQty) || items.reduce((sum, it) => sum + (Number(it.qty) || 0), 0);
+      const orderPending = Math.max(0, orderQty - orderFgPassed);
+
+      const slip = (state.cuttingSlips || []).find(c => c.soId === so.id);
+      const currentStage = so.stage || (slip ? slip.status : "New Sale Order");
+      const units = [...new Set(allocations.map(a => a.unit).filter(Boolean))];
+      const tailors = [...new Set(allocations.map(a => a.tailor).filter(Boolean))];
+
+      const title = document.getElementById("so-item-status-title");
+      const subtitle = document.getElementById("so-item-status-subtitle");
+      const summary = document.getElementById("so-item-status-summary");
+      const tbody = document.getElementById("so-item-status-tbody");
+      const note = document.getElementById("so-item-status-note");
+
+      title.textContent = `Item-wise Pending — ${so.id}`;
+      subtitle.textContent = `${so.client || ""} • ${so.date || ""} • ${currentStage}`;
+
+      const kpis = [
+        ["Order Qty", orderQty],
+        ["FG Passed", orderFgPassed],
+        ["Pending Qty", orderPending],
+        ["Stitched WIP", Math.max(0, orderStitched - orderFgPassed)]
+      ];
+      summary.innerHTML = kpis.map(([label, value]) => `
+        <div class="bg-white border border-slate-200 rounded-xl p-3">
+          <div class="text-[10px] uppercase font-bold text-slate-500">${label}</div>
+          <div class="text-lg sm:text-xl font-extrabold text-slate-900 mt-1">${Number(value).toLocaleString("en-IN")} <span class="text-[10px] font-semibold text-slate-400">pcs</span></div>
+        </div>`).join("");
+
+      tbody.innerHTML = items.map((item, index) => {
+        const itemQty = Number(item.qty) || Object.values(item.sizes || {}).reduce((s, q) => s + (Number(q) || 0), 0);
+        // FG records are item-attributed only when their stored style matches the item style.
+        const matchedFg = finished.filter(f => String(f.style || "").trim().toLowerCase() === String(item.style || "").trim().toLowerCase());
+        const itemFg = matchedFg.reduce((s, f) => s + (Number(f.passedQty) || 0), 0);
+        const singleItemFallback = items.length === 1 && matchedFg.length === 0;
+        const doneQty = Math.min(itemQty, singleItemFallback ? orderFgPassed : itemFg);
+        const pendingQty = Math.max(0, itemQty - doneQty);
+        const itemStatus = pendingQty === 0 ? "Completed" : (slip ? currentStage : "Awaiting Cutting Slip");
+        const statusClass = pendingQty === 0 ? "text-emerald-700 bg-emerald-50" : "text-amber-800 bg-amber-50";
+        const itemText = [item.cloth, item.colour].filter(Boolean).join(" • ");
+        return `
+          <tr>
+            <td class="p-3">
+              <div class="font-bold text-slate-900">${index + 1}. ${escapeSoStatusText(item.style || "Item")}</div>
+              <div class="text-[10px] text-slate-500">${escapeSoStatusText(itemText)}</div>
+            </td>
+            <td class="p-3 text-right font-bold">${itemQty.toLocaleString("en-IN")}</td>
+            <td class="p-3 text-right font-bold text-emerald-700">${doneQty.toLocaleString("en-IN")}</td>
+            <td class="p-3 text-right font-extrabold ${pendingQty ? "text-rose-700" : "text-emerald-700"}">${pendingQty.toLocaleString("en-IN")}</td>
+            <td class="p-3"><span class="inline-flex px-2 py-1 rounded-full text-[10px] font-bold ${statusClass}">${escapeSoStatusText(itemStatus)}</span></td>
+            <td class="p-3">
+              <div class="font-semibold text-slate-800">${escapeSoStatusText(tailors.join(", ") || "Not allocated")}</div>
+              <div class="text-[10px] text-slate-500">${escapeSoStatusText(units.join(", ") || "Unit not assigned")}</div>
+            </td>
+          </tr>`;
+      }).join("");
+
+      const allItemsHaveItemWiseFg = items.every(item =>
+        finished.some(f => String(f.style || "").trim().toLowerCase() === String(item.style || "").trim().toLowerCase())
+      );
+      note.textContent = items.length > 1 && finished.length && !allItemsHaveItemWiseFg
+        ? "Note: Existing Finished Goods receipts are stored against the whole Sale Order, not individual item lines. Item-wise FG Passed/Pending is shown only where the Finished Goods style matches the item. To get exact item-wise progress for every line, the FG receiving and tailor allocation forms must also capture the selected item."
+        : `Cutting slip: ${slip ? slip.slipId + " (" + (slip.status || "Generated") + ")" : "Not generated"} • Allocated: ${orderAllocated} pcs • Stitched logged: ${orderStitched} pcs. Allocation and stitched quantities are currently tracked at Sale Order level.`;
+
+      const modal = document.getElementById("so-item-status-modal");
+      modal.classList.remove("hidden");
+      modal.classList.add("flex");
+    }
+
     function renderSaleOrders() {
       const tbody = document.getElementById("sale-orders-tbody");
       tbody.innerHTML = state.saleOrders.map(so => {
@@ -2095,6 +2188,9 @@ const FLOW_STORAGE_KEY = "st_traders_5stage_erp_v1";
             </td>
             <td class="py-3.5 px-4 text-right">
               <div class="inline-flex flex-wrap justify-end gap-1.5">
+                <button onclick="openSaleOrderItemStatus('${so.id}')" class="px-2.5 py-1.5 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 text-xs font-bold transition">
+                  Item-wise Pending
+                </button>
                 <button onclick="openSaleOrderPrint('${so.id}')" class="px-2.5 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition">
                   Print SO
                 </button>
@@ -3963,119 +4059,94 @@ const FLOW_STORAGE_KEY = "st_traders_5stage_erp_v1";
       return Math.max(0, Math.floor((Date.now() - d.getTime()) / 86400000));
     }
 
-    function getManufacturingDueRecords() {
-      return (state.saleOrders || []).map((so, soIndex) => {
-        const qty = Number(so.totalQty) || Object.values(so.sizes || {}).reduce((sum, n) => sum + (Number(n) || 0), 0);
-        const slips = (state.cuttingSlips || []).filter(x => x.soId === so.id);
-        const allocations = (state.allocations || []).filter(x => x.soId === so.id);
-        const finished = (state.finishedGoods || []).filter(x => x.soId === so.id);
-        const cutQtyRecorded = slips.reduce((sum, x) => sum + (Number(x.cutQty) || 0), 0);
-        const stitchedQty = Math.min(qty, allocations.reduce((sum, x) => sum + (Number(x.stitchedQty) || 0), 0));
-        const fgPassedQty = Math.min(qty, finished.reduce((sum, x) => sum + (Number(x.passedQty) || 0), 0));
-        const reworkQty = finished.reduce((sum, x) => sum + (Number(x.reworkQty) || 0), 0);
-        const pendingQty = Math.max(0, qty - fgPassedQty);
-        const stitchingPending = Math.max(0, allocations.reduce((sum, x) => sum + (Number(x.totalQty) || 0), 0) - stitchedQty);
-        const activeAllocation = allocations[0] || null;
-        const activeSlip = slips[0] || null;
-        const units = [...new Set(allocations.map(x => x.unit).filter(Boolean))];
-        const tailors = [...new Set(allocations.map(x => x.tailor).filter(Boolean))];
-        const deliveryDue = so.deliveryDue || so.deliveryDate || so.dueDate || so.promisedDate || so.expectedDelivery || '';
-        let stage = 'Awaiting Cutting';
-        if (pendingQty === 0 && qty > 0) stage = 'Completed – FG Received';
-        else if (finished.length && fgPassedQty < qty) stage = 'Partial FG / QC Balance';
-        else if (allocations.length && stitchedQty < qty) stage = 'At Unit – Stitching';
-        else if (allocations.length && stitchedQty >= qty) stage = 'Stitched – Awaiting FG / QC';
-        else if (slips.length) stage = slips.some(x => x.fabricReleased) ? 'Cutting / Fabric Released' : 'Cutting Slip Generated';
-        const stageText = String(so.stage || '');
-        if (pendingQty > 0 && !allocations.length && !slips.length && /cut/i.test(stageText)) stage = 'Awaiting Cutting';
-        const isOverdue = Boolean(deliveryDue && pendingQty > 0 && new Date(deliveryDue) < new Date(new Date().toDateString()));
-        return { so, soIndex, qty, slips, allocations, finished, cutQtyRecorded, stitchedQty, fgPassedQty, reworkQty, pendingQty, stitchingPending, activeAllocation, activeSlip, units, tailors, deliveryDue, stage, isOverdue };
-      });
-    }
-
     function renderDueListPage() {
-      const tbody = document.getElementById('due-list-tbody');
+      const tbody = document.getElementById("due-list-tbody");
       if (!tbody) return;
-      const records = getManufacturingDueRecords();
-      const open = records.filter(r => r.pendingQty > 0);
-      const orderedQty = records.reduce((s, r) => s + r.qty, 0);
-      const completedQty = records.reduce((s, r) => s + r.fgPassedQty, 0);
-      const pendingQty = records.reduce((s, r) => s + r.pendingQty, 0);
-      const wipQty = records.reduce((s, r) => s + Math.max(0, r.stitchedQty - r.fgPassedQty), 0);
-      const setTxt = (id, value) => { const el = document.getElementById(id); if (el) el.textContent = value; };
-      setTxt('due-kpi-billed', `${open.length} SO`);
-      setTxt('due-kpi-billed-sub', `${records.length} total sale orders • ${orderedQty.toLocaleString('en-IN')} pcs ordered`);
-      setTxt('due-kpi-paid', `${completedQty.toLocaleString('en-IN')} pcs`);
-      setTxt('due-kpi-balance', `${wipQty.toLocaleString('en-IN')} pcs`);
-      setTxt('due-kpi-balance-sub', 'Stitched / processed but not yet FG received');
-      setTxt('due-kpi-overdue', `${pendingQty.toLocaleString('en-IN')} pcs`);
-      setTxt('due-kpi-overdue-sub', `${open.length} open SOs • ${records.filter(r => r.isOverdue).length} overdue SOs`);
 
-      const mode = document.getElementById('due-status-filter')?.value || 'PENDING';
-      const unitFilter = document.getElementById('due-unit-filter')?.value || 'ALL';
-      const search = (document.getElementById('due-search')?.value || '').trim().toLowerCase();
-      const from = document.getElementById('due-from-date')?.value || '';
-      const to = document.getElementById('due-to-date')?.value || '';
-      const rows = records.filter(r => {
-        if (mode === 'PENDING' && r.pendingQty <= 0) return false;
-        if (mode === 'OVERDUE' && !r.isOverdue) return false;
-        if (mode === 'WIP' && !(r.stitchedQty > r.fgPassedQty || r.allocations.length)) return false;
-        if (mode === 'CUTTING' && !(r.slips.length || r.stage === 'Awaiting Cutting')) return false;
-        if (mode === 'STITCHING' && !r.allocations.length) return false;
-        if (mode === 'FG' && !(r.finished.length || r.stitchedQty > r.fgPassedQty)) return false;
-        if (unitFilter !== 'ALL' && !r.units.some(u => u.toLowerCase().includes(unitFilter.toLowerCase()))) return false;
-        if (from && (!r.deliveryDue || r.deliveryDue < from)) return false;
-        if (to && (!r.deliveryDue || r.deliveryDue > to)) return false;
-        if (search) {
-          const haystack = [r.so.id, r.so.orderRef, r.so.client, r.so.style, r.so.colour, r.stage, ...r.units, ...r.tailors].join(' ').toLowerCase();
-          if (!haystack.includes(search)) return false;
-        }
+      let totalBilled = 0, totalPaid = 0, totalDue = 0, pendingCount = 0, overdueAmt = 0, overdueCount = 0;
+
+      const enriched = (state.invoices || []).map((inv, idx) => {
+        const billed = Number(inv.grandTotal) || 0;
+        const paid = Number(inv.paidAmount) || 0;
+        const balance = Math.max(0, billed - paid);
+        const ageDays = getInvoiceAgeDays(inv.date);
+        const isOverdue = balance > 0 && ageDays > 8;
+
+        totalBilled += billed;
+        totalPaid += paid;
+        totalDue += balance;
+        if (balance > 0) pendingCount++;
+        if (isOverdue) { overdueAmt += balance; overdueCount++; }
+
+        return { inv, idx, billed, paid, balance, ageDays, isOverdue };
+      });
+
+      const setTxt = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+      setTxt("due-kpi-billed", formatINR2(totalBilled));
+      setTxt("due-kpi-billed-sub", `${(state.invoices || []).length} total invoices`);
+      setTxt("due-kpi-paid", formatINR2(totalPaid));
+      setTxt("due-kpi-balance", formatINR2(totalDue));
+      setTxt("due-kpi-balance-sub", `${pendingCount} pending bills`);
+      setTxt("due-kpi-overdue", formatINR2(overdueAmt));
+      setTxt("due-kpi-overdue-sub", `${overdueCount} overdue invoices`);
+
+      const filterMode = document.getElementById("due-status-filter")?.value || "PENDING";
+      const rows = enriched.filter(x => {
+        if (filterMode === "PENDING") return x.balance > 0;
+        if (filterMode === "OVERDUE") return x.isOverdue;
         return true;
       });
-      setTxt('due-table-count', `${rows.length} sale order(s) • ${rows.reduce((s, r) => s + r.pendingQty, 0).toLocaleString('en-IN')} pcs pending`);
 
-      tbody.innerHTML = rows.map(r => {
-        const stageColor = r.pendingQty === 0 ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : r.isOverdue ? 'bg-rose-50 text-rose-700 border-rose-200' : r.allocations.length ? 'bg-indigo-50 text-indigo-700 border-indigo-200' : r.slips.length ? 'bg-amber-50 text-amber-800 border-amber-200' : 'bg-slate-100 text-slate-700 border-slate-200';
-        const unitText = r.units.length ? r.units.join(', ') : 'Not allocated';
-        const tailorText = r.tailors.length ? r.tailors.join(', ') : '—';
-        const sizes = Object.entries(r.so.sizes || {}).filter(([, n]) => Number(n) > 0).map(([size, n]) => `${size}: ${n}`).join(' • ') || '—';
-        const cuttingText = r.slips.length ? r.slips.map(x => `${x.slipId}${x.fabricReleased ? ' • Fabric released' : ''}`).join(', ') : 'Slip not generated';
-        const stitchedPending = Math.max(0, r.qty - r.stitchedQty - r.fgPassedQty);
-        return `<tr class="hover:bg-slate-50 align-top">
-          <td class="py-3 px-3"><div class="font-extrabold text-slate-900">${r.so.id}</div><div class="text-[11px] text-slate-500">${r.so.date || ''}</div></td>
-          <td class="py-3 px-3"><div class="font-bold text-slate-800">${r.so.client || '—'}</div><div class="text-[11px] text-slate-500">${r.so.nameCode || ''}</div></td>
-          <td class="py-3 px-3"><div class="font-semibold">${r.so.style || '—'}</div><div class="text-[11px] text-slate-500">${r.so.colour || ''}</div></td>
-          <td class="py-3 px-3 text-[11px]">${sizes}</td>
-          <td class="py-3 px-3 text-right font-extrabold">${r.qty}</td>
-          <td class="py-3 px-3 text-right"><div class="font-bold">${r.slips.length ? 'Slip created' : '0'}</div><div class="text-[10px] text-slate-500">${r.slips.length} slip(s)</div></td>
-          <td class="py-3 px-3 text-right font-bold text-amber-700">${r.stitchedQty > r.fgPassedQty ? r.stitchedQty - r.fgPassedQty : 0}</td>
-          <td class="py-3 px-3 text-right"><div class="font-bold">${r.stitchedQty}</div><div class="text-[10px] text-slate-500">${stitchedPending} not stitched</div></td>
-          <td class="py-3 px-3 text-right font-extrabold text-emerald-700">${r.fgPassedQty}</td>
-          <td class="py-3 px-3 text-right font-extrabold ${r.pendingQty ? 'text-rose-700' : 'text-emerald-700'}">${r.pendingQty}</td>
-          <td class="py-3 px-3"><div class="font-semibold">${unitText}</div><div class="text-[11px] text-slate-500">${tailorText}</div></td>
-          <td class="py-3 px-3 text-[11px]">${r.deliveryDue || 'Not set'}</td>
-          <td class="py-3 px-3"><span class="inline-block px-2 py-1 rounded-full border text-[10px] font-bold ${stageColor}">${r.stage}</span>${r.reworkQty ? `<div class="text-[10px] text-rose-600 mt-1">${r.reworkQty} rework</div>` : ''}</td>
-          <td class="py-3 px-3"><div class="text-[10px] text-slate-600">${cuttingText}</div><button onclick="switchStep('tracking'); syncTrackingSearch('${r.so.id}')" class="mt-1 px-2 py-1 rounded bg-slate-900 text-white text-[10px] font-bold">Track SO</button></td>
-        </tr>`;
-      }).join('') || `<tr><td colspan="14" class="py-8 text-center text-slate-400">No sale orders match these production filters.</td></tr>`;
+      setTxt("due-table-count", `${rows.length} bill(s)`);
+
+      tbody.innerHTML = rows.map(x => {
+        const badgeHtml = x.balance <= 0
+          ? `<span class="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold">Paid in Full ✓</span>`
+          : x.isOverdue
+            ? `<span class="px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200 font-bold">Overdue (${x.ageDays}d)</span>`
+            : `<span class="px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200 font-bold">Due (${x.ageDays}d)</span>`;
+
+        return `
+          <tr class="hover:bg-slate-50">
+            <td class="py-3.5 px-4">
+              <div class="font-extrabold text-slate-900">${x.inv.invNo}</div>
+              <div class="text-[11px] text-slate-500">${x.inv.date} • SO: ${x.inv.soId}</div>
+            </td>
+            <td class="py-3.5 px-4">
+              <div class="font-bold text-slate-800">${x.inv.client}</div>
+              <div class="text-[11px] font-mono text-slate-500">${x.inv.gstin}</div>
+            </td>
+            <td class="py-3.5 px-4 text-right font-semibold text-slate-800">${formatINR2(x.billed)}</td>
+            <td class="py-3.5 px-4 text-right font-bold text-emerald-700">${formatINR2(x.paid)}</td>
+            <td class="py-3.5 px-4 text-right font-extrabold ${x.balance > 0 ? 'text-rose-700' : 'text-slate-400'}">${formatINR2(x.balance)}</td>
+            <td class="py-3.5 px-4">${badgeHtml}</td>
+            <td class="py-3.5 px-4 text-right">
+              <button onclick="openTaxInvoicePrint(${x.idx})" class="px-2.5 py-1 rounded-lg bg-slate-900 hover:bg-indigo-600 text-white font-bold">Print Bill</button>
+            </td>
+          </tr>
+        `;
+      }).join("") || `<tr><td colspan="7" class="py-8 text-center text-slate-400">No invoices match the selected due filter.</td></tr>`;
     }
 
     function exportDueListCsv() {
-      const rows = [['Sale Order', 'Booking Date', 'Client', 'Style', 'Order Qty', 'Cutting Slip(s)', 'Stitched Qty', 'FG Passed Qty', 'Pending Qty', 'Production Unit', 'Tailor', 'Current Stage', 'Delivery Due', 'Rework Qty']];
-      getManufacturingDueRecords().forEach(r => rows.push([
-        r.so.id, r.so.date || '', r.so.client || '', r.so.style || '', r.qty,
-        r.slips.map(x => x.slipId).join('; '), r.stitchedQty, r.fgPassedQty, r.pendingQty,
-        r.units.join('; '), r.tailors.join('; '), r.stage, r.deliveryDue, r.reworkQty
-      ]));
-      const csv = rows.map(row => row.map(v => `"${String(v ?? '').replace(/"/g, '""')}"`).join(',')).join('\n');
-      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const rows = [["Invoice No", "Invoice Date", "Client", "GSTIN", "Grand Total", "Received", "Balance Due", "Age Days", "Status"]];
+      (state.invoices || []).forEach(inv => {
+        const billed = Number(inv.grandTotal) || 0;
+        const paid = Number(inv.paidAmount) || 0;
+        const bal = Math.max(0, billed - paid);
+        const age = getInvoiceAgeDays(inv.date);
+        const status = bal <= 0 ? "Paid" : (age > 8 ? "Overdue" : "Pending");
+        rows.push([inv.invNo, inv.date, `"${inv.client}"`, inv.gstin, billed.toFixed(2), paid.toFixed(2), bal.toFixed(2), age, status]);
+      });
+      const csv = rows.map(r => r.join(",")).join("\n");
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
       const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
+      const a = document.createElement("a");
       a.href = url;
-      a.download = `ST_Traders_Manufacturing_Due_${new Date().toISOString().split('T')[0]}.csv`;
+      a.download = `ST_Traders_Due_List_${new Date().toISOString().split("T")[0]}.csv`;
       a.click();
       URL.revokeObjectURL(url);
-      showToast('Exported Sale Order Manufacturing Due CSV.', 'success');
+      showToast("Exported Customer Due List CSV.", "success");
     }
 
     function renderAllSteps() {

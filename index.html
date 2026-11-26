@@ -1883,6 +1883,45 @@
   <!-- ===================================================================== -->
   <!-- APPLICATION STATE & 5-STAGE WORKFLOW ENGINE                           -->
   <!-- ===================================================================== -->
+  
+  <!-- Sale Order Item-wise Production Status Modal -->
+  <div id="so-item-status-modal" class="hidden fixed inset-0 z-[70] items-center justify-center bg-slate-950/60 p-2 sm:p-5"
+       onclick="if(event.target===this) closeModal('so-item-status-modal')">
+    <div class="bg-white w-full max-w-6xl max-h-[92dvh] rounded-2xl shadow-2xl overflow-hidden flex flex-col">
+      <div class="px-4 sm:px-6 py-4 border-b border-slate-200 flex items-start justify-between gap-3">
+        <div class="min-w-0">
+          <div class="text-[10px] font-extrabold uppercase tracking-wider text-indigo-600">Sale Order Drill-down</div>
+          <h3 id="so-item-status-title" class="text-base sm:text-lg font-extrabold text-slate-900">Item-wise Pending</h3>
+          <p id="so-item-status-subtitle" class="text-xs text-slate-500 mt-1"></p>
+        </div>
+        <button type="button" onclick="closeModal('so-item-status-modal')" class="shrink-0 w-9 h-9 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold">✕</button>
+      </div>
+      <div id="so-item-status-summary" class="grid grid-cols-2 lg:grid-cols-4 gap-2 p-3 sm:p-5 bg-slate-50 border-b border-slate-200"></div>
+      <div class="p-3 sm:p-5 overflow-auto">
+        <div class="text-xs font-bold text-slate-700 mb-2">Item-wise quantity status</div>
+        <div class="overflow-x-auto border border-slate-200 rounded-xl">
+          <table class="min-w-[850px] w-full text-left text-xs">
+            <thead class="bg-slate-100 text-slate-600 uppercase tracking-wide">
+              <tr>
+                <th class="p-3">Item / Style</th>
+                <th class="p-3 text-right">Ordered</th>
+                <th class="p-3 text-right">FG Passed</th>
+                <th class="p-3 text-right">Pending</th>
+                <th class="p-3">Production Stage</th>
+                <th class="p-3">Unit / Tailor</th>
+              </tr>
+            </thead>
+            <tbody id="so-item-status-tbody" class="divide-y divide-slate-100"></tbody>
+          </table>
+        </div>
+        <p id="so-item-status-note" class="text-[11px] text-amber-700 bg-amber-50 border border-amber-200 rounded-lg p-3 mt-3"></p>
+      </div>
+      <div class="px-4 sm:px-6 py-3 border-t border-slate-200 flex justify-end">
+        <button type="button" onclick="closeModal('so-item-status-modal')" class="px-4 py-2 rounded-lg bg-slate-900 text-white text-xs font-bold">Close</button>
+      </div>
+    </div>
+  </div>
+
   <script src="app-engine.js"></script>
 </body>
 </html>
