@@ -234,9 +234,9 @@
 
             <button onclick="switchStep('due-list')" data-step="due-list" class="step-card w-full text-left px-3 py-2.5 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-white transition flex items-center justify-between">
               <div>
-                <div class="text-[10px] font-extrabold uppercase text-rose-400">Accounts</div>
-                <div class="text-xs font-bold">Due List</div>
-                <div id="step-sub-due" class="text-[10px] text-slate-400">Pending bills</div>
+                <div class="text-[10px] font-extrabold uppercase text-amber-400">Production Control</div>
+                <div class="text-xs font-bold">Manufacturing Due List</div>
+                <div id="step-sub-due" class="text-[10px] text-slate-400">Pending production & delivery</div>
               </div>
               <span id="badge-step-due" class="px-2 py-0.5 rounded-full bg-slate-800 text-slate-200 text-xs font-extrabold">0</span>
             </button>
@@ -1420,70 +1420,47 @@
       </section>
 
       <!-- =============================================================== -->
-      <!-- DUE LIST VIEW (PENDING & OVERDUE TAX INVOICES)                  -->
+      <!-- MANUFACTURING DUE LIST: SALE ORDER, WIP & SEMI-FINISHED GOODS -->
       <!-- =============================================================== -->
       <section id="view-due-list" class="step-view hidden tab-fade space-y-6">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <h2 class="text-xl font-extrabold text-slate-900">Customer Due List</h2>
-            <p class="text-xs sm:text-sm text-slate-500">Pending & overdue balances from raised Tax Invoices</p>
+            <h2 class="text-xl font-extrabold text-slate-900">Manufacturing Due List – Sale Order & WIP</h2>
+            <p class="text-xs sm:text-sm text-slate-500">Track every garment order from order booking through cutting, semi-finished work, stitching, QC and finished-goods receipt. This is a production follow-up register, not an accounts receivable list.</p>
           </div>
-          <button onclick="exportDueListCsv()" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-xs transition">
-            Export Due List CSV
-          </button>
+          <div class="flex flex-wrap gap-2">
+            <button onclick="renderDueListPage()" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold">Refresh</button>
+            <button onclick="exportDueListCsv()" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-xs">Export Manufacturing Due CSV</button>
+          </div>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs">
-            <div class="text-[11px] font-bold uppercase text-slate-400">Total Billed</div>
-            <div id="due-kpi-billed" class="text-xl font-extrabold text-slate-900 mt-1">₹0.00</div>
-            <div id="due-kpi-billed-sub" class="text-xs text-slate-500 mt-0.5">0 total invoices</div>
-          </div>
-          <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs">
-            <div class="text-[11px] font-bold uppercase text-slate-400">Total Received</div>
-            <div id="due-kpi-paid" class="text-xl font-extrabold text-emerald-700 mt-1">₹0.00</div>
-            <div class="text-xs text-slate-500 mt-0.5">Cleared payments</div>
-          </div>
-          <div class="bg-white rounded-2xl border border-rose-200 p-4 shadow-xs">
-            <div class="text-[11px] font-bold uppercase text-rose-700">Balance Due</div>
-            <div id="due-kpi-balance" class="text-xl font-extrabold text-rose-700 mt-1">₹0.00</div>
-            <div id="due-kpi-balance-sub" class="text-xs text-rose-600 font-semibold mt-0.5">0 pending bills</div>
-          </div>
-          <div class="bg-white rounded-2xl border border-amber-200 p-4 shadow-xs">
-            <div class="text-[11px] font-bold uppercase text-amber-800">Overdue (&gt; 8 Days)</div>
-            <div id="due-kpi-overdue" class="text-xl font-extrabold text-amber-800 mt-1">₹0.00</div>
-            <div id="due-kpi-overdue-sub" class="text-xs text-amber-700 mt-0.5">0 overdue invoices</div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+          <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs"><div class="text-[11px] font-bold uppercase text-slate-500">Open Sale Orders</div><div id="due-kpi-billed" class="text-2xl font-extrabold text-slate-900 mt-1">0</div><div id="due-kpi-billed-sub" class="text-xs text-slate-500 mt-1">Orders not fully completed</div></div>
+          <div class="bg-white rounded-2xl border border-indigo-200 p-4 shadow-xs"><div class="text-[11px] font-bold uppercase text-indigo-700">Order Quantity Pending</div><div id="due-kpi-paid" class="text-2xl font-extrabold text-indigo-700 mt-1">0 pcs</div><div class="text-xs text-slate-500 mt-1">Not yet received as finished goods</div></div>
+          <div class="bg-white rounded-2xl border border-amber-200 p-4 shadow-xs"><div class="text-[11px] font-bold uppercase text-amber-800">Semi-Finished / WIP</div><div id="due-kpi-balance" class="text-2xl font-extrabold text-amber-800 mt-1">0 pcs</div><div id="due-kpi-balance-sub" class="text-xs text-amber-700 mt-1">Cut / issued / partly stitched</div></div>
+          <div class="bg-white rounded-2xl border border-rose-200 p-4 shadow-xs"><div class="text-[11px] font-bold uppercase text-rose-700">Production Overdue</div><div id="due-kpi-overdue" class="text-2xl font-extrabold text-rose-700 mt-1">0</div><div id="due-kpi-overdue-sub" class="text-xs text-rose-600 mt-1">Orders past promised delivery date</div></div>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2"><div><h3 class="text-sm font-bold text-slate-900">Production Due Filters</h3><p class="text-[11px] text-slate-500">Filter by delivery commitment, production stage, unit or customer</p></div><span class="text-[11px] font-semibold text-slate-500">Manufacturing control</span></div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+            <input id="due-search" type="search" oninput="renderDueListPage()" placeholder="Search SO / client / garment..." class="px-3 py-2 rounded-xl border border-slate-200 text-xs">
+            <select id="due-status-filter" onchange="renderDueListPage()" class="px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold bg-white"><option value="PENDING">Open production orders</option><option value="OVERDUE">Overdue delivery</option><option value="WIP">Semi-finished / WIP</option><option value="CUTTING">Awaiting / in cutting</option><option value="STITCHING">At tailor / stitching</option><option value="FG">Awaiting QC / FG receipt</option><option value="ALL">All sale orders</option></select>
+            <select id="due-unit-filter" onchange="renderDueListPage()" class="px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold bg-white"><option value="ALL">All production units</option><option value="Cherlapally">Cherlapally</option><option value="Musheerabad">Musheerabad</option></select>
+            <input id="due-from-date" type="date" onchange="renderDueListPage()" title="Delivery due from" class="px-3 py-2 rounded-xl border border-slate-200 text-xs">
+            <input id="due-to-date" type="date" onchange="renderDueListPage()" title="Delivery due to" class="px-3 py-2 rounded-xl border border-slate-200 text-xs">
           </div>
         </div>
 
         <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
-          <div class="p-4 border-b border-slate-100 flex flex-wrap items-center justify-between gap-2">
-            <div class="flex items-center gap-2">
-              <h3 class="text-sm font-bold text-slate-900">Due Invoices Register</h3>
-              <select id="due-status-filter" onchange="renderDueListPage()" class="px-2.5 py-1 rounded-lg border border-slate-200 text-xs font-bold bg-slate-50">
-                <option value="PENDING">Pending & Overdue Only</option>
-                <option value="OVERDUE">Overdue (&gt; 8 Days) Only</option>
-                <option value="ALL">All Invoices (Incl. Paid)</option>
-              </select>
-            </div>
-            <span id="due-table-count" class="text-xs font-semibold text-rose-600">0 bill(s)</span>
-          </div>
-          <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse">
-              <thead>
-                <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-500">
-                  <th class="py-3.5 px-4">Invoice & Date</th>
-                  <th class="py-3.5 px-4">Client & GSTIN</th>
-                  <th class="py-3.5 px-4 text-right">Billed Total (₹)</th>
-                  <th class="py-3.5 px-4 text-right">Received (₹)</th>
-                  <th class="py-3.5 px-4 text-right">Balance Due (₹)</th>
-                  <th class="py-3.5 px-4">Status & Aging</th>
-                  <th class="py-3.5 px-4 text-right">Action</th>
-                </tr>
-              </thead>
-              <tbody id="due-list-tbody" class="divide-y divide-slate-100 text-xs"></tbody>
-            </table>
-          </div>
+          <div class="p-4 border-b border-slate-100 flex flex-wrap items-center justify-between gap-2"><div><h3 class="text-sm font-bold text-slate-900">Sale Order Manufacturing Due Register</h3><p class="text-[11px] text-slate-500">One row per sale order / garment line. Quantities must reconcile across cutting, semi-finished WIP, finished goods and balance.</p></div><span id="due-table-count" class="text-xs font-semibold text-indigo-700">0 order(s)</span></div>
+          <div class="overflow-x-auto"><table class="w-full text-left border-collapse min-w-[1500px]"><thead><tr class="bg-slate-50 border-b border-slate-200 text-[10px] font-bold uppercase tracking-wider text-slate-500">
+            <th class="py-3 px-3">Sale Order / Booking Date</th><th class="py-3 px-3">Client / Hospital</th><th class="py-3 px-3">Garment / Style / Colour</th><th class="py-3 px-3">Size-wise Order Qty</th><th class="py-3 px-3 text-right">Order Qty</th><th class="py-3 px-3 text-right">Cut Qty</th><th class="py-3 px-3 text-right">Semi-Finished WIP</th><th class="py-3 px-3 text-right">Stitched Qty</th><th class="py-3 px-3 text-right">QC Passed / FG</th><th class="py-3 px-3 text-right">Balance Qty</th><th class="py-3 px-3">Production Unit / Tailor</th><th class="py-3 px-3">Delivery Due</th><th class="py-3 px-3">Current Stage / Delay</th><th class="py-3 px-3">Follow-up</th>
+          </tr></thead><tbody id="due-list-tbody" class="divide-y divide-slate-100 text-xs"><tr><td colspan="14" class="px-4 py-10 text-center text-slate-500">Manufacturing due register will display sale-order and production progress records here.</td></tr></tbody></table></div>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div class="bg-amber-50 border border-amber-200 rounded-2xl p-4"><h3 class="text-sm font-bold text-amber-900">Semi-Finished Goods / WIP Definition</h3><p class="text-xs text-amber-900 mt-1">Garments or components that have entered production but are not yet QC-passed finished goods. Track cutting completed, parts bundled, embroidery / logo work, pocket or collar work, stitching in progress, alteration and rework separately where your workflow requires it.</p></div>
+          <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4"><h3 class="text-sm font-bold text-slate-800">Quantity Reconciliation</h3><p class="text-xs text-slate-600 mt-1">Pending Qty = Sale Order Qty − QC Passed / Finished Goods Qty. WIP is a stage-wise subset of pending quantity; do not add WIP again to the pending quantity. Rejected / rework pieces remain pending until passed and received into FG.</p></div>
         </div>
       </section>
 
