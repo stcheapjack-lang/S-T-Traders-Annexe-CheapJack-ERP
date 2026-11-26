@@ -5193,64 +5193,364 @@
     function openTaxInvoicePrint(idx) {
       const inv = state.invoices[idx];
       if (!inv) return;
-      const isIntra = (inv.gstin || "").startsWith("36");
-      const taxLine = isIntra
-        ? `CGST (${inv.gstPct / 2}%): ${formatINR2(inv.taxAmt / 2)} | SGST (${inv.gstPct / 2}%): ${formatINR2(inv.taxAmt / 2)}`
-        : `IGST (${inv.gstPct}%): ${formatINR2(inv.taxAmt)}`;
 
-      document.getElementById("print-modal-title").textContent = `GST Tax Invoice — ${inv.invNo}`;
+      const linkedSo = state.saleOrders.find(x => x.id === inv.soId) || {};
+      const cliMaster = state.masterClients.find(c => c.name === inv.client || c.gstin === inv.gstin) || {};
+      const cfg = state.companyConfig || {
+        firmName: "ST TRADERS ANNEXE CHEAP JACK",
+        shortTag: "ST",
+        address: "10-5-348/A, Tukaram Gate, Buddha Nagar, Lalaguda gate,, Secundrabad, 500017, Telangana",
+        phone: "9347203651",
+        gstin: "36AAIPF1095L1ZJ",
+        email: "sttradersannexecheapjack@gmail.com",
+        tan: "HYDJ06442C",
+        pan: "AAIPF1095L",
+        msme: "TS02B0042046",
+        bankName: "Bank Of Baroda",
+        bankAc: "71700200000140",
+        bankIfsc: "BARBODBSECE",
+        bankBranch: "East Marredpally, 500026"
+      };
+
+      const lineItems = (Array.isArray(inv.items) && inv.items.length > 0)
+        ? inv.items
+        : [{
+            hsn: inv.hsn || "621010",
+            style: inv.style,
+            gstPct: Number(inv.gstPct) || 5,
+            qty: inv.qty,
+            rate: inv.rate,
+            taxable: inv.taxable
+          }];
+
+      const taxableAmt = lineItems.reduce((sum, it) => sum + (Number(it.taxable) || (Number(it.qty) * Number(it.rate))), 0);
+      const totalQtySum = lineItems.reduce((sum, it) => sum + (Number(it.qty) || 0), 0);
+      const gstPct = Number(inv.gstPct) || 5;
+      const isIntra = (inv.gstin || "36").startsWith("36");
+      const totalTax = taxableAmt * (gstPct / 100);
+      const sgstAmt = isIntra ? totalTax / 2 : 0;
+      const cgstAmt = isIntra ? totalTax / 2 : 0;
+      const igstAmt = isIntra ? 0 : totalTax;
+      const subTotal = taxableAmt + totalTax;
+      const discountAmt = Number(inv.discount) || 0;
+      const afterDisc = subTotal - discountAmt;
+      const roundedGrand = Math.round(afterDisc);
+      const roundOff = roundedGrand - afterDisc;
+
+      const dispDate = (inv.date || "").split("-").reverse().join("/");
+      const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      const dParts = (inv.date || "").split("-");
+      const dcDateDisp = dParts.length === 3 ? `${dParts[2]}/${months[parseInt(dParts[1], 10) - 1] || dParts[1]}/${dParts[0]}` : dispDate;
+      const dcNo = inv.dcNo || inv.invNo.replace(/^SIV-|^STC\//i, "DLC-");
+
+      const custAddress = inv.address || linkedSo.address || cliMaster.city || "1-5-24, Kubera Complex, Sri Krishna Colony, Musheerabad, Hyderabad 500020";
+      const shipClient = linkedSo.shipClient || inv.client;
+      const shipAddress = linkedSo.shipAddress || custAddress;
+      const shipPhone = linkedSo.shipPhone || inv.phone || linkedSo.phone || "";
+      const contactPerson = inv.contactPerson || cliMaster.contactPerson || "Hyder Nawaz";
+      const buyerEmail = inv.email || cliMaster.email || "cheapjacksttraders@gmail.com";
+      const buyerPan = (inv.gstin && inv.gstin.length >= 12) ? inv.gstin.slice(2, 12) : "";
+      const stateCodeLabel = (inv.gstin || "").startsWith("36") ? "36-Telangana" : `${(inv.gstin || "36").slice(0, 2)}-State`;
+      const amountWords = numberToIndianWords(roundedGrand);
+
+      const minBodyHeight = Math.max(85, 240 - (lineItems.length - 1) * 28);
+      const rowsHtml = lineItems.map((it, rIdx) => {
+        const rowTaxable = Number(it.taxable) || (Number(it.qty) * Number(it.rate));
+        const isLast = rIdx === lineItems.length - 1;
+        return `
+          <tr class="align-top ${!isLast ? 'border-b border-black/30' : ''}">
+            <td class="py-1.5 px-1.5 text-center border-r border-black ${isLast ? `h-[${minBodyHeight}px]` : ''}">${rIdx + 1}</td>
+            <td class="py-1.5 px-2 border-r border-black font-bold uppercase">
+              <div contenteditable="true" class="outline-none focus:bg-yellow-50">${it.style}</div>
+            </td>
+            <td class="py-1.5 px-2 text-center border-r border-black">
+              <span contenteditable="true" class="outline-none focus:bg-yellow-50">${it.hsn || inv.hsn || "621010"}</span>
+            </td>
+            <td class="py-1.5 px-2 text-right border-r border-black">
+              <span contenteditable="true" class="outline-none focus:bg-yellow-50">${formatPlain2(it.gstPct || gstPct)}</span>
+            </td>
+            <td class="py-1.5 px-2 text-right border-r border-black">
+              <span contenteditable="true" class="outline-none focus:bg-yellow-50">${formatPlain2(it.qty)}</span>
+            </td>
+            <td class="py-1.5 px-2 text-right border-r border-black">
+              <span contenteditable="true" class="outline-none focus:bg-yellow-50">${formatPlain2(it.rate)}</span>
+            </td>
+            <td class="py-1.5 px-2 text-right font-semibold">
+              <span contenteditable="true" class="outline-none focus:bg-yellow-50">${formatPlain2(rowTaxable)}</span>
+            </td>
+          </tr>
+        `;
+      }).join("");
+
+      const toolbarEl = document.getElementById("cutting-slip-toolbar");
+      if (toolbarEl) toolbarEl.classList.add("hidden");
+      document.getElementById("print-modal-title").textContent = `Tax Invoice — ${inv.invNo}`;
+
       document.getElementById("print-area").innerHTML = `
-        <div class="border-2 border-slate-900 p-5 space-y-4 text-slate-900 bg-white">
-          <div class="border-b-2 border-slate-900 pb-3 flex justify-between items-start">
-            <div>
-              <h2 class="text-lg font-extrabold">S T TRADERS ANNEXE CHEAPJACK</h2>
-              <p class="text-xs text-slate-600">Musheerabad & Cherlapally Units, Hyderabad, Telangana • GSTIN: 36AAJFS8492K1Z5</p>
+        <div class="so-a4-sheet border border-black bg-white text-black font-sans text-[10.5px] leading-snug select-text">
+          <div>
+            <div class="grid grid-cols-12 px-3 py-2 border-b border-black items-center">
+              <div class="col-span-2 flex flex-col items-start justify-center">
+                <div class="w-14 h-12 rounded-md border-2 border-sky-900 bg-sky-50 flex flex-col items-center justify-center leading-none">
+                  <span class="text-[21px] font-black text-sky-900 tracking-tighter">${cfg.shortTag || "ST"}</span>
+                  <span class="text-[5.5px] font-extrabold text-sky-800 tracking-tight uppercase mt-0.5">ST TRADERS ANNEXE</span>
+                </div>
+              </div>
+              <div class="col-span-8 text-center">
+                <h1 class="text-[19px] font-extrabold tracking-wide uppercase leading-tight">${cfg.firmName}</h1>
+                <p class="text-[10px] font-medium mt-0.5">${cfg.address},</p>
+                <p class="text-[10px] font-medium">Ph No:${cfg.phone},, GST No.: ${cfg.gstin},</p>
+                <p class="text-[10px] font-medium">E-Mail:${cfg.email}</p>
+              </div>
+              <div class="col-span-2"></div>
             </div>
-            <span class="px-3 py-1 bg-slate-900 text-white text-xs font-extrabold">TAX INVOICE • ${inv.invNo}</span>
+
+            <div class="px-2.5 py-1 border-b border-black">
+              <div class="text-center font-extrabold text-[13px] tracking-wide">Tax Invoice</div>
+              <div class="grid grid-cols-3 text-[10px] font-bold mt-0.5">
+                <div class="text-left">TAN.: <span contenteditable="true" class="font-semibold">${cfg.tan || "HYDJ06442C"}</span></div>
+                <div class="text-center">PAN.: <span contenteditable="true" class="font-semibold">${cfg.pan || "AAIPF1095L"}</span></div>
+                <div class="text-right">MSME.: <span contenteditable="true" class="font-semibold">${cfg.msme || "TS02B0042046"}</span></div>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-12 border-b border-black text-[10px]">
+              <div class="col-span-6 border-r border-black p-2 space-y-1">
+                <div class="grid grid-cols-12">
+                  <div class="col-span-5 font-semibold">GST No.</div>
+                  <div class="col-span-7 font-bold">: <span contenteditable="true">${cfg.gstin}</span></div>
+                </div>
+                <div class="grid grid-cols-12">
+                  <div class="col-span-5 font-semibold">State:</div>
+                  <div class="col-span-7 font-bold">: 36-Telangana</div>
+                </div>
+                <div class="grid grid-cols-12">
+                  <div class="col-span-5 font-semibold">Reverse Charge</div>
+                  <div class="col-span-7 font-bold">: <span contenteditable="true">N</span></div>
+                </div>
+                <div class="grid grid-cols-12">
+                  <div class="col-span-5 font-semibold">Invoice Number</div>
+                  <div class="col-span-7 font-extrabold">: <span contenteditable="true">${inv.invNo}</span></div>
+                </div>
+                <div class="grid grid-cols-12">
+                  <div class="col-span-5 font-semibold">Invoice Date</div>
+                  <div class="col-span-7 font-bold">: <span contenteditable="true">${dispDate}</span></div>
+                </div>
+              </div>
+
+              <div class="col-span-6 p-2 space-y-1">
+                <div class="grid grid-cols-12">
+                  <div class="col-span-5 font-semibold">E-Way Bill No. :</div>
+                  <div class="col-span-7 font-bold"><span contenteditable="true">${inv.ewayNo || "0"}</span></div>
+                </div>
+                <div class="grid grid-cols-12">
+                  <div class="col-span-5 font-semibold">Ack No.:</div>
+                  <div class="col-span-7 font-bold"><span contenteditable="true">${inv.ackNo || "0"}</span></div>
+                </div>
+                <div class="grid grid-cols-12">
+                  <div class="col-span-5 font-semibold">Ack Date :</div>
+                  <div class="col-span-7"><span contenteditable="true">${inv.ackDate || ""}</span></div>
+                </div>
+                <div class="grid grid-cols-12">
+                  <div class="col-span-5 font-semibold">Ack IRN :</div>
+                  <div class="col-span-7"><span contenteditable="true">${inv.ackIrn || ""}</span></div>
+                </div>
+                <div class="grid grid-cols-12">
+                  <div class="col-span-5 font-semibold">Vehicle No:</div>
+                  <div class="col-span-7 font-semibold"><span contenteditable="true">${inv.transport || ""}</span></div>
+                </div>
+                <div class="grid grid-cols-12">
+                  <div class="col-span-5 font-semibold">LR No:</div>
+                  <div class="col-span-7"><span contenteditable="true">${inv.lrNo || ""}</span></div>
+                </div>
+                <div class="grid grid-cols-12">
+                  <div class="col-span-5 font-semibold">Transporter:</div>
+                  <div class="col-span-7"><span contenteditable="true">${inv.transporterName || ""}</span></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-12 border-b border-black text-[10px]">
+              <div class="col-span-6 border-r border-black">
+                <div class="px-2 py-0.5 border-b border-black font-bold text-center">Bill To</div>
+                <div class="p-2 space-y-1 min-h-[145px]">
+                  <div class="grid grid-cols-12">
+                    <div class="col-span-4 font-semibold">Name</div>
+                    <div class="col-span-8 font-bold" contenteditable="true">${inv.client}</div>
+                  </div>
+                  <div class="grid grid-cols-12">
+                    <div class="col-span-4 font-semibold">Address:</div>
+                    <div class="col-span-8 whitespace-pre-line" contenteditable="true">${custAddress}</div>
+                  </div>
+                  <div class="grid grid-cols-12">
+                    <div class="col-span-4 font-semibold">State C/N:</div>
+                    <div class="col-span-8 font-bold">${stateCodeLabel}</div>
+                  </div>
+                  <div class="grid grid-cols-12">
+                    <div class="col-span-4 font-semibold">GST No</div>
+                    <div class="col-span-8 font-bold">: <span contenteditable="true">${inv.gstin}</span></div>
+                  </div>
+                  <div class="grid grid-cols-12">
+                    <div class="col-span-4 font-semibold">DC No</div>
+                    <div class="col-span-8 font-bold">: <span contenteditable="true">${dcNo}</span></div>
+                  </div>
+                  <div class="grid grid-cols-12">
+                    <div class="col-span-4 font-semibold">DC Date</div>
+                    <div class="col-span-8 font-bold">: <span contenteditable="true">${dcDateDisp}</span></div>
+                  </div>
+                  <div class="grid grid-cols-12">
+                    <div class="col-span-4 font-semibold">P.O. Ref. & Dt:</div>
+                    <div class="col-span-8 font-semibold" contenteditable="true">${inv.soId || ""}</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-span-6">
+                <div class="px-2 py-0.5 border-b border-black font-bold text-center">Consignee (Shipped to)</div>
+                <div class="p-2 space-y-1 min-h-[145px]">
+                  <div class="grid grid-cols-12">
+                    <div class="col-span-4 font-semibold">Name</div>
+                    <div class="col-span-8 font-bold" contenteditable="true">${shipClient}</div>
+                  </div>
+                  <div class="grid grid-cols-12">
+                    <div class="col-span-4 font-semibold">Address</div>
+                    <div class="col-span-8 whitespace-pre-line" contenteditable="true">${shipAddress}</div>
+                  </div>
+                  <div class="grid grid-cols-12">
+                    <div class="col-span-4 font-semibold">Phone:</div>
+                    <div class="col-span-8" contenteditable="true">${shipPhone}</div>
+                  </div>
+                  <div class="grid grid-cols-12">
+                    <div class="col-span-4 font-semibold">Contact Person:</div>
+                    <div class="col-span-8 font-semibold" contenteditable="true">${contactPerson}</div>
+                  </div>
+                  <div class="grid grid-cols-12">
+                    <div class="col-span-4 font-semibold">E-Mail:</div>
+                    <div class="col-span-8" contenteditable="true">${buyerEmail}</div>
+                  </div>
+                  <div class="grid grid-cols-12">
+                    <div class="col-span-4 font-semibold">GST State</div>
+                    <div class="col-span-8 font-bold">${stateCodeLabel}</div>
+                  </div>
+                  <div class="grid grid-cols-12">
+                    <div class="col-span-4 font-semibold">GST No</div>
+                    <div class="col-span-8 font-bold">: <span contenteditable="true">${inv.gstin}</span></div>
+                  </div>
+                  <div class="grid grid-cols-12">
+                    <div class="col-span-4 font-semibold">PAN No</div>
+                    <div class="col-span-8 font-semibold">: <span contenteditable="true">${buyerPan}</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <table class="w-full border-collapse border-b border-black text-[10.5px]">
+              <thead>
+                <tr class="border-b border-black text-center font-bold">
+                  <th class="w-[36px] py-1 px-1 border-r border-black">Sn</th>
+                  <th class="py-1 px-2 border-r border-black">Description</th>
+                  <th class="w-[82px] py-1 px-1 border-r border-black">HSN Code</th>
+                  <th class="w-[54px] py-1 px-1 border-r border-black leading-tight">Tax<br>%</th>
+                  <th class="w-[68px] py-1 px-1.5 border-r border-black">Qty</th>
+                  <th class="w-[78px] py-1 px-1.5 border-r border-black">Unit Price</th>
+                  <th class="w-[96px] py-1 px-2 leading-tight">Taxable<br>Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${rowsHtml}
+                <tr class="border-t border-black font-bold">
+                  <td class="py-1 px-1 border-r border-black"></td>
+                  <td class="py-1 px-2 border-r border-black text-center">Total</td>
+                  <td class="py-1 px-1 border-r border-black"></td>
+                  <td class="py-1 px-1 border-r border-black"></td>
+                  <td class="py-1 px-1.5 border-r border-black text-right font-extrabold">${formatPlain2(totalQtySum)}</td>
+                  <td class="py-1 px-1.5 border-r border-black"></td>
+                  <td class="py-1 px-2 text-right font-extrabold">${formatPlain2(taxableAmt)}</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div class="grid grid-cols-12 border-b border-black text-[10px]">
+              <div class="col-span-7 border-r border-black flex flex-col justify-between">
+                <div class="px-2.5 py-2 border-b border-black">
+                  <span class="font-semibold">Invoice Value in Words</span>
+                  <div contenteditable="true" class="font-extrabold mt-0.5 text-[10.5px] outline-none focus:bg-yellow-50">${amountWords}</div>
+                </div>
+                <div class="p-2.5 space-y-1 flex-1 flex flex-col justify-center">
+                  <div><span class="font-semibold">Bank Name:</span> <span class="font-bold ml-1">${cfg.bankName}</span></div>
+                  <div><span class="font-semibold">Bank A/c No.:</span> <span class="font-bold ml-1">A/C No: ${cfg.bankAc}</span></div>
+                  <div class="pl-[76px] font-bold">IFSC CODE: ${cfg.bankIfsc}</div>
+                  <div class="pl-[76px] font-bold">Branch: ${cfg.bankBranch}</div>
+                </div>
+              </div>
+
+              <div class="col-span-5 divide-y divide-black">
+                <div class="grid grid-cols-12 px-2 py-1">
+                  <div class="col-span-7 font-bold">Taxable Amount</div>
+                  <div class="col-span-5 text-right font-extrabold">${formatPlain2(taxableAmt)}</div>
+                </div>
+                <div class="grid grid-cols-12 px-2 py-1">
+                  <div class="col-span-7 font-semibold">Add: SGST</div>
+                  <div class="col-span-5 text-right font-bold">${formatPlain2(sgstAmt)}</div>
+                </div>
+                <div class="grid grid-cols-12 px-2 py-1">
+                  <div class="col-span-7 font-semibold">Add: CGST</div>
+                  <div class="col-span-5 text-right font-bold">${formatPlain2(cgstAmt)}</div>
+                </div>
+                <div class="grid grid-cols-12 px-2 py-1">
+                  <div class="col-span-7 font-semibold">Add: IGST</div>
+                  <div class="col-span-5 text-right font-bold">${formatPlain2(igstAmt)}</div>
+                </div>
+                <div class="grid grid-cols-12 px-2 py-1">
+                  <div class="col-span-7 font-bold">Total Tax Amount</div>
+                  <div class="col-span-5 text-right font-extrabold">${formatPlain2(totalTax)}</div>
+                </div>
+                <div class="grid grid-cols-12 px-2 py-1">
+                  <div class="col-span-7 font-bold">Sub Total</div>
+                  <div class="col-span-5 text-right font-extrabold">${formatPlain2(subTotal)}</div>
+                </div>
+                <div class="grid grid-cols-12 px-2 py-1">
+                  <div class="col-span-7 font-semibold">DSC @</div>
+                  <div class="col-span-5 text-right font-bold">${formatPlain2(discountAmt)}</div>
+                </div>
+                <div class="grid grid-cols-12 px-2 py-1">
+                  <div class="col-span-7 font-semibold">Round Off</div>
+                  <div class="col-span-5 text-right font-bold">${roundOff.toFixed(2)}</div>
+                </div>
+                <div class="grid grid-cols-12 px-2 py-1.5 bg-slate-50">
+                  <div class="col-span-7 font-extrabold text-[11px]">Grand Total</div>
+                  <div class="col-span-5 text-right font-extrabold text-[11px]">${formatPlain2(roundedGrand)}</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-12 px-2.5 py-2 text-[9.5px] items-stretch">
+              <div class="col-span-8 pr-2 space-y-0.5">
+                <div class="font-bold text-[10px]">Terms of Conditions :</div>
+                <div>1. Goods once sold can not be returned back or exchanged.</div>
+                <div>2. Our responsibilities ceases as soon as goods leave our premises.</div>
+                <div>3. Subject to 36-Telangana Jurisdiction.</div>
+                <div>4. If any regarding this invoice must be informed with in 2 days</div>
+                <div>5. Payments should be done as per Terms and conditions By Cheque Of RTGS/NEFT</div>
+              </div>
+              <div class="col-span-4 text-right flex flex-col justify-between">
+                <div class="font-extrabold text-[10px] leading-tight">For ${cfg.firmName}</div>
+                <div class="font-bold text-[10px] pt-8">Authorised Signatory</div>
+              </div>
+            </div>
           </div>
-          <div class="grid grid-cols-2 gap-3 text-xs bg-slate-50 p-3.5 rounded-lg border border-slate-200">
-            <div><strong>Billed To:</strong> ${inv.client}</div>
-            <div><strong>Buyer GSTIN:</strong> ${inv.gstin}</div>
-            <div><strong>Invoice Date:</strong> ${inv.date}</div>
-            <div><strong>Sale Order Ref:</strong> ${inv.soId}</div>
-            <div class="col-span-2"><strong>Dispatch / Vehicle:</strong> ${inv.transport}</div>
-          </div>
-          <table class="w-full text-left border-collapse border border-slate-300 text-xs">
-            <thead>
-              <tr class="bg-slate-100 border-b border-slate-300 font-bold">
-                <th class="p-2 border-r border-slate-300">Description of Goods</th>
-                <th class="p-2 border-r border-slate-300">HSN</th>
-                <th class="p-2 border-r border-slate-300 text-right">Qty</th>
-                <th class="p-2 border-r border-slate-300 text-right">Rate (₹)</th>
-                <th class="p-2 text-right">Taxable Value (₹)</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td class="p-2 border-r border-slate-300 font-semibold">${inv.style}</td>
-                <td class="p-2 border-r border-slate-300">${inv.hsn}</td>
-                <td class="p-2 border-r border-slate-300 text-right">${inv.qty}</td>
-                <td class="p-2 border-r border-slate-300 text-right">${formatINR2(inv.rate)}</td>
-                <td class="p-2 text-right font-bold">${formatINR2(inv.taxable)}</td>
-              </tr>
-            </tbody>
-          </table>
-          <div class="flex flex-col items-end text-xs space-y-1 pt-2">
-            <div>${taxLine}</div>
-            <div class="text-base font-extrabold text-slate-900 pt-1 border-t border-slate-300">Grand Invoice Total: ${formatINR2(inv.grandTotal)}</div>
-          </div>
-          <div class="pt-6 flex justify-between text-xs text-slate-500">
-            <span>Receiver's Seal & Signature</span>
-            <span>For S T Traders Annexe CheapJack (Authorised Signatory)</span>
-          </div>
+          <div class="text-center text-[9.5px] py-1 border-t border-black/30">Page 1 of 1</div>
         </div>
       `;
-      currentPrintableText = `S T TRADERS ANNEXE CHEAPJACK — TAX INVOICE ${inv.invNo} | Client: ${inv.client} (${inv.gstin}) | Item: ${inv.style} | Qty: ${inv.qty} @ ₹${inv.rate} | Taxable: ${formatINR2(inv.taxable)} | ${taxLine} | Grand Total: ${formatINR2(inv.grandTotal)}`;
+
+      const taxLine = isIntra
+        ? `SGST (${gstPct / 2}%): ${formatINR2(sgstAmt)} | CGST (${gstPct / 2}%): ${formatINR2(cgstAmt)}`
+        : `IGST (${gstPct}%): ${formatINR2(igstAmt)}`;
+      currentPrintableText = `${cfg.firmName} — TAX INVOICE ${inv.invNo} | Date: ${dispDate} | Bill To: ${inv.client} (${inv.gstin}) | Item: ${inv.style} | HSN: ${inv.hsn || "621010"} | Qty: ${totalQtySum} @ ₹${inv.rate} | Taxable: ${formatINR2(taxableAmt)} | ${taxLine} | Round Off: ${roundOff.toFixed(2)} | Grand Total: ${formatINR2(roundedGrand)} (${amountWords})`;
 
       document.getElementById("print-preview-modal").classList.remove("hidden");
       document.getElementById("print-preview-modal").classList.add("flex");
     }
-
     function downloadInvoiceCsv(idx) {
       const inv = state.invoices[idx];
       if (!inv) return;
